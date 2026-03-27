@@ -8,7 +8,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-    <!-- Bootstrap & Icons -->
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <style>
@@ -39,8 +39,6 @@
         .message.admin { background-color: var(--bs-accent); color: white; align-self: flex-end; margin-left: auto; border-bottom-right-radius: 0; }
         .message.cliente { background-color: #495057; color: white; align-self: flex-start; margin-right: auto; border-bottom-left-radius: 0; }
         .message small { display: block; font-size: 0.7em; opacity: 0.7; text-align: right; margin-top: 5px; }
-        .chat-input { padding: 10px; background-color: #343a40; border-top: 1px solid #495057; display: flex; gap: 10px; }
-        .checklist-box { background-color: rgba(0,0,0,0.2); border: 1px solid #6c757d; border-radius: 0.5rem; padding: 15px; margin-bottom: 15px; }
         .toast-container { position: fixed; top: 20px; right: 20px; z-index: 1055; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
         .spin { animation: spin 1s linear infinite; display: inline-block; }
@@ -49,14 +47,14 @@
 <body>
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- TELA DE LOGIN (BOTÕES INDEPENDENTES) -->
+    <!-- TELA DE LOGIN BLINDADA -->
     <div id="loginScreen" class="d-flex flex-column justify-content-center align-items-center vh-100">
         <div class="card p-4 shadow-lg" style="width: 100%; max-width: 400px;">
             <div class="card-header text-center"><h3>Evolution Motors</h3></div>
             <div class="card-body">
                 <div id="loginFormContainer">
-                    <div class="mb-3"><label class="form-label">Email do Admin</label><input type="email" class="form-control" id="loginEmail" placeholder="Seu e-mail"></div>
-                    <div class="mb-4"><label class="form-label">Senha</label><input type="password" class="form-control" id="loginPassword" placeholder="Sua senha"></div>
+                    <div class="mb-3"><label class="form-label">Email do Admin</label><input type="email" class="form-control" id="loginEmail" placeholder="admin@evolution.com"></div>
+                    <div class="mb-4"><label class="form-label">Senha</label><input type="password" class="form-control" id="loginPassword" placeholder="******"></div>
                     <button type="button" class="btn btn-primary w-100 mb-2" id="btnSubmitLogin" onclick="fazerLogin()">Entrar no Painel</button>
                     <button type="button" class="btn btn-outline-light w-100" id="btnRegisterAdmin" onclick="cadastrarAdmin()">Criar Conta (Primeiro Acesso)</button>
                 </div>
@@ -91,49 +89,58 @@
                 <div class="card"><div class="card-header d-flex justify-content-between align-items-center"><h5>Ordens de Serviço</h5><button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#servicoModal" onclick="prepareServicoModal('add')">Nova OS</button></div>
                 <div class="card-body"><div class="row" id="listaAgendamentos"></div></div></div>
             </section>
+            
             <section id="estoque" class="admin-section" style="display:none;">
                 <div class="card"><div class="card-header d-flex justify-content-between align-items-center"><h5>Estoque</h5><div><button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#stockAdjustmentModal" onclick="prepareStockAdjustmentModal('add')">+ Qtd</button> <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#stockAdjustmentModal" onclick="prepareStockAdjustmentModal('remove')">- Qtd</button> <button class="btn btn-light btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#estoqueModal" onclick="prepareEstoqueModal('add')">Nova Peça</button></div></div>
                 <div class="card-body"><table class="table table-hover"><thead><tr><th>Img</th><th>Nome</th><th>Custo</th><th>Venda</th><th>Qtd.</th><th>Ações</th></tr></thead><tbody id="listaEstoque"></tbody></table></div></div>
             </section>
+            
             <section id="clientesMotos" class="admin-section" style="display:none;">
                 <div class="card mb-4"><div class="card-header d-flex justify-content-between align-items-center"><h5>Clientes</h5><button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#clienteModal" onclick="prepareClienteModal('add')">Novo Cliente</button></div>
                 <div class="card-body"><table class="table table-hover"><thead><tr><th>Nome</th><th>WhatsApp</th><th>Email Login</th><th>Ações</th></tr></thead><tbody id="listaClientes"></tbody></table></div></div>
                 <div class="card"><div class="card-header d-flex justify-content-between align-items-center"><h5>Motos</h5><button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#motoModal" onclick="prepareMotoModal('add')">Nova Moto</button></div>
                 <div class="card-body"><table class="table table-hover"><thead><tr><th>Img</th><th>Cliente</th><th>Modelo/Placa</th><th>KM</th><th>Ações</th></tr></thead><tbody id="listaMotos"></tbody></table></div></div>
             </section>
+            
             <section id="funcionarios" class="admin-section" style="display:none;">
                 <div class="card"><div class="card-header d-flex justify-content-between align-items-center"><h5>Funcionários</h5><button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#funcionarioModal" onclick="prepareFuncionarioModal('add')">Novo</button></div>
                 <div class="card-body"><table class="table table-hover"><thead><tr><th>Nome</th><th>Função</th><th>Ações</th></tr></thead><tbody id="listaFuncionarios"></tbody></table></div></div>
             </section>
+            
             <section id="fornecedores" class="admin-section" style="display:none;">
                 <div class="card"><div class="card-header d-flex justify-content-between align-items-center"><h5>Fornecedores & Compras</h5><div><button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#purchaseModal" onclick="preparePurchaseModal()">Registrar Compra</button> <button class="btn btn-light btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#fornecedorModal" onclick="prepareFornecedorModal('add')">Novo Fornecedor</button></div></div>
                 <div class="card-body"><table class="table table-hover"><thead><tr><th>Nome</th><th>Categoria</th><th>Ações</th></tr></thead><tbody id="listaFornecedores"></tbody></table></div></div>
             </section>
+            
             <section id="financeiro" class="admin-section" style="display:none;">
                 <div class="card"><div class="card-header d-flex justify-content-between align-items-center"><h5>Financeiro</h5><button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#financeiroModal" onclick="prepareFinanceiroModal('add')">Adicionar Manual</button></div>
                 <div class="card-body"><div class="row mb-3 text-center"><div class="col"><div class="p-3 bg-success rounded"><h5>Entradas</h5><h4 id="totEnt">R$ 0,00</h4></div></div><div class="col"><div class="p-3 bg-danger rounded"><h5>Saídas</h5><h4 id="totSai">R$ 0,00</h4></div></div><div class="col"><div class="p-3 bg-primary rounded"><h5>Saldo</h5><h4 id="totSal">R$ 0,00</h4></div></div></div>
                 <table class="table table-hover"><thead><tr><th>Tipo</th><th>Descrição</th><th>Valor</th><th>Data</th><th>Origem</th><th>Ações</th></tr></thead><tbody id="listaFinanceiro"></tbody></table></div></div>
             </section>
+            
             <section id="mensagens" class="admin-section" style="display:none;">
                 <div class="row">
                     <div class="col-md-4"><div class="card h-100"><div class="card-header"><h5>Clientes</h5></div><div class="list-group bg-dark" id="chatClientList" style="overflow-y: auto; max-height:400px;"></div></div></div>
-                    <div class="col-md-8"><div class="card h-100"><div class="card-header"><h5 id="chatActiveClientName">Selecione um cliente</h5></div><div class="card-body p-0"><div class="chat-container"><div class="chat-messages" id="chatMessagesArea"></div><div class="chat-input" style="display:none;" id="chatInputArea"><input type="text" class="form-control" id="chatMsgInput" placeholder="Mensagem..."><button class="btn btn-primary" onclick="enviarMensagemAdmin()">Enviar</button></div></div></div></div></div>
+                    <div class="col-md-8"><div class="card h-100"><div class="card-header"><h5 id="chatActiveClientName">Selecione um cliente</h5></div><div class="card-body p-0"><div class="chat-container"><div class="chat-messages" id="chatMessagesArea"></div><div class="p-3 bg-dark d-flex gap-2" style="display:none;" id="chatInputArea"><input type="text" class="form-control" id="chatMsgInput" placeholder="Mensagem..."><button class="btn btn-primary" onclick="enviarMensagemAdmin()">Enviar</button></div></div></div></div></div>
                 </div>
             </section>
         </div>
     </div>
 
-    <!-- MODALS COMPRIMIDOS PARA NÃO QUEBRAR O CÓDIGO -->
-    <div class="modal fade" id="estoqueModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Peça</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="estoqueForm" onsubmit="salvarEstoque(event)"><input type="hidden" id="estoqueId"><div class="mb-3"><label>Imagem (Cloudinary)</label><input type="file" class="form-control" id="estoqueImagem"><div id="previewEstoqueImg"></div></div><div class="mb-3"><label>Nome</label><input type="text" class="form-control" id="estoqueNome" required></div><div class="mb-3"><label>Custo</label><input type="number" step="0.01" class="form-control" id="estoqueCusto" required></div><div class="mb-3"><label>Venda</label><input type="number" step="0.01" class="form-control" id="estoqueVenda" required></div><div class="mb-3"><label>Qtd Inicial</label><input type="number" class="form-control" id="estoqueQuantidade" required></div><button type="submit" class="btn btn-primary w-100">Salvar</button></form></div></div></div></div>
+    <!-- ========================================================================================= -->
+    <!-- MODALS COMPRIMIDOS (PARA NÃO QUEBRAR O LIMITE DO CHAT) -->
+    <!-- ========================================================================================= -->
+    <div class="modal fade" id="estoqueModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Peça</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="estoqueForm" onsubmit="salvarEstoque(event)"><input type="hidden" id="estoqueId"><div class="mb-3"><label>Imagem (Cloudinary)</label><input type="file" class="form-control" id="estoqueImagem"><div id="previewEstoqueImg"></div></div><div class="mb-3"><label>Nome</label><input type="text" class="form-control" id="estoqueNome" required></div><div class="mb-3"><label>Custo</label><input type="number" step="0.01" class="form-control" id="estoqueCusto" required></div><div class="mb-3"><label>Venda</label><input type="number" step="0.01" class="form-control" id="estoqueVenda" required></div><div class="mb-3"><label>Qtd</label><input type="number" class="form-control" id="estoqueQuantidade" required></div><button type="submit" class="btn btn-primary w-100">Salvar</button></form></div></div></div></div>
     <div class="modal fade" id="stockAdjustmentModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="stockAdjTitle">Ajustar</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="stockAdjustmentForm" onsubmit="ajustarEstoque(event)"><input type="hidden" id="adjType"><div class="mb-3"><label>Peça</label><select class="form-select" id="adjItem" required></select></div><div class="mb-3"><label>Qtd</label><input type="number" class="form-control" id="adjQtd" required></div><button type="submit" class="btn btn-primary w-100">Salvar</button></form></div></div></div></div>
-    <div class="modal fade" id="clienteModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Cliente</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="clienteForm" onsubmit="salvarCliente(event)"><input type="hidden" id="clienteId"><div class="mb-3"><label>Nome</label><input type="text" class="form-control" id="clienteNome" required></div><div class="mb-3"><label>WhatsApp (Ex: 11999999999)</label><input type="text" class="form-control" id="clienteContato" required></div><hr><h6>Acesso ao Portal</h6><div class="mb-3"><label>E-mail</label><input type="email" class="form-control" id="clienteEmail" required></div><div class="mb-3"><label>Senha Provisória</label><div class="input-group"><input type="text" class="form-control" id="clienteSenha" required><button class="btn btn-warning" type="button" onclick="document.getElementById('clienteSenha').value = Math.random().toString(36).slice(-6);">Gerar</button></div></div><button type="submit" class="btn btn-primary w-100">Salvar e Criar Acesso</button></form></div></div></div></div>
-    <div class="modal fade" id="motoModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Moto</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="motoForm" onsubmit="salvarMoto(event)"><input type="hidden" id="motoId"><div class="mb-3"><label>Foto</label><input type="file" class="form-control" id="motoImagem"></div><div class="mb-3"><label>Dono</label><select class="form-select" id="motoClienteId" required></select></div><div class="mb-3"><label>Modelo</label><input type="text" class="form-control" id="motoModelo" required></div><div class="mb-3"><label>Placa</label><input type="text" class="form-control" id="motoPlaca" required></div><div class="mb-3"><label>KM Atual</label><input type="number" class="form-control" id="motoKmAtual"></div><button type="submit" class="btn btn-primary w-100">Salvar</button></form></div></div></div></div>
+    <div class="modal fade" id="clienteModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Cliente</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="clienteForm" onsubmit="salvarCliente(event)"><input type="hidden" id="clienteId"><div class="mb-3"><label>Nome</label><input type="text" class="form-control" id="clienteNome" required></div><div class="mb-3"><label>WhatsApp</label><input type="text" class="form-control" id="clienteContato" required></div><hr><h6>Acesso ao Portal</h6><div class="mb-3"><label>E-mail</label><input type="email" class="form-control" id="clienteEmail" required></div><div class="mb-3"><label>Senha Provisória</label><div class="input-group"><input type="text" class="form-control" id="clienteSenha" required><button class="btn btn-warning" type="button" onclick="document.getElementById('clienteSenha').value=Math.random().toString(36).slice(-6)">Gerar</button></div></div><button type="submit" class="btn btn-primary w-100">Salvar/Criar Acesso</button></form></div></div></div></div>
+    <div class="modal fade" id="motoModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Moto</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="motoForm" onsubmit="salvarMoto(event)"><input type="hidden" id="motoId"><div class="mb-3"><label>Foto</label><input type="file" class="form-control" id="motoImagem"></div><div class="mb-3"><label>Dono</label><select class="form-select" id="motoClienteId" required></select></div><div class="mb-3"><label>Modelo</label><input type="text" class="form-control" id="motoModelo" required></div><div class="mb-3"><label>Placa</label><input type="text" class="form-control" id="motoPlaca" required></div><div class="mb-3"><label>KM</label><input type="number" class="form-control" id="motoKmAtual"></div><button type="submit" class="btn btn-primary w-100">Salvar</button></form></div></div></div></div>
     <div class="modal fade" id="funcionarioModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Funcionário</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="funcionarioForm" onsubmit="salvarFuncionario(event)"><input type="hidden" id="funcionarioId"><div class="mb-3"><label>Nome</label><input type="text" class="form-control" id="funcNome" required></div><div class="mb-3"><label>Função</label><input type="text" class="form-control" id="funcFuncao"></div><button type="submit" class="btn btn-primary w-100">Salvar</button></form></div></div></div></div>
     <div class="modal fade" id="fornecedorModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Fornecedor</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="fornecedorForm" onsubmit="salvarFornecedor(event)"><input type="hidden" id="fornId"><div class="mb-3"><label>Nome</label><input type="text" class="form-control" id="fornNome" required></div><div class="mb-3"><label>Categoria</label><input type="text" class="form-control" id="fornCat"></div><button type="submit" class="btn btn-primary w-100">Salvar</button></form></div></div></div></div>
-    <div class="modal fade" id="purchaseModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Registrar Compra</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="purchaseForm" onsubmit="salvarCompra(event)"><div class="mb-3"><label>Fornecedor</label><select class="form-select" id="purchForn" required></select></div><div class="mb-3"><label>Data</label><input type="date" class="form-control" id="purchDate" required></div><div class="mb-3"><label>Valor Total da Nota (R$)</label><input type="number" step="0.01" class="form-control" id="purchValorTotal" required></div><button type="submit" class="btn btn-primary w-100">Lançar Financeiro</button></form></div></div></div></div>
+    <div class="modal fade" id="purchaseModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Compra</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="purchaseForm" onsubmit="salvarCompra(event)"><div class="mb-3"><label>Fornecedor</label><select class="form-select" id="purchForn" required></select></div><div class="mb-3"><label>Data</label><input type="date" class="form-control" id="purchDate" required></div><div class="mb-3"><label>Valor (R$)</label><input type="number" step="0.01" class="form-control" id="purchValorTotal" required></div><button type="submit" class="btn btn-primary w-100">Lançar no Caixa</button></form></div></div></div></div>
     <div class="modal fade" id="financeiroModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Transação</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="finForm" onsubmit="salvarFinanceiro(event)"><div class="mb-3"><label>Tipo</label><select class="form-select" id="finTipo"><option>Entrada</option><option>Saída</option></select></div><div class="mb-3"><label>Descrição</label><input type="text" class="form-control" id="finDesc" required></div><div class="mb-3"><label>Valor</label><input type="number" step="0.01" class="form-control" id="finValor" required></div><div class="mb-3"><label>Data</label><input type="date" class="form-control" id="finData" required></div><button type="submit" class="btn btn-primary w-100">Salvar</button></form></div></div></div></div>
 
-    <div class="modal fade" id="servicoModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Ordem de Serviço</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="servicoForm" onsubmit="salvarOS(event)"><input type="hidden" id="osId"><ul class="nav nav-tabs mb-3"><li class="nav-item"><button class="nav-link active text-white" data-bs-toggle="tab" data-bs-target="#osGeral" type="button">Dados Gerais</button></li><li class="nav-item"><button class="nav-link text-white" data-bs-toggle="tab" data-bs-target="#osChecklist" type="button">Checklist</button></li></ul><div class="tab-content"><div class="tab-pane fade show active" id="osGeral"><div class="row"><div class="col-md-6 mb-2"><label>Cliente</label><select class="form-select" id="osCliente" required onchange="loadOsMotos()"></select></div><div class="col-md-6 mb-2"><label>Moto</label><select class="form-select" id="osMoto" required></select></div></div><div class="mb-2"><label>Serviço</label><textarea class="form-control" id="osDesc" required></textarea></div><div class="row"><div class="col-md-4 mb-2"><label>Status</label><select class="form-select" id="osStatus"><option>Aguardando Orçamento</option><option>Orçamento Enviado</option><option>Aprovado</option><option>Em Andamento</option><option>Concluido</option><option>Cancelado</option></select></div><div class="col-md-4 mb-2"><label>Mecânico</label><select class="form-select" id="osMec"></select></div><div class="col-md-4 mb-2"><label>Data</label><input type="date" class="form-control" id="osData" required></div></div><hr><div class="mb-2"><label>Mão de Obra (R$)</label><input type="number" step="0.01" class="form-control" id="osMaoObra" value="0" oninput="calcOsTotal()"></div><div class="mb-2"><label>Peças</label><div id="osPecasContainer"></div><button type="button" class="btn btn-sm btn-outline-light mt-2" onclick="addOsPeca()">+ Add Peça</button></div><div><label>Total OS</label><input type="text" class="form-control bg-dark text-warning fw-bold fs-5" id="osTotal" readonly></div></div><div class="tab-pane fade" id="osChecklist"><div class="checklist-box"><div class="mb-3"><label>Combustível</label><select class="form-select" id="chkComb"><option>Não Verificado</option><option>Reserva</option><option>Meio Tanque</option><option>Cheio</option></select></div><div class="row"><div class="col-md-6"><div class="form-check form-switch mb-2"><input class="form-check-input" type="checkbox" id="chkPainel"><label>Painel OK</label></div><div class="form-check form-switch mb-2"><input class="form-check-input" type="checkbox" id="chkPneus"><label>Pneus OK</label></div></div><div class="col-md-6"><div class="form-check form-switch mb-2"><input class="form-check-input" type="checkbox" id="chkCare"><label>Carenagem OK</label></div></div></div><div class="mt-3"><label>Avarias notadas:</label><textarea class="form-control" id="chkObs"></textarea></div></div></div></div><button type="submit" class="btn btn-primary w-100 mt-4 fs-5">Salvar OS</button></form></div></div></div></div>
+    <!-- OS MODAL (COMPACTADO MAS COMPLETO) -->
+    <div class="modal fade" id="servicoModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">OS</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="servicoForm" onsubmit="salvarOS(event)"><input type="hidden" id="osId"><ul class="nav nav-tabs mb-3"><li class="nav-item"><button class="nav-link active text-white" data-bs-toggle="tab" data-bs-target="#osGeral" type="button">Geral</button></li><li class="nav-item"><button class="nav-link text-white" data-bs-toggle="tab" data-bs-target="#osChecklist" type="button">Checklist</button></li></ul><div class="tab-content"><div class="tab-pane fade show active" id="osGeral"><div class="row"><div class="col-md-6 mb-2"><label>Cliente</label><select class="form-select" id="osCliente" required onchange="loadOsMotos()"></select></div><div class="col-md-6 mb-2"><label>Moto</label><select class="form-select" id="osMoto" required></select></div></div><div class="mb-2"><label>Serviço</label><textarea class="form-control" id="osDesc" required></textarea></div><div class="row"><div class="col-md-4 mb-2"><label>Status</label><select class="form-select" id="osStatus"><option>Aguardando Orçamento</option><option>Orçamento Enviado</option><option>Aprovado</option><option>Em Andamento</option><option>Concluido</option><option>Cancelado</option></select></div><div class="col-md-4 mb-2"><label>Mecânico</label><select class="form-select" id="osMec"></select></div><div class="col-md-4 mb-2"><label>Data</label><input type="date" class="form-control" id="osData" required></div></div><hr><div class="mb-2"><label>Mão de Obra</label><input type="number" step="0.01" class="form-control" id="osMaoObra" value="0" oninput="calcOsTotal()"></div><div class="mb-2"><label>Peças</label><div id="osPecasContainer"></div><button type="button" class="btn btn-sm btn-outline-light mt-2" onclick="addOsPeca()">+ Peça</button></div><div><label>Total OS</label><input type="text" class="form-control bg-dark text-warning fw-bold fs-5" id="osTotal" readonly></div></div><div class="tab-pane fade" id="osChecklist"><div class="checklist-box bg-dark p-3 rounded border border-secondary"><div class="mb-3"><label>Combustível</label><select class="form-select" id="chkComb"><option>Não Verificado</option><option>Reserva</option><option>Meio Tanque</option><option>Cheio</option></select></div><div class="row"><div class="col-md-6"><div class="form-check form-switch mb-2"><input class="form-check-input" type="checkbox" id="chkPainel"><label>Painel OK</label></div><div class="form-check form-switch mb-2"><input class="form-check-input" type="checkbox" id="chkPneus"><label>Pneus OK</label></div></div><div class="col-md-6"><div class="form-check form-switch mb-2"><input class="form-check-input" type="checkbox" id="chkCare"><label>Carenagem OK</label></div></div></div><div class="mt-3"><label>Avarias:</label><textarea class="form-control" id="chkObs"></textarea></div></div></div></div><button type="submit" class="btn btn-primary w-100 mt-4 fs-5">Salvar OS</button></form></div></div></div></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     
@@ -146,19 +153,22 @@
             messagingSenderId: "349908951188",
             appId: "1:349908951188:web:457832d484a83f45b19481"
         };
-
         const cloudinaryConfig = { cloudName: "dmuvm1o6m", uploadPreset: "evolution" };
 
         let firebaseApp, auth, db, secondaryApp, secondaryAuth; 
-        let estoqueLista = [], clientesLista = [], motosLista = [], funcionariosLista = [], fornecedoresLista = [], servicosLista = [], financeiroLista = [], mensagensLista = [];
+        let estoqueLista=[], clientesLista=[], motosLista=[], funcionariosLista=[], fornecedoresLista=[], servicosLista=[], financeiroLista=[], mensagensLista=[];
         let chatActiveClienteId = null; 
 
-        function showToast(message, type='info') {
-            const toastContainer = document.getElementById('toastContainer');
-            const bgClass = type === 'error' ? 'bg-danger' : (type === 'success' ? 'bg-success' : 'bg-primary');
-            const toastId = 'toast' + Date.now();
-            toastContainer.insertAdjacentHTML('beforeend', `<div id="${toastId}" class="toast align-items-center text-white ${bgClass} border-0 show" role="alert"><div class="d-flex"><div class="toast-body">${message}</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div>`);
-            setTimeout(() => { document.getElementById(toastId)?.remove(); }, 4000);
+        // Auxiliares para comprimir JS
+        const $ = id => document.getElementById(id);
+        const $v = id => $(id).value;
+
+        function showToast(msg, type='info') {
+            const tc = $('toastContainer');
+            const bg = type==='error'?'bg-danger':(type==='success'?'bg-success':'bg-primary');
+            const id = 't'+Date.now();
+            tc.insertAdjacentHTML('beforeend', `<div id="${id}" class="toast align-items-center text-white ${bg} border-0 show" role="alert"><div class="d-flex"><div class="toast-body">${msg}</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div>`);
+            setTimeout(() => $(id)?.remove(), 4000);
         }
 
         function initFirebase() {
@@ -166,165 +176,162 @@
                 if (!firebase.apps.length) {
                     firebaseApp = firebase.initializeApp(firebaseConfig);
                     auth = firebase.auth(); db = firebase.firestore();
-                    secondaryApp = firebase.initializeApp(firebaseConfig, "SecondaryApp");
+                    secondaryApp = firebase.initializeApp(firebaseConfig, "SecApp");
                     secondaryAuth = secondaryApp.auth();
                 } else {
                     firebaseApp = firebase.app(); auth = firebase.auth(); db = firebase.firestore();
                 }
+                
                 auth.onAuthStateChanged(user => {
                     if (user) {
-                        document.getElementById('loginScreen').style.display = 'none';
-                        document.getElementById('adminPanel').style.display = 'flex';
-                        setupListeners(); showAdminSection('agendamentos');
+                        $('loginScreen').style.display = 'none';
+                        $('adminPanel').style.display = 'flex';
+                        setupListeners(); 
+                        showAdminSection('agendamentos');
+                        $('btnSubmitLogin').innerHTML = "Entrar no Painel";
+                        $('btnSubmitLogin').disabled = false;
                     } else {
-                        document.getElementById('adminPanel').style.display = 'none';
-                        document.getElementById('loginScreen').style.display = 'flex';
+                        $('adminPanel').style.display = 'none';
+                        $('loginScreen').style.display = 'flex';
                     }
                 });
-            } catch (error) { console.error(error); showToast("Erro Firebase.", "error"); }
+            } catch (err) { showToast("Erro Crítico DB.", "error"); }
         }
 
         async function fazerLogin() {
-            const email = document.getElementById('loginEmail').value.trim();
-            const password = document.getElementById('loginPassword').value;
-            if(!email || !password) return showToast("Preencha e-mail e senha.", "error");
-            
-            const btn = document.getElementById('btnSubmitLogin');
+            const e = $v('loginEmail').trim(); const p = $v('loginPassword');
+            if(!e || !p) return showToast("Preencha e-mail e senha.", "error");
+            const btn = $('btnSubmitLogin'); const txt = btn.innerHTML;
             btn.innerHTML = "<i class='bi bi-arrow-repeat spin'></i> Entrando..."; btn.disabled = true;
-
-            try {
-                await auth.signInWithEmailAndPassword(email, password);
-            } catch (error) {
-                console.error("Falha login:", error);
-                if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found') showToast("E-mail ou senha incorretos.", "error");
-                else if (error.code === 'auth/too-many-requests') showToast("Google bloqueou por muitas tentativas. Aguarde.", "error");
-                else showToast("Erro: " + error.message, "error");
-                btn.innerHTML = "Entrar no Painel"; btn.disabled = false;
-            }
+            try { await auth.signInWithEmailAndPassword(e, p); } 
+            catch (err) { showToast("Erro: " + err.message, "error"); btn.innerHTML = txt; btn.disabled = false; }
         }
 
         async function cadastrarAdmin() {
-            const email = document.getElementById('loginEmail').value.trim();
-            const password = document.getElementById('loginPassword').value;
-            if(!email || !password) return showToast("Preencha e-mail e senha para criar.", "error");
-
-            const btn = document.getElementById('btnRegisterAdmin');
+            const e = $v('loginEmail').trim(); const p = $v('loginPassword');
+            if(!e || !p) return showToast("Preencha e-mail e senha.", "error");
+            const btn = $('btnRegisterAdmin'); const txt = btn.innerHTML;
             btn.innerHTML = "<i class='bi bi-arrow-repeat spin'></i> Criando..."; btn.disabled = true;
-
             try {
-                await auth.createUserWithEmailAndPassword(email, password);
-                showToast("Sucesso! Conta criada.", "success");
-            } catch (error) {
-                console.error("Falha cadastro:", error);
-                if (error.code === 'auth/email-already-in-use') showToast("E-mail já existe! Use 'Entrar'.", "error");
-                else if (error.code === 'auth/weak-password') showToast("Senha mín. 6 caracteres.", "error");
-                else showToast("Erro: " + error.message, "error");
-                btn.innerHTML = "Criar Conta (Primeiro Acesso)"; btn.disabled = false;
-            }
+                await auth.createUserWithEmailAndPassword(e, p);
+                showToast("Conta criada!", "success");
+            } catch (err) { showToast("Erro: " + err.message, "error"); btn.innerHTML = txt; btn.disabled = false; }
         }
 
         function adminLogout() { auth.signOut(); }
 
+        function safeListen(col, cb) { try { db.collection(col).onSnapshot(cb); } catch(e){} }
         function setupListeners() {
-            db.collection('estoqueItems').onSnapshot(s => { estoqueLista = s.docs.map(d => ({id: d.id, ...d.data()})); renderEstoque(); });
-            db.collection('clientes').onSnapshot(s => { clientesLista = s.docs.map(d => ({id: d.id, ...d.data()})); renderClientes(); });
-            db.collection('motos').onSnapshot(s => { motosLista = s.docs.map(d => ({id: d.id, ...d.data()})); renderMotos(); });
-            db.collection('funcionarios').onSnapshot(s => { funcionariosLista = s.docs.map(d => ({id: d.id, ...d.data()})); renderFuncionarios(); });
-            db.collection('fornecedores').onSnapshot(s => { fornecedoresLista = s.docs.map(d => ({id: d.id, ...d.data()})); renderFornecedores(); });
-            db.collection('servicos').onSnapshot(s => { servicosLista = s.docs.map(d => ({id: d.id, ...d.data()})); renderServicos(); });
-            db.collection('financeiroItems').onSnapshot(s => { financeiroLista = s.docs.map(d => ({id: d.id, ...d.data()})); renderFinanceiro(); });
-            db.collection('mensagens').orderBy('timestamp', 'asc').onSnapshot(s => {
-                mensagensLista = s.docs.map(d => ({id: d.id, ...d.data()}));
-                if (chatActiveClienteId) openChatWith(chatActiveClienteId, document.getElementById('chatActiveClientName').innerText);
-            });
+            safeListen('estoqueItems', s => { estoqueLista = s.docs.map(d => ({id:d.id,...d.data()})); renderEstoque(); });
+            safeListen('clientes', s => { clientesLista = s.docs.map(d => ({id:d.id,...d.data()})); renderClientes(); });
+            safeListen('motos', s => { motosLista = s.docs.map(d => ({id:d.id,...d.data()})); renderMotos(); });
+            safeListen('funcionarios', s => { funcionariosLista = s.docs.map(d => ({id:d.id,...d.data()})); renderFunc(); });
+            safeListen('fornecedores', s => { fornecedoresLista = s.docs.map(d => ({id:d.id,...d.data()})); renderForn(); });
+            safeListen('servicos', s => { servicosLista = s.docs.map(d => ({id:d.id,...d.data()})); renderServicos(); });
+            safeListen('financeiroItems', s => { financeiroLista = s.docs.map(d => ({id:d.id,...d.data()})); renderFin(); });
+            try { db.collection('mensagens').orderBy('timestamp','asc').onSnapshot(s => { mensagensLista = s.docs.map(d => ({id:d.id,...d.data()})); if(chatActiveClienteId) openChatWith(chatActiveClienteId, $('chatActiveClientName').innerText); }); } catch(e){}
         }
 
-        function showAdminSection(id) { document.querySelectorAll('.admin-section').forEach(s => s.style.display = 'none'); document.getElementById(id).style.display = 'block'; }
+        function showAdminSection(id) { document.querySelectorAll('.admin-section').forEach(s => s.style.display='none'); $(id).style.display='block'; document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active')); try { event.target.classList.add('active'); } catch(e){} }
 
         async function uploadCloudinary(file) {
             if (!cloudinaryConfig.cloudName) return null;
             const fd = new FormData(); fd.append('file', file); fd.append('upload_preset', cloudinaryConfig.uploadPreset);
-            try { const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/image/upload`, {method: 'POST', body: fd}); return (await res.json()).secure_url || null; } catch(e) { return null; }
+            try { const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/image/upload`, {method:'POST',body:fd}); return (await res.json()).secure_url || null; } catch(e) { return null; }
         }
 
+        // --- MÓDULOS DE RENDER & SALVAR ---
         function renderEstoque() {
-            document.getElementById('listaEstoque').innerHTML = estoqueLista.map(i => `<tr><td>${i.img?`<img src="${i.img}" width="40">`:'-'}</td><td>${i.nome}</td><td>R$ ${i.custo}</td><td>R$ ${i.venda}</td><td>${i.qtd}</td><td><button class="btn btn-sm btn-warning" onclick="prepareEstoqueModal('edit','${i.id}')" data-bs-toggle="modal" data-bs-target="#estoqueModal">Ed</button> <button class="btn btn-sm btn-danger" onclick="db.collection('estoqueItems').doc('${i.id}').delete()">X</button></td></tr>`).join('');
-            document.getElementById('adjItem').innerHTML = estoqueLista.map(i => `<option value="${i.id}">${i.nome} (Qtd: ${i.qtd})</option>`).join('');
+            $('listaEstoque').innerHTML = estoqueLista.map(i=>`<tr><td>${i.img?`<img src="${i.img}" width="40" height="40" style="object-fit:cover">`:'-'}</td><td>${i.nome}</td><td>R$ ${i.custo}</td><td>R$ ${i.venda}</td><td>${i.qtd}</td><td><button class="btn btn-sm btn-warning" onclick="prepareEstoqueModal('edit','${i.id}')" data-bs-toggle="modal" data-bs-target="#estoqueModal"><i class="bi bi-pencil"></i></button> <button class="btn btn-sm btn-danger" onclick="if(confirm('Excluir?')) db.collection('estoqueItems').doc('${i.id}').delete()"><i class="bi bi-trash"></i></button></td></tr>`).join('');
+            $('adjItem').innerHTML = estoqueLista.map(i=>`<option value="${i.id}">${i.nome} (Qtd: ${i.qtd})</option>`).join('');
         }
         function prepareEstoqueModal(m, id='') {
-            document.getElementById('estoqueForm').reset(); document.getElementById('previewEstoqueImg').innerHTML = '';
-            if (m==='edit') { const item=estoqueLista.find(x=>x.id===id); document.getElementById('estoqueId').value=item.id; document.getElementById('estoqueNome').value=item.nome; document.getElementById('estoqueCusto').value=item.custo; document.getElementById('estoqueVenda').value=item.venda; document.getElementById('estoqueQuantidade').value=item.qtd; }
-            else { document.getElementById('estoqueId').value=''; }
+            $('estoqueForm').reset(); $('previewEstoqueImg').innerHTML='';
+            if(m==='edit'){ const i=estoqueLista.find(x=>x.id===id); $('estoqueId').value=i.id; $('estoqueNome').value=i.nome; $('estoqueCusto').value=i.custo; $('estoqueVenda').value=i.venda; $('estoqueQuantidade').value=i.qtd; if(i.img) $('previewEstoqueImg').innerHTML=`<img src="${i.img}" width="80">`; } else $('estoqueId').value='';
         }
         async function salvarEstoque(e) {
-            e.preventDefault(); const id=document.getElementById('estoqueId').value; const file=document.getElementById('estoqueImagem').files[0]; let imgUrl = file ? await uploadCloudinary(file) : '';
-            const dados = { nome: document.getElementById('estoqueNome').value, custo: parseFloat(document.getElementById('estoqueCusto').value), venda: parseFloat(document.getElementById('estoqueVenda').value), qtd: parseInt(document.getElementById('estoqueQuantidade').value) };
-            if (id) { const old=estoqueLista.find(x=>x.id===id); if(!imgUrl) imgUrl=old.img; dados.img=imgUrl; await db.collection('estoqueItems').doc(id).update(dados); } else { dados.img=imgUrl; await db.collection('estoqueItems').add(dados); }
-            bootstrap.Modal.getInstance(document.getElementById('estoqueModal')).hide();
+            e.preventDefault(); const id=$v('estoqueId'); const f=$('estoqueImagem').files[0]; let img = f ? await uploadCloudinary(f) : '';
+            const d = {nome:$v('estoqueNome'), custo:parseFloat($v('estoqueCusto')), venda:parseFloat($v('estoqueVenda')), qtd:parseInt($v('estoqueQuantidade'))};
+            if(id) { const o=estoqueLista.find(x=>x.id===id); if(!img) img=o.img; d.img=img; await db.collection('estoqueItems').doc(id).update(d); } else { d.img=img; await db.collection('estoqueItems').add(d); } bootstrap.Modal.getInstance($('estoqueModal')).hide();
         }
-        function prepareStockAdjustmentModal(t) { document.getElementById('adjType').value=t; document.getElementById('stockAdjTitle').innerText=t==='add'?'Add':'Baixa'; }
+        function prepareStockAdjustmentModal(t) { $('adjType').value=t; $('stockAdjTitle').innerText=t==='add'?'Add Estoque':'Baixa'; }
         async function ajustarEstoque(e) {
-            e.preventDefault(); const id=document.getElementById('adjItem').value; const t=document.getElementById('adjType').value; const q=parseInt(document.getElementById('adjQtd').value); const item=estoqueLista.find(x=>x.id===id);
-            if(t==='remove' && item.qtd<q) return showToast("Sem estoque.", "error"); await db.collection('estoqueItems').doc(id).update({qtd: t==='add'?item.qtd+q:item.qtd-q}); bootstrap.Modal.getInstance(document.getElementById('stockAdjustmentModal')).hide();
+            e.preventDefault(); const id=$v('adjItem'); const t=$v('adjType'); const q=parseInt($v('adjQtd')); const i=estoqueLista.find(x=>x.id===id);
+            if(t==='remove' && i.qtd<q) return showToast("Sem estoque.", "error"); await db.collection('estoqueItems').doc(id).update({qtd: t==='add'?i.qtd+q:i.qtd-q}); bootstrap.Modal.getInstance($('stockAdjustmentModal')).hide();
         }
 
         function renderClientes() {
-            document.getElementById('listaClientes').innerHTML = clientesLista.map(c => `<tr><td>${c.nome}</td><td>${c.contato}</td><td>${c.email||'-'}</td><td><button class="btn btn-sm btn-info" onclick="enviarWhatsCliente('${c.nome}','${c.contato}','${c.email}','${c.senhaProv}')">Whats</button> <button class="btn btn-sm btn-warning" onclick="prepareClienteModal('edit','${c.id}')" data-bs-toggle="modal" data-bs-target="#clienteModal">Ed</button></td></tr>`).join('');
-            const ops = '<option value="">Sel Cliente</option>' + clientesLista.map(c => `<option value="${c.id}">${c.nome}</option>`).join(''); document.getElementById('osCliente').innerHTML = ops; document.getElementById('motoClienteId').innerHTML = ops;
-            document.getElementById('chatClientList').innerHTML = clientesLista.map(c => `<button class="list-group-item bg-dark text-white" onclick="openChatWith('${c.id}', '${c.nome}')">${c.nome}</button>`).join('');
+            $('listaClientes').innerHTML = clientesLista.map(c=>`<tr><td>${c.nome}</td><td>${c.contato}</td><td>${c.email||'-'}</td><td><button class="btn btn-sm btn-info" onclick="window.open('https://wa.me/55${c.contato}?text=${encodeURIComponent(`Olá ${c.nome}! Acesso: https://tsvalencio-ia.github.io/EvolutionMotor/clientes/projeto_evolution_24.html \\nUsuário: ${c.email}\\nSenha: ${c.senhaProv}`)}','_blank')"><i class="bi bi-whatsapp"></i></button> <button class="btn btn-sm btn-warning" onclick="prepareClienteModal('edit','${c.id}')" data-bs-toggle="modal" data-bs-target="#clienteModal"><i class="bi bi-pencil"></i></button></td></tr>`).join('');
+            const ops='<option value="">Sel Cliente</option>'+clientesLista.map(c=>`<option value="${c.id}">${c.nome}</option>`).join(''); $('osCliente').innerHTML=ops; $('motoClienteId').innerHTML=ops;
+            $('chatClientList').innerHTML = clientesLista.map(c=>`<button class="list-group-item list-group-item-action bg-dark text-white border-secondary" onclick="openChatWith('${c.id}', '${c.nome}')"><i class="bi bi-person-circle me-2"></i> ${c.nome}</button>`).join('');
         }
         function prepareClienteModal(m, id='') {
-            document.getElementById('clienteForm').reset();
-            if (m==='edit') { const c=clientesLista.find(x=>x.id===id); document.getElementById('clienteId').value=c.id; document.getElementById('clienteNome').value=c.nome; document.getElementById('clienteContato').value=c.contato; document.getElementById('clienteEmail').value=c.email||''; document.getElementById('clienteSenha').value=c.senhaProv||''; document.getElementById('clienteEmail').disabled=!!c.email; }
-            else { document.getElementById('clienteId').value=''; document.getElementById('clienteSenha').value=Math.random().toString(36).slice(-6); document.getElementById('clienteEmail').disabled=false; }
+            $('clienteForm').reset(); if(m==='edit'){ const c=clientesLista.find(x=>x.id===id); $('clienteId').value=c.id; $('clienteNome').value=c.nome; $('clienteContato').value=c.contato; $('clienteEmail').value=c.email||''; $('clienteSenha').value=c.senhaProv||''; $('clienteEmail').disabled=!!c.email; } else { $('clienteId').value=''; $('clienteSenha').value=Math.random().toString(36).slice(-6); $('clienteEmail').disabled=false; }
         }
         async function salvarCliente(e) {
-            e.preventDefault(); const id=document.getElementById('clienteId').value; const dados={ nome:document.getElementById('clienteNome').value, contato:document.getElementById('clienteContato').value, email:document.getElementById('clienteEmail').value, senhaProv:document.getElementById('clienteSenha').value };
-            try { if (id) { await db.collection('clientes').doc(id).update(dados); } else { await secondaryAuth.createUserWithEmailAndPassword(dados.email, dados.senhaProv); await db.collection('clientes').add(dados); } bootstrap.Modal.getInstance(document.getElementById('clienteModal')).hide(); } catch (err) { showToast(err.message, "error"); }
+            e.preventDefault(); const id=$v('clienteId'); const d={nome:$v('clienteNome'), contato:$v('clienteContato'), email:$v('clienteEmail'), senhaProv:$v('clienteSenha')};
+            try { if(id) await db.collection('clientes').doc(id).update(d); else { await secondaryAuth.createUserWithEmailAndPassword(d.email, d.senhaProv); await db.collection('clientes').add(d); } bootstrap.Modal.getInstance($('clienteModal')).hide(); } catch(err) { showToast("Erro: "+err.message,"error"); }
         }
-        function enviarWhatsCliente(n, t, e, s) { window.open(`https://wa.me/55${t}?text=${encodeURIComponent(`Olá ${n}! Acesse seu painel: https://tsvalencio-ia.github.io/EvolutionMotor/clientes/projeto_evolution_24.html \nUsuário: ${e}\nSenha: ${s}`)}`,'_blank'); }
 
-        function renderMotos() { document.getElementById('listaMotos').innerHTML = motosLista.map(m=>{const dono=clientesLista.find(x=>x.id===m.clienteId); return `<tr><td>${m.img?`<img src="${m.img}" width="40">`:'-'}</td><td>${dono?dono.nome:'-'}</td><td>${m.modelo}/${m.placa}</td><td>${m.km||'-'}</td><td><button class="btn btn-sm btn-danger" onclick="db.collection('motos').doc('${m.id}').delete()">X</button></td></tr>`;}).join(''); }
-        async function salvarMoto(e) { e.preventDefault(); const f=document.getElementById('motoImagem').files[0]; let i=f?await uploadCloudinary(f):''; await db.collection('motos').add({clienteId:document.getElementById('motoClienteId').value, modelo:document.getElementById('motoModelo').value, placa:document.getElementById('motoPlaca').value, km:document.getElementById('motoKmAtual').value, img:i}); bootstrap.Modal.getInstance(document.getElementById('motoModal')).hide(); }
+        function renderMotos() { $('listaMotos').innerHTML = motosLista.map(m=>{const d=clientesLista.find(x=>x.id===m.clienteId); return `<tr><td>${m.img?`<img src="${m.img}" width="40">`:'-'}</td><td>${d?d.nome:'-'}</td><td>${m.modelo} / <b>${m.placa}</b></td><td>${m.km||'-'}</td><td><button class="btn btn-sm btn-danger" onclick="if(confirm('Deletar?')) db.collection('motos').doc('${m.id}').delete()"><i class="bi bi-trash"></i></button></td></tr>`; }).join(''); }
+        async function salvarMoto(e) { e.preventDefault(); const f=$('motoImagem').files[0]; let i=f?await uploadCloudinary(f):''; await db.collection('motos').add({clienteId:$v('motoClienteId'), modelo:$v('motoModelo'), placa:$v('motoPlaca'), km:$v('motoKmAtual'), img:i}); bootstrap.Modal.getInstance($('motoModal')).hide(); }
 
-        function renderFuncionarios() { document.getElementById('listaFuncionarios').innerHTML=funcionariosLista.map(f=>`<tr><td>${f.nome}</td><td>${f.funcao}</td><td><button class="btn btn-sm btn-danger" onclick="db.collection('funcionarios').doc('${f.id}').delete()">X</button></td></tr>`).join(''); document.getElementById('osMec').innerHTML='<option value="">Mecânico</option>'+funcionariosLista.map(f=>`<option value="${f.id}">${f.nome}</option>`).join(''); }
-        function salvarFuncionario(e) { e.preventDefault(); db.collection('funcionarios').add({nome:document.getElementById('funcNome').value, funcao:document.getElementById('funcFuncao').value}); bootstrap.Modal.getInstance(document.getElementById('funcionarioModal')).hide(); }
+        function renderFunc() { $('listaFuncionarios').innerHTML = funcionariosLista.map(f=>`<tr><td>${f.nome}</td><td>${f.funcao}</td><td><button class="btn btn-sm btn-danger" onclick="db.collection('funcionarios').doc('${f.id}').delete()"><i class="bi bi-trash"></i></button></td></tr>`).join(''); $('osMec').innerHTML='<option value="">Sel. Mecânico</option>'+funcionariosLista.map(f=>`<option value="${f.id}">${f.nome}</option>`).join(''); }
+        function salvarFuncionario(e) { e.preventDefault(); db.collection('funcionarios').add({nome:$v('funcNome'), funcao:$v('funcFuncao')}); bootstrap.Modal.getInstance($('funcionarioModal')).hide(); }
 
-        function renderFornecedores() { document.getElementById('listaFornecedores').innerHTML=fornecedoresLista.map(f=>`<tr><td>${f.nome}</td><td>${f.cat}</td><td><button class="btn btn-sm btn-danger" onclick="db.collection('fornecedores').doc('${f.id}').delete()">X</button></td></tr>`).join(''); document.getElementById('purchForn').innerHTML=fornecedoresLista.map(f=>`<option value="${f.id}">${f.nome}</option>`).join(''); }
-        function salvarFornecedor(e) { e.preventDefault(); db.collection('fornecedores').add({nome:document.getElementById('fornNome').value, cat:document.getElementById('fornCat').value}); bootstrap.Modal.getInstance(document.getElementById('fornecedorModal')).hide(); }
+        function renderForn() { $('listaFornecedores').innerHTML = fornecedoresLista.map(f=>`<tr><td>${f.nome}</td><td>${f.cat}</td><td><button class="btn btn-sm btn-danger" onclick="db.collection('fornecedores').doc('${f.id}').delete()"><i class="bi bi-trash"></i></button></td></tr>`).join(''); $('purchForn').innerHTML='<option value="">Fornecedor</option>'+fornecedoresLista.map(f=>`<option value="${f.id}">${f.nome}</option>`).join(''); }
+        function salvarFornecedor(e) { e.preventDefault(); db.collection('fornecedores').add({nome:$v('fornNome'), cat:$v('fornCat')}); bootstrap.Modal.getInstance($('fornecedorModal')).hide(); }
 
-        function preparePurchaseModal() { document.getElementById('purchaseForm').reset(); document.getElementById('purchDate').value = new Date().toISOString().split('T')[0]; }
-        async function salvarCompra(e) { e.preventDefault(); const forn=fornecedoresLista.find(x=>x.id===document.getElementById('purchForn').value).nome; await db.collection('financeiroItems').add({tipo:'Saída', descricao:`Compra: ${forn}`, valor:parseFloat(document.getElementById('purchValorTotal').value), data:document.getElementById('purchDate').value, originType:'compra'}); bootstrap.Modal.getInstance(document.getElementById('purchaseModal')).hide(); }
+        function preparePurchaseModal() { $('purchaseForm').reset(); $('purchDate').value=new Date().toISOString().split('T')[0]; }
+        async function salvarCompra(e) { e.preventDefault(); const n=fornecedoresLista.find(x=>x.id===$v('purchForn')).nome; await db.collection('financeiroItems').add({tipo:'Saída', descricao:`Compra: ${n}`, valor:parseFloat($v('purchValorTotal')), data:$v('purchDate'), originType:'compra'}); bootstrap.Modal.getInstance($('purchaseModal')).hide(); }
 
-        function loadOsMotos() { const cid = document.getElementById('osCliente').value; document.getElementById('osMoto').innerHTML='<option value="">Sel. Moto</option>'+motosLista.filter(m=>m.clienteId===cid).map(m=>`<option value="${m.id}">${m.modelo} (${m.placa})</option>`).join(''); }
-        function addOsPeca() { const div = document.createElement('div'); div.className='d-flex mb-2 gap-2'; div.innerHTML=`<select class="form-select form-select-sm os-peca-sel" onchange="calcOsTotal()"><option value="">Peça...</option>${estoqueLista.map(i=>`<option value="${i.id}" data-p="${i.venda}">${i.nome} (R$${i.venda})</option>`).join('')}</select><input type="number" class="form-control form-control-sm os-peca-qtd" style="width:60px" value="1" oninput="calcOsTotal()"><button type="button" class="btn btn-sm btn-danger" onclick="this.parentElement.remove(); calcOsTotal()">X</button>`; document.getElementById('osPecasContainer').appendChild(div); }
-        function calcOsTotal() { let t = parseFloat(document.getElementById('osMaoObra').value)||0; document.querySelectorAll('.os-peca-sel').forEach(s=>{ if(s.value){ t += parseFloat(s.options[s.selectedIndex].getAttribute('data-p')) * parseInt(s.nextElementSibling.value); } }); document.getElementById('osTotal').value = t.toFixed(2); }
-        
+        // OS LÓGICA
+        function loadOsMotos() { $('osMoto').innerHTML='<option value="">Sel. Moto</option>'+motosLista.filter(m=>m.clienteId===$v('osCliente')).map(m=>`<option value="${m.id}">${m.modelo} (${m.placa})</option>`).join(''); }
+        function addOsPeca() {
+            const div = document.createElement('div'); div.className='d-flex mb-2 gap-2';
+            div.innerHTML=`<select class="form-select form-select-sm os-peca-sel" onchange="calcOsTotal()"><option value="">Peça...</option>${estoqueLista.map(i=>`<option value="${i.id}" data-p="${i.venda}">${i.nome} (R$${i.venda})</option>`).join('')}</select><input type="number" class="form-control form-control-sm os-peca-qtd" style="width:70px" value="1" oninput="calcOsTotal()"><button type="button" class="btn btn-sm btn-danger" onclick="this.parentElement.remove(); calcOsTotal()">X</button>`;
+            $('osPecasContainer').appendChild(div);
+        }
+        function calcOsTotal() {
+            let t = parseFloat($v('osMaoObra'))||0;
+            document.querySelectorAll('.os-peca-sel').forEach(s=>{ if(s.value) t+=parseFloat(s.options[s.selectedIndex].getAttribute('data-p'))*parseInt(s.nextElementSibling.value); });
+            $('osTotal').value = t.toFixed(2);
+        }
         function renderServicos() {
-            document.getElementById('listaAgendamentos').innerHTML = servicosLista.sort((a,b)=>new Date(b.data)-new Date(a.data)).map(os=>{
-                const cli=clientesLista.find(c=>c.id===os.clienteId); const mot=motosLista.find(m=>m.id===os.motoId);
-                return `<div class="col-md-4"><div class="servico-card status-${os.status.toLowerCase().replace(/\s/g,'-')}"><h6>${cli?cli.nome:'-'}</h6><small>${mot?mot.placa:'-'}</small><br><b>${os.status}</b><br>R$ ${os.total}<div class="text-end mt-2"><button class="btn btn-sm btn-warning" onclick="prepareServicoModal('edit','${os.id}')" data-bs-toggle="modal" data-bs-target="#servicoModal">Ed</button></div></div></div>`;
+            $('listaAgendamentos').innerHTML = servicosLista.length===0?'<div class="col-12">Nenhuma OS.</div>':servicosLista.sort((a,b)=>new Date(b.data)-new Date(a.data)).map(os=>{
+                const c=clientesLista.find(x=>x.id===os.clienteId); const m=motosLista.find(x=>x.id===os.motoId); const sCls=`status-${os.status.toLowerCase().replace(/\s/g,'-')}`;
+                return `<div class="col-md-4"><div class="servico-card ${sCls} h-100"><h6>${c?c.nome:'-'}</h6><small>${m?m.placa:'-'}</small><hr class="my-1 border-secondary"><small>${os.desc}</small><div><span class="badge bg-primary">${os.status}</span></div><div class="mt-1">R$ ${os.total}</div><div class="mt-2 text-end"><button class="btn btn-sm btn-warning w-100" onclick="prepareServicoModal('edit','${os.id}')" data-bs-toggle="modal" data-bs-target="#servicoModal">Editar</button></div></div></div>`;
             }).join('');
         }
         function prepareServicoModal(m, id='') {
-            document.getElementById('servicoForm').reset(); document.getElementById('osPecasContainer').innerHTML=''; document.getElementById('osData').value=new Date().toISOString().split('T')[0];
-            if(m==='edit') { const os=servicosLista.find(x=>x.id===id); document.getElementById('osId').value=os.id; document.getElementById('osCliente').value=os.clienteId; loadOsMotos(); document.getElementById('osMoto').value=os.motoId; document.getElementById('osDesc').value=os.desc; document.getElementById('osStatus').value=os.status; document.getElementById('osMec').value=os.mecId||''; document.getElementById('osMaoObra').value=os.maoObra||0; if(os.pecas){ os.pecas.forEach(p=>{ addOsPeca(); const ss=document.querySelectorAll('.os-peca-sel'); ss[ss.length-1].value=p.id; ss[ss.length-1].nextElementSibling.value=p.qtd; }); } if(os.check){ document.getElementById('chkComb').value=os.check.comb; document.getElementById('chkPainel').checked=os.check.painel; document.getElementById('chkPneus').checked=os.check.pneus; document.getElementById('chkCare').checked=os.check.care; document.getElementById('chkObs').value=os.check.obs; } } else { document.getElementById('osId').value=''; } calcOsTotal();
+            $('servicoForm').reset(); $('osPecasContainer').innerHTML=''; $('osData').value=new Date().toISOString().split('T')[0];
+            const t=$('servicoForm').querySelector('.nav-link[data-bs-target="#osGeral"]'); if(t){try{new bootstrap.Tab(t).show()}catch(e){}}
+            if(m==='edit') {
+                const os=servicosLista.find(x=>x.id===id); $('osId').value=os.id; $('osCliente').value=os.clienteId; loadOsMotos(); $('osMoto').value=os.motoId; $('osDesc').value=os.desc; $('osStatus').value=os.status; $('osMec').value=os.mecId||''; $('osMaoObra').value=os.maoObra||0;
+                if(os.pecas){ os.pecas.forEach(p=>{ addOsPeca(); const ss=document.querySelectorAll('.os-peca-sel'); ss[ss.length-1].value=p.id; ss[ss.length-1].nextElementSibling.value=p.qtd; }); }
+                if(os.check){ $('chkComb').value=os.check.comb; $('chkPainel').checked=os.check.painel; $('chkPneus').checked=os.check.pneus; $('chkCare').checked=os.check.care; $('chkObs').value=os.check.obs||''; }
+            } else $('osId').value='';
+            calcOsTotal();
         }
         async function salvarOS(e) {
-            e.preventDefault(); const id=document.getElementById('osId').value; const sts=document.getElementById('osStatus').value; const tot=parseFloat(document.getElementById('osTotal').value); const arrPecas=[]; document.querySelectorAll('.os-peca-sel').forEach(s=>{ if(s.value) arrPecas.push({id:s.value, qtd:parseInt(s.nextElementSibling.value)}); });
-            const d={ clienteId:document.getElementById('osCliente').value, motoId:document.getElementById('osMoto').value, desc:document.getElementById('osDesc').value, status:sts, mecId:document.getElementById('osMec').value, data:document.getElementById('osData').value, maoObra:parseFloat(document.getElementById('osMaoObra').value), total:tot, pecas:arrPecas, check:{comb:document.getElementById('chkComb').value, painel:document.getElementById('chkPainel').checked, pneus:document.getElementById('chkPneus').checked, care:document.getElementById('chkCare').checked, obs:document.getElementById('chkObs').value} };
-            if (sts==='Concluido' && (!id || servicosLista.find(x=>x.id===id).status!=='Concluido')) { arrPecas.forEach(p=>{ const est=estoqueLista.find(x=>x.id===p.id); if(est) db.collection('estoqueItems').doc(p.id).update({qtd:est.qtd-p.qtd}); }); await db.collection('financeiroItems').add({tipo:'Entrada', descricao:'OS Concluída', valor:tot, data:new Date().toISOString().split('T')[0], originType:'servico', originId:id||'nova'}); }
-            if (id) await db.collection('servicos').doc(id).update(d); else await db.collection('servicos').add(d); bootstrap.Modal.getInstance(document.getElementById('servicoModal')).hide();
+            e.preventDefault(); const id=$v('osId'); const sts=$v('osStatus'); const arrP=[]; document.querySelectorAll('.os-peca-sel').forEach(s=>{ if(s.value) arrP.push({id:s.value, qtd:parseInt(s.nextElementSibling.value)}); });
+            const d = { clienteId:$v('osCliente'), motoId:$v('osMoto'), desc:$v('osDesc'), status:sts, mecId:$v('osMec'), data:$v('osData'), maoObra:parseFloat($v('osMaoObra')), total:parseFloat($v('osTotal')), pecas:arrP, check:{comb:$v('chkComb'), painel:$('chkPainel').checked, pneus:$('chkPneus').checked, care:$('chkCare').checked, obs:$v('chkObs')} };
+            if (sts==='Concluido' && (!id || servicosLista.find(x=>x.id===id).status!=='Concluido')) {
+                arrP.forEach(p=>{ const est=estoqueLista.find(x=>x.id===p.id); if(est) db.collection('estoqueItems').doc(p.id).update({qtd:est.qtd-p.qtd}); });
+                await db.collection('financeiroItems').add({tipo:'Entrada', descricao:`OS: ${d.desc}`, valor:d.total, data:new Date().toISOString().split('T')[0], originType:'servico', originId:id||'nova'}); showToast("OS e Baixas confirmadas!", "success");
+            }
+            if(id) await db.collection('servicos').doc(id).update(d); else await db.collection('servicos').add(d); bootstrap.Modal.getInstance($('servicoModal')).hide();
         }
 
-        function renderFinanceiro() {
-            let e=0, s=0; document.getElementById('listaFinanceiro').innerHTML=financeiroLista.sort((a,b)=>new Date(b.data)-new Date(a.data)).map(t=>{ if(t.tipo==='Entrada') e+=t.valor; else s+=t.valor; return `<tr class="${t.tipo==='Entrada'?'table-success':'table-danger'}"><td>${t.tipo}</td><td>${t.descricao}</td><td>R$ ${t.valor.toFixed(2)}</td><td>${t.data}</td><td>${t.originType||'Manual'}</td><td>${!t.originType?`<button class="btn btn-sm btn-danger" onclick="db.collection('financeiroItems').doc('${t.id}').delete()">X</button>`:''}</td></tr>`; }).join('');
-            document.getElementById('totEnt').innerText=`R$ ${e.toFixed(2)}`; document.getElementById('totSai').innerText=`R$ ${s.toFixed(2)}`; document.getElementById('totSal').innerText=`R$ ${(e-s).toFixed(2)}`;
+        // FINANCEIRO E CHAT
+        function renderFin() {
+            let ent=0, sai=0; $('listaFinanceiro').innerHTML=financeiroLista.sort((a,b)=>new Date(b.data)-new Date(a.data)).map(t=>{ if(t.tipo==='Entrada') ent+=t.valor; else sai+=t.valor; return `<tr class="${t.tipo==='Entrada'?'table-success':'table-danger'}"><td>${t.tipo}</td><td>${t.descricao}</td><td>R$ ${t.valor.toFixed(2)}</td><td>${t.data}</td><td>${t.originType||'Manual'}</td><td>${!t.originType?`<button class="btn btn-sm btn-danger" onclick="if(confirm('Apagar?')) db.collection('financeiroItems').doc('${t.id}').delete()"><i class="bi bi-trash"></i></button>`:'-'}</td></tr>`; }).join('');
+            $('totEnt').innerText=`R$ ${ent.toFixed(2)}`; $('totSai').innerText=`R$ ${sai.toFixed(2)}`; $('totSal').innerText=`R$ ${(ent-sai).toFixed(2)}`;
         }
-        async function salvarFinanceiro(e) { e.preventDefault(); await db.collection('financeiroItems').add({ tipo:document.getElementById('finTipo').value, descricao:document.getElementById('finDesc').value, valor:parseFloat(document.getElementById('finValor').value), data:document.getElementById('finData').value }); bootstrap.Modal.getInstance(document.getElementById('financeiroModal')).hide(); }
+        async function salvarFinanceiro(e) { e.preventDefault(); await db.collection('financeiroItems').add({tipo:$v('finTipo'), descricao:$v('finDesc'), valor:parseFloat($v('finValor')), data:$v('finData')}); bootstrap.Modal.getInstance($('financeiroModal')).hide(); }
 
-        function openChatWith(id, nm) { chatActiveClienteId=id; document.getElementById('chatActiveClientName').innerText=nm; document.getElementById('chatInputArea').style.display='flex'; const a=document.getElementById('chatMessagesArea'); a.innerHTML=''; mensagensLista.filter(m=>m.clienteId===id).forEach(m=>{ const t=m.timestamp?new Date(m.timestamp.toDate()).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):''; a.innerHTML+=`<div class="message ${m.sender}">${m.text}<small>${t}</small></div>`; }); a.scrollTop=a.scrollHeight; }
-        async function enviarMensagemAdmin() { const v=document.getElementById('chatMsgInput').value.trim(); if(!v||!chatActiveClienteId) return; await db.collection('mensagens').add({clienteId:chatActiveClienteId, sender:'admin', text:v, timestamp:firebase.firestore.FieldValue.serverTimestamp()}); document.getElementById('chatMsgInput').value=''; }
+        function openChatWith(id, nm) { chatActiveClienteId=id; $('chatActiveClientName').innerText=nm; $('chatInputArea').style.display='flex'; const a=$('chatMessagesArea'); a.innerHTML=''; mensagensLista.filter(m=>m.clienteId===id).forEach(m=>{ const tmp=m.timestamp?new Date(m.timestamp.toDate()).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):''; a.innerHTML+=`<div class="message ${m.sender==='admin'?'admin':'cliente'}">${m.text}<small>${tmp}</small></div>`; }); a.scrollTop=a.scrollHeight; }
+        async function enviarMensagemAdmin() { const v=$v('chatMsgInput').trim(); if(!v||!chatActiveClienteId) return; await db.collection('mensagens').add({clienteId:chatActiveClienteId, sender:'admin', text:v, timestamp:firebase.firestore.FieldValue.serverTimestamp()}); $('chatMsgInput').value=''; }
 
         document.addEventListener('DOMContentLoaded', initFirebase);
     </script>

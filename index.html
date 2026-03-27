@@ -87,7 +87,7 @@
                         <label class="form-label">Senha</label>
                         <input type="password" class="form-control" id="loginPassword" placeholder="Sua senha" required>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100">Entrar</button>
+                    <button type="submit" class="btn btn-primary w-100">Entrar / Cadastrar</button>
                 </form>
             </div>
         </div>
@@ -524,7 +524,6 @@
         let financeiroLista = [];
         let mensagensLista = [];
         
-        // VARIÁVEL QUE FALTAVA E DAVA ERRO NO CHAT
         let chatActiveClienteId = null; 
 
         // Função de Mensagens (Toast)
@@ -585,7 +584,7 @@
         }
 
         // =====================================================================
-        // LÓGICA DE LOGIN (CRIAR ADMIN SE NÃO EXISTIR)
+        // LÓGICA DE LOGIN MESTRE (CRIA ADMIN OU TRATA BLOQUEIO)
         // =====================================================================
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -596,9 +595,11 @@
                 // Tenta logar
                 await auth.signInWithEmailAndPassword(email, password);
             } catch (error) {
+                console.error("Erro Auth:", error);
+                
                 // SE O USUÁRIO NÃO EXISTIR, PERGUNTA SE QUER CRIAR O ADMIN!
-                if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
-                    if (confirm("Este e-mail ainda não existe. Deseja registrá-lo como o Administrador principal agora?")) {
+                if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential' || error.code === 'auth/invalid-login-credentials') {
+                    if (confirm("Este e-mail não foi encontrado no sistema. Deseja registrá-lo como o Administrador principal agora?")) {
                         try {
                             await auth.createUserWithEmailAndPassword(email, password);
                             showToast("Administrador criado e logado com sucesso!", "success");
@@ -606,7 +607,12 @@
                             showToast("Erro ao criar admin: " + createError.message, "error");
                         }
                     }
-                } else {
+                } 
+                // MENSAGEM CLARA SOBRE O BLOQUEIO DE MUITAS TENTATIVAS (auth/too-many-requests)
+                else if (error.code === 'auth/too-many-requests') {
+                    showToast("Firebase bloqueou tentativas excessivas por segurança. Aguarde 15 minutos ou conecte-se usando o 4G do celular para mudar o IP.", "error");
+                } 
+                else {
                     showToast("Erro no login: " + error.message, "error");
                 }
             }
@@ -668,7 +674,6 @@
             document.querySelectorAll('.admin-section').forEach(sec => sec.style.display = 'none');
             document.getElementById(sectionId).style.display = 'block';
             document.querySelectorAll('#navbarNavAdmin .nav-link').forEach(link => link.classList.remove('active'));
-            // Gambiarra simples para marcar o link ativo
             try { event.target.classList.add('active'); } catch(e){} 
         }
 
@@ -894,7 +899,6 @@
         });
 
         function enviarWhatsCliente(nome, telefone, email, senha) {
-            // URL Onde vai ficar o arquivo HTML do cliente. Pode ser alterado para o link final do GitHub
             const linkPainel = "https://tsvalencio-ia.github.io/clientes/projeto_evolution_24.html";
             const texto = `Olá *${nome}*! Bem-vindo à Evolution Motors. 🏍️\n\nSeu painel exclusivo para acompanhar serviços e manutenções já está pronto!\n\n🌐 *Acesse:* ${linkPainel}\n📧 *Usuário:* ${email}\n🔑 *Senha:* ${senha}\n\nRecomendamos guardar esta mensagem.`;
             window.open(`https://wa.me/55${telefone}?text=${encodeURIComponent(texto)}`, '_blank');
@@ -1295,7 +1299,7 @@
         // MÓDULO: CHAT AO VIVO
         // =====================================================================
         function openChatWith(clienteId, nomeCliente) {
-            chatActiveClienteId = clienteId; // Agora a variável existe e funciona!
+            chatActiveClienteId = clienteId; 
             document.getElementById('chatActiveClientName').innerText = nomeCliente;
             document.getElementById('chatInputArea').style.display = 'flex';
             

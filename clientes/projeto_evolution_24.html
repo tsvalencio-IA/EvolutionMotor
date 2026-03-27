@@ -3,64 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Evolution Motors - Meu Painel</title>
+    <title>Evolution Motors - Portal do Cliente</title>
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <style>
-        :root { --bs-body-bg: #212529; --bs-body-color: #f8f9fa; --bs-dark-card: #343a40; --bs-accent: #e65100; }
-        body { background-color: var(--bs-body-bg); color: var(--bs-body-color); font-family: sans-serif; }
-        .navbar { background-color: var(--bs-dark-card) !important; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .card { background-color: var(--bs-dark-card); border-radius: 0.75rem; border: 1px solid rgba(255,255,255,0.1); }
+        :root { --bs-body-bg: #121212; --bs-body-color: #e0e0e0; --bs-dark-card: #1e1e1e; --bs-accent: #e65100; }
+        body { background-color: var(--bs-body-bg); color: var(--bs-body-color); font-family: 'Segoe UI', sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
+        .navbar { background-color: var(--bs-dark-card) !important; border-bottom: 2px solid var(--bs-accent); }
+        .card { background-color: var(--bs-dark-card); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; }
+        .form-control { background-color: #2c2c2c; color: white; border: 1px solid #444; }
+        .form-control:focus { background-color: #2c2c2c; color: white; border-color: var(--bs-accent); box-shadow: none; }
+        .btn-primary { background-color: var(--bs-accent); border: none; }
+        .btn-primary:hover { background-color: #c94400; }
         
-        .status-card { text-align: center; padding: 15px; border-radius: 0.75rem; margin-bottom: 15px; color: white; }
-        .status-card.bg-em-andamento { background-color: #fd7e14; }
+        /* KPI Cards */
+        .kpi-card { padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 15px; }
+        .kpi-gastos { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); }
+        .kpi-manutencao { background: linear-gradient(135deg, #e65100 0%, #f57c00 100%); }
+        .kpi-card h3 { margin: 0; font-size: 2rem; font-weight: bold; color: white; }
+        .kpi-card p { margin: 0; opacity: 0.8; color: white; }
+
+        /* Floating Chat Button */
+        .chat-btn-floating { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background-color: var(--bs-accent); color: white; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 4px 15px rgba(230,81,0,0.4); cursor: pointer; z-index: 1000; transition: transform 0.2s; }
+        .chat-btn-floating:hover { transform: scale(1.1); }
         
-        /* Estilos do Modal */
-        .modal-content { background-color: var(--bs-dark-card); color: var(--bs-body-color); }
-        .modal-header { background-color: var(--bs-accent); color: white; border-bottom: none; }
-        .btn-close { filter: invert(1); }
-        
-        .check-item { margin-bottom: 8px; font-size: 1.1em; }
-        .check-icon-ok { color: #198754; font-weight: bold; }
-        .check-icon-nok { color: #dc3545; font-weight: bold; }
+        /* Chat Modal Styles */
+        .chat-container { height: 60vh; display: flex; flex-direction: column; }
+        .chat-messages { flex-grow: 1; overflow-y: auto; padding: 15px; background-color: #121212; }
+        .message { margin-bottom: 10px; max-width: 85%; padding: 12px; border-radius: 15px; position: relative; font-size: 0.95rem; }
+        .message.cliente { background-color: var(--bs-accent); color: white; align-self: flex-end; margin-left: auto; border-bottom-right-radius: 0; }
+        .message.admin { background-color: #2c2c2c; color: white; align-self: flex-start; margin-right: auto; border-bottom-left-radius: 0; }
+        .chat-input-area { padding: 15px; background-color: var(--bs-dark-card); display: flex; gap: 10px; }
+
+        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 1055; }
     </style>
 </head>
 <body>
-    <div id="clientPanel" class="d-flex flex-column h-100">
-        <nav class="navbar navbar-expand-lg">
-            <div class="container-fluid">
-                <a class="navbar-brand text-white fw-bold" href="#"><i class="bi bi-speedometer2 me-2"></i>Evolution Motors</a>
-            </div>
-        </nav>
-        
-        <div class="container-fluid mt-3">
-            <h2 id="clientWelcomeMessage">Olá, Cliente!</h2>
+    <div class="toast-container" id="toastContainer"></div>
 
-            <h4 class="mt-4 mb-3"><i class="bi bi-gear me-2"></i>Status dos Serviços Atuais</h4>
-            <div id="clientCurrentServicesStatus" class="row">
-                <!-- Serviços Renderizados Aqui -->
+    <!-- Login Screen -->
+    <div id="loginScreen" class="d-flex flex-column justify-content-center align-items-center vh-100">
+        <div class="text-center mb-4">
+            <h1 style="color: var(--bs-accent); font-weight: 800; letter-spacing: 2px;">EVOLUTION</h1>
+            <h4 class="text-secondary">Portal do Cliente</h4>
+        </div>
+        <div class="card p-4 shadow-lg" style="width: 100%; max-width: 400px;">
+            <div class="card-body">
+                <form id="loginForm">
+                    <div class="mb-3">
+                        <label class="form-label text-white-50">Seu E-mail</label>
+                        <input type="email" class="form-control form-control-lg" id="loginEmail" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label text-white-50">Sua Senha</label>
+                        <input type="password" class="form-control form-control-lg" id="loginPassword" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold">Acessar Meu Painel</button>
+                </form>
             </div>
         </div>
     </div>
 
-    <!-- Modal do Checklist de Entrada -->
-    <div class="modal fade" id="checklistModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
+    <!-- Client Dashboard Area -->
+    <div id="dashboardArea" style="display: none; flex-grow: 1;">
+        <nav class="navbar navbar-dark">
+            <div class="container-fluid">
+                <span class="navbar-brand fw-bold"><i class="bi bi-speedometer2 me-2" style="color:var(--bs-accent)"></i>Meu Portal Evolution</span>
+                <button class="btn btn-outline-light btn-sm" onclick="clientLogout()"><i class="bi bi-box-arrow-right"></i> Sair</button>
+            </div>
+        </nav>
+
+        <div class="container mt-4 pb-5">
+            <h3 id="welcomeMsg" class="mb-4 fw-bold"></h3>
+
+            <!-- Seção de KPIs Inteligentes -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="kpi-card kpi-gastos shadow">
+                        <p><i class="bi bi-wallet2"></i> Investimento em Manutenção (Total)</p>
+                        <h3 id="kpiTotalGasto">R$ 0,00</h3>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="kpi-card kpi-manutencao shadow" id="kpiAlertCard">
+                        <p><i class="bi bi-tools"></i> Status de Manutenção</p>
+                        <h3 id="kpiStatusManutencao">Tudo em Dia!</h3>
+                        <small id="kpiStatusSub" style="color:white; opacity: 0.8;">Suas motos estão revisadas.</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-transparent border-bottom border-secondary">
+                    <h5 class="mb-0 text-white"><i class="bi bi-gear-fill me-2" style="color:var(--bs-accent)"></i>Serviços em Andamento</h5>
+                </div>
+                <div class="card-body" id="currentServicesList">
+                    <div class="text-center text-white-50 py-3">Nenhum serviço pendente no momento.</div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-transparent border-bottom border-secondary">
+                    <h5 class="mb-0 text-white"><i class="bi bi-motorcycle me-2" style="color:var(--bs-accent)"></i>Minhas Motos</h5>
+                </div>
+                <div class="card-body row" id="myMotosList">
+                    <!-- Motos renderizadas aqui -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Botão Flutuante do Chat -->
+        <div class="chat-btn-floating" data-bs-toggle="modal" data-bs-target="#chatModal">
+            <i class="bi bi-chat-dots-fill"></i>
+        </div>
+    </div>
+
+    <!-- Modal de Chat do Cliente -->
+    <div class="modal fade" id="chatModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content border-0 shadow-lg">
                 <div class="modal-header">
-                    <h5 class="modal-title"><i class="bi bi-card-checklist me-2"></i>Checklist de Recebimento</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title"><i class="bi bi-chat-text-fill me-2"></i>Atendimento Evolution</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body" id="checklistModalBody">
-                    <!-- O conteúdo do checklist será injetado aqui via JS -->
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal">Fechar</button>
+                <div class="modal-body p-0 chat-container">
+                    <div class="chat-messages d-flex flex-column" id="clientChatMessages">
+                        <div class="text-center text-white-50 mt-4 small">Envie uma mensagem para a oficina. Dúvidas sobre orçamento ou agendamentos?</div>
+                    </div>
+                    <div class="chat-input-area">
+                        <input type="text" class="form-control rounded-pill px-3" id="clientMsgInput" placeholder="Sua mensagem...">
+                        <button class="btn btn-primary rounded-circle" style="width: 45px; height: 45px;" onclick="enviarMensagemCliente()">
+                            <i class="bi bi-send-fill"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -68,84 +148,205 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Simulação de banco de dados para renderizar a interface de exemplo
-        const servicos = [
-            {
-                id: 'os123', status: 'Em Andamento', descricaoServico: 'Revisão Geral e Troca de Óleo',
-                checklist: {
-                    combustivel: 'Meio Tanque', painelOk: true, retrovisoresOk: true, 
-                    faroisOk: true, pneusOk: false, carenagemOk: true,
-                    avarias: 'Pneu traseiro liso. Cliente ciente.'
-                }
-            }
-        ];
-        const motos = [{ id: 'm1', modelo: 'Honda CB 500F', placa: 'ABC-1234' }];
+        // =====================================================================
+        // CONFIGURAÇÕES DO SISTEMA (COLE SUAS CHAVES AQUI - AS MESMAS DO INDEX)
+        // =====================================================================
+        const firebaseConfig = {
+            apiKey: "",
+            authDomain: "",
+            projectId: "",
+            storageBucket: "",
+            messagingSenderId: "",
+            appId: ""
+        };
 
-        // Função que renderiza os serviços no painel do cliente
-        function loadClientServices() {
-            const container = document.getElementById('clientCurrentServicesStatus');
-            container.innerHTML = '';
+        let firebaseApp, auth, db;
+        let loggedClienteObj = null; 
+
+        function showToast(message, type = 'info') {
+            const toastContainer = document.getElementById('toastContainer');
+            const bgClass = type === 'error' ? 'bg-danger' : (type === 'success' ? 'bg-success' : 'bg-primary');
+            const toastId = 'toast' + Date.now();
+            toastContainer.insertAdjacentHTML('beforeend', `
+                <div id="${toastId}" class="toast align-items-center text-white ${bgClass} border-0 show" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="4000">
+                    <div class="d-flex"><div class="toast-body">${message}</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div>
+                </div>
+            `);
+            setTimeout(() => { document.getElementById(toastId)?.remove(); }, 4000);
+        }
+
+        async function initializeFirebase() {
+            if (!firebaseConfig.apiKey) { showToast("Sistema não configurado. Contate a oficina.", "error"); return; }
+            if (!firebaseApp) { firebaseApp = firebase.initializeApp(firebaseConfig); auth = firebaseApp.auth(); db = firebaseApp.firestore(); }
             
-            servicos.forEach(serv => {
-                const moto = motos[0]; // Simulação
-                
-                // Botão para ver o Checklist se ele existir na OS
-                let checklistBtn = '';
-                if(serv.checklist) {
-                    checklistBtn = `
-                        <button class="btn btn-sm btn-outline-light mt-3 w-100" onclick="viewChecklist('${serv.id}')">
-                            <i class="bi bi-search me-1"></i> Ver Inspeção de Entrada
-                        </button>
-                    `;
+            auth.onAuthStateChanged(async user => {
+                if (user) {
+                    document.getElementById('loginScreen').style.display = 'none';
+                    await fetchClientData(user.email);
+                } else {
+                    document.getElementById('dashboardArea').style.display = 'none';
+                    document.getElementById('loginScreen').style.display = 'flex';
                 }
+            });
+        }
 
-                container.innerHTML += `
-                    <div class="col-12 col-md-6">
-                        <div class="status-card bg-em-andamento">
-                            <h4>${serv.status}</h4>
-                            <p class="fw-bold">${moto.modelo} (${moto.placa})</p>
-                            <p>${serv.descricaoServico}</p>
-                            ${checklistBtn}
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+                showToast("Acesso liberado!", "success");
+            } catch (error) {
+                showToast("Email ou senha incorretos.", "error");
+            }
+        });
+
+        function clientLogout() { auth.signOut(); }
+
+        async function fetchClientData(email) {
+            try {
+                const snapshot = await db.collection('clientes').where('email', '==', email).get();
+                if (snapshot.empty) {
+                    showToast("Perfil de cliente não localizado no banco de dados.", "error");
+                    auth.signOut();
+                    return;
+                }
+                loggedClienteObj = { id: snapshot.docs[0].id, ...snapshot.docs[0].data() };
+                
+                document.getElementById('dashboardArea').style.display = 'flex';
+                document.getElementById('welcomeMsg').innerHTML = `Olá, <span style="color:var(--bs-accent)">${loggedClienteObj.nome.split(' ')[0]}</span>!`;
+                
+                setupRealtimeListeners(loggedClienteObj.id);
+            } catch (error) { showToast("Erro ao buscar dados.", "error"); }
+        }
+
+        // Realtime Data
+        let motos = []; let servicos = []; let unsubscribeChat = null;
+
+        function setupRealtimeListeners(clienteId) {
+            db.collection('motos').where('clienteId', '==', clienteId).onSnapshot(snap => {
+                motos = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderMotos(); calculateKPIs();
+            });
+
+            db.collection('servicos').where('clienteId', '==', clienteId).onSnapshot(snap => {
+                servicos = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderServicos(); calculateKPIs();
+            });
+
+            if(unsubscribeChat) unsubscribeChat();
+            unsubscribeChat = db.collection('mensagens').where('clienteId', '==', clienteId).orderBy('timestamp', 'asc').onSnapshot(snap => {
+                const area = document.getElementById('clientChatMessages');
+                area.innerHTML = '';
+                snap.forEach(doc => {
+                    const msg = doc.data();
+                    const css = msg.sender === 'cliente' ? 'cliente' : 'admin';
+                    const time = msg.timestamp ? new Date(msg.timestamp.toDate()).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '';
+                    area.innerHTML += `<div class="message ${css}">${msg.text}<div style="font-size:10px; opacity:0.7; text-align:right; margin-top:4px;">${time}</div></div>`;
+                });
+                area.scrollTop = area.scrollHeight;
+            });
+        }
+
+        // Renderização e Regras de Negócio
+        function renderMotos() {
+            const list = document.getElementById('myMotosList');
+            list.innerHTML = '';
+            motos.forEach(m => {
+                list.innerHTML += `
+                    <div class="col-md-6 mb-3">
+                        <div class="p-3 bg-dark rounded border border-secondary h-100">
+                            <h5 class="text-white mb-1">${m.modelo}</h5>
+                            <span class="badge bg-secondary mb-2">${m.placa}</span>
+                            <div class="text-white-50 small">
+                                <div><i class="bi bi-speedometer2"></i> KM Atual: ${m.kmAtual || 'Não inf.'}</div>
+                                <div><i class="bi bi-calendar"></i> Ano: ${m.ano || '-'}</div>
+                            </div>
                         </div>
                     </div>
                 `;
             });
         }
 
-        // Função chamada ao clicar em "Ver Inspeção de Entrada"
-        function viewChecklist(serviceId) {
-            const service = servicos.find(s => s.id === serviceId);
-            if (!service || !service.checklist) return;
-
-            const check = service.checklist;
-            const body = document.getElementById('checklistModalBody');
+        function renderServicos() {
+            const list = document.getElementById('currentServicesList');
+            const ativos = servicos.filter(s => s.status !== 'Concluido' && s.status !== 'Cancelado');
+            if (ativos.length === 0) { list.innerHTML = '<div class="text-center text-white-50 py-3">Você não tem motos na oficina no momento.</div>'; return; }
             
-            // Renderiza ícones X ou Confere dependendo do boolean
-            const renderIcon = (isOk) => isOk ? '<i class="bi bi-check-circle-fill check-icon-ok me-2"></i>' : '<i class="bi bi-x-circle-fill check-icon-nok me-2"></i>';
-
-            body.innerHTML = `
-                <div class="p-3 bg-dark rounded border border-secondary mb-3">
-                    <p class="mb-1"><i class="bi bi-fuel-pump text-warning me-2"></i><strong>Combustível:</strong> ${check.combustivel}</p>
-                </div>
-                
-                <div class="check-item">${renderIcon(check.painelOk)} Painel de Instrumentos</div>
-                <div class="check-item">${renderIcon(check.retrovisoresOk)} Retrovisores</div>
-                <div class="check-item">${renderIcon(check.faroisOk)} Faróis e Setas</div>
-                <div class="check-item">${renderIcon(check.pneusOk)} Pneus</div>
-                <div class="check-item">${renderIcon(check.carenagemOk)} Carenagem/Estética</div>
-                
-                <hr class="border-secondary my-3">
-                <h6>Avarias Relatadas no Recebimento:</h6>
-                <div class="p-2 bg-secondary text-white rounded fst-italic">
-                    ${check.avarias ? check.avarias : 'Nenhuma avaria pré-existente relatada.'}
-                </div>
-                <small class="d-block mt-3 text-white-50 text-center">Inspeção realizada no momento em que a moto foi deixada na oficina.</small>
-            `;
-
-            new bootstrap.Modal(document.getElementById('checklistModal')).show();
+            list.innerHTML = '';
+            ativos.forEach(s => {
+                const moto = motos.find(m => m.id === s.motoId) || { modelo: 'Moto', placa: '---' };
+                list.innerHTML += `
+                    <div class="p-3 mb-3" style="background-color: #212529; border-left: 4px solid var(--bs-accent); border-radius: 8px;">
+                        <div class="d-flex justify-content-between">
+                            <h6 class="text-white mb-1">${s.descricaoServico}</h6>
+                            <span class="badge bg-primary">${s.status}</span>
+                        </div>
+                        <div class="text-white-50 small mt-2">
+                            <i class="bi bi-motorcycle me-1"></i> ${moto.modelo} (${moto.placa})<br>
+                            <i class="bi bi-calendar-event me-1"></i> Entrada: ${new Date(s.dataAgendamento + 'T00:00:00').toLocaleDateString('pt-BR')}
+                        </div>
+                    </div>
+                `;
+            });
         }
 
-        document.addEventListener('DOMContentLoaded', loadClientServices);
+        function calculateKPIs() {
+            // 1. Total Gasto
+            const total = servicos.filter(s => s.status === 'Concluido').reduce((acc, s) => acc + (s.custoTotal || 0), 0);
+            document.getElementById('kpiTotalGasto').textContent = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total);
+
+            // 2. Inteligência de Manutenção Preventiva (Regra Básica de KM ou Tempo)
+            // Se tiver serviço feito há mais de 6 meses OU moto com KM alto sem revisão registrada
+            let precisaRevisao = false;
+            let aviso = "Suas motos estão revisadas.";
+            
+            motos.forEach(moto => {
+                const servicosDaMoto = servicos.filter(s => s.motoId === moto.id && s.status === 'Concluido');
+                if (servicosDaMoto.length > 0) {
+                    // Ordena pelo mais recente
+                    servicosDaMoto.sort((a,b) => new Date(b.dataConclusao || b.dataAgendamento) - new Date(a.dataConclusao || a.dataAgendamento));
+                    const ultimoServico = servicosDaMoto[0];
+                    const dataUltimo = new Date(ultimoServico.dataConclusao || ultimoServico.dataAgendamento);
+                    const mesesAtras = (new Date() - dataUltimo) / (1000 * 60 * 60 * 24 * 30);
+                    
+                    if (mesesAtras > 6) {
+                        precisaRevisao = true;
+                        aviso = `Sua ${moto.modelo} não passa aqui há mais de 6 meses. Recomendamos uma verificação!`;
+                    }
+                }
+            });
+
+            const kpiAlertCard = document.getElementById('kpiAlertCard');
+            if (precisaRevisao) {
+                kpiAlertCard.style.background = "linear-gradient(135deg, #b71c1c 0%, #e53935 100%)"; // Vermelho Alerta
+                document.getElementById('kpiStatusManutencao').textContent = "Atenção Necessária";
+                document.getElementById('kpiStatusSub').textContent = aviso;
+            } else {
+                kpiAlertCard.style.background = "linear-gradient(135deg, #2e7d32 0%, #43a047 100%)"; // Verde OK
+                document.getElementById('kpiStatusManutencao').textContent = "Tudo em Dia!";
+                document.getElementById('kpiStatusSub').textContent = aviso;
+            }
+        }
+
+        async function enviarMensagemCliente() {
+            const input = document.getElementById('clientMsgInput');
+            const texto = input.value.trim();
+            if (!texto || !loggedClienteObj) return;
+
+            try {
+                await db.collection('mensagens').add({
+                    clienteId: loggedClienteObj.id,
+                    sender: 'cliente',
+                    text: texto,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                input.value = '';
+            } catch (error) { showToast("Erro ao enviar mensagem.", "error"); }
+        }
+
+        document.addEventListener('DOMContentLoaded', initializeFirebase);
     </script>
 </body>
 </html>

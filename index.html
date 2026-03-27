@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Evolution Motors - Sistema de Gestão da Oficina</title>
+    <title>Evolution Motors - Admin Completo</title>
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
@@ -11,36 +11,31 @@
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         :root { --bs-body-bg: #212529; --bs-body-color: #f8f9fa; --bs-dark-card: #343a40; --bs-accent: #e65100; --bs-primary-light: #0d6efd; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bs-body-bg); color: var(--bs-body-color); min-height: 100vh; display: flex; flex-direction: column; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bs-body-bg); color: var(--bs-body-color); min-height: 100vh; display: flex; flex-direction: column; }
         .navbar { background-color: var(--bs-dark-card) !important; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
-        .navbar-brand, .navbar-nav .nav-link { color: var(--bs-body-color) !important; }
-        .navbar-brand { font-weight: bold; }
+        .navbar-brand, .navbar-nav .nav-link { color: var(--bs-body-color) !important; font-weight: bold; }
         .navbar-nav .nav-link.active { color: var(--bs-accent) !important; border-bottom: 2px solid var(--bs-accent); }
-        .navbar-toggler-icon { filter: invert(1); }
         .container-fluid { padding-top: 20px; flex-grow: 1; }
-        .card { margin-bottom: 20px; box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2); border-radius: 0.75rem; background-color: var(--bs-dark-card); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .card-header { background-color: var(--bs-accent); color: white; border-bottom: 1px solid rgba(255, 255, 255, 0.1); border-radius: calc(0.75rem - 1px) calc(0.75rem - 1px) 0 0; }
+        .card { margin-bottom: 20px; border-radius: 0.75rem; background-color: var(--bs-dark-card); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .card-header { background-color: var(--bs-accent); color: white; border-radius: calc(0.75rem - 1px) calc(0.75rem - 1px) 0 0; }
         .btn-primary { background-color: var(--bs-accent); border-color: var(--bs-accent); }
         .btn-primary:hover { background-color: #c94400; border-color: #c94400; }
-        .form-control, .form-select { background-color: #495057; color: var(--bs-body-color); border-color: #6c757d; }
+        .form-control, .form-select { background-color: #495057; color: white; border-color: #6c757d; }
         .form-control:focus, .form-select:focus { background-color: #495057; color: white; border-color: var(--bs-accent); box-shadow: 0 0 0 0.25rem rgba(230, 81, 0, 0.25); }
-        .form-control::placeholder { color: rgba(255, 255, 255, 0.5); }
         .table { color: var(--bs-body-color); margin-top: 15px; }
         .table thead th { background-color: #495057; color: white; }
         .table-striped tbody tr:nth-of-type(odd) { background-color: rgba(255, 255, 255, 0.05); }
-        .table-hover tbody tr:hover { background-color: rgba(255, 255, 255, 0.1); }
         .table td { color: var(--bs-body-color); }
         .modal-content { background-color: var(--bs-dark-card); color: var(--bs-body-color); }
         .modal-header { background-color: var(--bs-accent); color: white; border-bottom: none; }
         .btn-close { filter: invert(1); }
-        .servico-card { border-left: 5px solid; margin-bottom: 10px; padding: 10px; border-radius: 0.5rem; background-color: #3f464e; color: var(--bs-body-color); }
+        
+        .servico-card { border-left: 5px solid; margin-bottom: 10px; padding: 10px; border-radius: 0.5rem; background-color: #3f464e; }
         .status-aguardando-orcamento { border-color: #ffc107; } .status-orcamento-enviado { border-color: #0d6efd; } .status-aprovado { border-color: #28a745; } .status-em-andamento { border-color: #fd7e14; } .status-concluido { border-color: #198754; }
         
-        /* Chat Box Styles */
         .chat-container { height: 400px; display: flex; flex-direction: column; background-color: #212529; border-radius: 0.5rem; }
         .chat-messages { flex-grow: 1; overflow-y: auto; padding: 15px; }
         .message { margin-bottom: 10px; max-width: 80%; padding: 10px; border-radius: 15px; position: relative; }
@@ -49,166 +44,199 @@
         .message small { display: block; font-size: 0.7em; opacity: 0.7; text-align: right; margin-top: 5px; }
         .chat-input { padding: 10px; background-color: #343a40; border-top: 1px solid #495057; display: flex; gap: 10px; }
         
-        /* Toast Notification */
+        .checklist-box { background-color: rgba(0,0,0,0.2); border: 1px solid #6c757d; border-radius: 0.5rem; padding: 15px; margin-bottom: 15px; }
         .toast-container { position: fixed; top: 20px; right: 20px; z-index: 1055; }
     </style>
 </head>
 <body>
-    <!-- Toast Notification Container -->
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- Login Screen -->
+    <!-- Login -->
     <div id="loginScreen" class="d-flex flex-column justify-content-center align-items-center vh-100">
         <div class="card p-4 shadow-lg" style="width: 100%; max-width: 400px;">
-            <div class="card-header text-center">
-                <h3>Login - Evolution Motors</h3>
-            </div>
+            <div class="card-header text-center"><h3>Evolution Motors</h3></div>
             <div class="card-body">
                 <form id="loginForm">
-                    <div class="mb-3">
-                        <label class="form-label">Email do Admin</label>
-                        <input type="email" class="form-control" id="loginEmail" value="admin@evolutionmotors.com" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Senha</label>
-                        <input type="password" class="form-control" id="loginPassword" value="123456" required>
-                    </div>
+                    <div class="mb-3"><label class="form-label">Email Admin</label><input type="email" class="form-control" id="loginEmail" required></div>
+                    <div class="mb-3"><label class="form-label">Senha</label><input type="password" class="form-control" id="loginPassword" required></div>
                     <button type="submit" class="btn btn-primary w-100">Entrar</button>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- Admin Panel Structure -->
+    <!-- Admin Panel -->
     <div id="adminPanel" class="d-flex flex-column h-100" style="display: none;">
         <nav class="navbar navbar-expand-lg">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#"><i class="bi bi-gear-fill me-2"></i>Evolution Admin</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAdmin">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+                <a class="navbar-brand" href="#"><i class="bi bi-gear-fill me-2"></i>Admin</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAdmin"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarNavAdmin">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <ul class="navbar-nav me-auto">
                         <li class="nav-item"><a class="nav-link active" href="#" onclick="showAdminSection('estoque')"><i class="bi bi-box-seam me-1"></i>Estoque</a></li>
                         <li class="nav-item"><a class="nav-link" href="#" onclick="showAdminSection('clientesMotos')"><i class="bi bi-people-fill me-1"></i>Clientes & Motos</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#" onclick="showAdminSection('agendamentos')"><i class="bi bi-calendar-check me-1"></i>Ordens de Serviço</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#" onclick="showAdminSection('mensagens')"><i class="bi bi-chat-dots me-1"></i>Mensagens</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#" onclick="showAdminSection('funcionarios')"><i class="bi bi-person-badge-fill me-1"></i>Funcionários</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#" onclick="showAdminSection('fornecedores')"><i class="bi bi-truck me-1"></i>Fornecedores</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#" onclick="showAdminSection('agendamentos')"><i class="bi bi-calendar-check me-1"></i>OS / Serviços</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#" onclick="showAdminSection('financeiro')"><i class="bi bi-currency-dollar me-1"></i>Financeiro</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#" onclick="showAdminSection('mensagens')"><i class="bi bi-chat-dots me-1"></i>Chat Cliente</a></li>
                     </ul>
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item"><a class="nav-link text-danger" href="#" onclick="adminLogout()"><i class="bi bi-box-arrow-right me-1"></i> Sair</a></li>
-                    </ul>
+                    <ul class="navbar-nav ms-auto"><li class="nav-item"><a class="nav-link text-danger" href="#" onclick="adminLogout()"><i class="bi bi-box-arrow-right me-1"></i> Sair</a></li></ul>
                 </div>
             </div>
         </nav>
 
         <div class="container-fluid mt-3 flex-grow-1">
-            <!-- Estoque Section (Omitted content for brevity, assume standard implementation) -->
+            <!-- Estoque -->
             <section id="estoque" class="admin-section">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5><i class="bi bi-box-seam me-2"></i>Controle de Estoque</h5>
-                        <button class="btn btn-light btn-sm" onclick="showToast('Estoque: Módulo ativo.', 'success')"><i class="bi bi-plus-circle"></i> Novo</button>
-                    </div>
-                    <div class="card-body"><p>Módulo de estoque resumido para focar nas inovações de Cliente.</p></div>
-                </div>
-            </section>
-
-            <!-- Clientes & Motos Section -->
-            <section id="clientesMotos" class="admin-section" style="display:none;">
-                <div class="card mb-4">
-                    <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
-                        <h5><i class="bi bi-people-fill me-2"></i>Gestão de Clientes e Acessos</h5>
-                        <button class="btn btn-light mt-2 mt-md-0" data-bs-toggle="modal" data-bs-target="#clienteModal" onclick="prepareClienteModal('add')">
-                            <i class="bi bi-person-plus me-1"></i> Adicionar Cliente
-                        </button>
+                        <h5>Controle de Estoque</h5>
+                        <div>
+                            <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#stockAdjustmentModal" onclick="prepareStockAdjustmentModal('add')">+ Qtd</button>
+                            <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#stockAdjustmentModal" onclick="prepareStockAdjustmentModal('remove')">- Qtd</button>
+                            <button class="btn btn-light btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#estoqueModal" onclick="prepareEstoqueModal('add')">Nova Peça</button>
+                        </div>
                     </div>
                     <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover table-striped">
-                                <thead><tr><th>Nome</th><th>Contato</th><th>Email (Login)</th><th>Ações / Enviar Acesso</th></tr></thead>
-                                <tbody id="listaClientes"></tbody>
-                            </table>
-                        </div>
+                        <table class="table table-hover">
+                            <thead><tr><th>Imagem</th><th>Nome</th><th>Custo</th><th>Venda</th><th>Qtd.</th><th>Ações</th></tr></thead>
+                            <tbody id="listaEstoque"></tbody>
+                        </table>
                     </div>
                 </div>
             </section>
 
-            <!-- Serviços Section -->
-            <section id="agendamentos" class="admin-section" style="display:none;">
+            <!-- Clientes & Motos -->
+            <section id="clientesMotos" class="admin-section" style="display:none;">
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center"><h5>Clientes</h5><button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#clienteModal" onclick="prepareClienteModal('add')">Novo Cliente</button></div>
+                    <div class="card-body">
+                        <table class="table table-hover"><thead><tr><th>Nome</th><th>WhatsApp</th><th>Email Login</th><th>Ações</th></tr></thead><tbody id="listaClientes"></tbody></table>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center"><h5>Motos</h5><button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#motoModal" onclick="prepareMotoModal('add')">Nova Moto</button></div>
+                    <div class="card-body">
+                        <table class="table table-hover"><thead><tr><th>Imagem</th><th>Cliente</th><th>Modelo/Placa</th><th>KM</th><th>Ações</th></tr></thead><tbody id="listaMotos"></tbody></table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Funcionarios -->
+            <section id="funcionarios" class="admin-section" style="display:none;">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center"><h5>Funcionários</h5><button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#funcionarioModal" onclick="prepareFuncionarioModal('add')">Novo</button></div>
+                    <div class="card-body"><table class="table table-hover"><thead><tr><th>Nome</th><th>Função</th><th>Ações</th></tr></thead><tbody id="listaFuncionarios"></tbody></table></div>
+                </div>
+            </section>
+
+            <!-- Fornecedores -->
+            <section id="fornecedores" class="admin-section" style="display:none;">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5><i class="bi bi-calendar-check me-2"></i>Ordens de Serviço</h5>
+                        <h5>Fornecedores & Compras</h5>
+                        <div>
+                            <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#purchaseModal" onclick="preparePurchaseModal()">Registrar Compra</button>
+                            <button class="btn btn-light btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#fornecedorModal" onclick="prepareFornecedorModal('add')">Novo Fornecedor</button>
+                        </div>
                     </div>
-                    <div class="card-body"><p>Gerenciamento de OS ativo.</p></div>
+                    <div class="card-body"><table class="table table-hover"><thead><tr><th>Nome</th><th>Categoria</th><th>Ações</th></tr></thead><tbody id="listaFornecedores"></tbody></table></div>
                 </div>
             </section>
 
-            <!-- Mensagens (Chat) Section -->
+            <!-- Serviços (OS) -->
+            <section id="agendamentos" class="admin-section" style="display:none;">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center"><h5>Ordens de Serviço</h5><button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#servicoModal" onclick="prepareServicoModal('add')">Nova OS</button></div>
+                    <div class="card-body"><div class="row" id="listaAgendamentos"></div></div>
+                </div>
+            </section>
+
+            <!-- Financeiro -->
+            <section id="financeiro" class="admin-section" style="display:none;">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center"><h5>Controle Financeiro</h5><button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#financeiroModal" onclick="prepareFinanceiroModal('add')">Adicionar Manual</button></div>
+                    <div class="card-body">
+                        <div class="row mb-3 text-center">
+                            <div class="col"><div class="p-3 bg-success rounded"><h5>Entradas</h5><h4 id="totEnt">R$ 0,00</h4></div></div>
+                            <div class="col"><div class="p-3 bg-danger rounded"><h5>Saídas</h5><h4 id="totSai">R$ 0,00</h4></div></div>
+                            <div class="col"><div class="p-3 bg-primary rounded"><h5>Saldo</h5><h4 id="totSal">R$ 0,00</h4></div></div>
+                        </div>
+                        <table class="table table-hover"><thead><tr><th>Tipo</th><th>Descrição</th><th>Valor</th><th>Data</th><th>Origem</th><th>Ações</th></tr></thead><tbody id="listaFinanceiro"></tbody></table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Mensagens -->
             <section id="mensagens" class="admin-section" style="display:none;">
                 <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <div class="card h-100">
-                            <div class="card-header"><h5><i class="bi bi-list me-2"></i>Clientes</h5></div>
-                            <div class="list-group list-group-flush bg-dark" id="chatClientList" style="overflow-y: auto; max-height: 400px;">
-                                <!-- Lista de clientes renderizada aqui -->
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-8 mb-3">
-                        <div class="card h-100">
-                            <div class="card-header"><h5 id="chatActiveClientName">Selecione um cliente para conversar</h5></div>
-                            <div class="card-body p-0">
-                                <div class="chat-container">
-                                    <div class="chat-messages" id="chatMessagesArea">
-                                        <!-- Mensagens -->
-                                    </div>
-                                    <div class="chat-input" style="display:none;" id="chatInputArea">
-                                        <input type="text" class="form-control" id="chatMsgInput" placeholder="Digite sua mensagem...">
-                                        <button class="btn btn-primary" onclick="enviarMensagemAdmin()"><i class="bi bi-send"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="col-md-4"><div class="card h-100"><div class="card-header"><h5>Clientes</h5></div><div class="list-group bg-dark" id="chatClientList" style="overflow-y: auto; max-height:400px;"></div></div></div>
+                    <div class="col-md-8"><div class="card h-100"><div class="card-header"><h5 id="chatActiveClientName">Selecione um cliente</h5></div>
+                        <div class="card-body p-0"><div class="chat-container"><div class="chat-messages" id="chatMessagesArea"></div>
+                        <div class="chat-input" style="display:none;" id="chatInputArea"><input type="text" class="form-control" id="chatMsgInput" placeholder="Mensagem..."><button class="btn btn-primary" onclick="enviarMensagemAdmin()">Enviar</button></div>
+                        </div></div></div></div>
                 </div>
             </section>
         </div>
     </div>
 
-    <!-- Cliente Modal (Com Email e Senha) -->
-    <div class="modal fade" id="clienteModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+    <!-- ==================== MODALS ==================== -->
+    
+    <!-- Estoque Modal -->
+    <div class="modal fade" id="estoqueModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Adicionar/Editar Peça</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="estoqueForm"><input type="hidden" id="estoqueId"><div class="mb-3"><label>Imagem da Peça (Cloudinary)</label><input type="file" class="form-control" id="estoqueImagem" accept="image/*"><div id="previewEstoqueImg" class="mt-2"></div></div><div class="mb-3"><label>Nome</label><input type="text" class="form-control" id="estoqueNome" required></div><div class="mb-3"><label>Custo</label><input type="number" step="0.01" class="form-control" id="estoqueCusto" required></div><div class="mb-3"><label>Venda</label><input type="number" step="0.01" class="form-control" id="estoqueVenda" required></div><div class="mb-3"><label>Quantidade</label><input type="number" class="form-control" id="estoqueQuantidade" required></div><button type="submit" class="btn btn-primary w-100">Salvar</button></form></div></div></div></div>
+
+    <!-- Ajuste Estoque Modal -->
+    <div class="modal fade" id="stockAdjustmentModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="stockAdjTitle">Ajustar</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="stockAdjustmentForm"><input type="hidden" id="adjType"><div class="mb-3"><label>Peça</label><select class="form-select" id="adjItem" required></select></div><div class="mb-3"><label>Quantidade</label><input type="number" class="form-control" id="adjQtd" required></div><div class="mb-3"><label>Motivo</label><input type="text" class="form-control" id="adjMotivo"></div><button type="submit" class="btn btn-primary w-100">Salvar Ajuste</button></form></div></div></div></div>
+
+    <!-- Cliente Modal com Auth -->
+    <div class="modal fade" id="clienteModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Adicionar/Editar Cliente</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="clienteForm"><input type="hidden" id="clienteId"><div class="mb-3"><label>Nome Completo</label><input type="text" class="form-control" id="clienteNome" required></div><div class="mb-3"><label>WhatsApp (Ex: 11999999999)</label><input type="text" class="form-control" id="clienteContato" required></div><hr><h6>Credenciais Painel Cliente</h6><div class="mb-3"><label>E-mail</label><input type="email" class="form-control" id="clienteEmail" required></div><div class="mb-3"><label>Senha Provisória</label><div class="input-group"><input type="text" class="form-control" id="clienteSenha" required><button class="btn btn-warning" type="button" onclick="gerarSenha()">Gerar</button></div></div><button type="submit" class="btn btn-primary w-100">Salvar e Criar Acesso</button></form></div></div></div></div>
+
+    <!-- Moto Modal -->
+    <div class="modal fade" id="motoModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Moto</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="motoForm"><input type="hidden" id="motoId"><div class="mb-3"><label>Foto</label><input type="file" class="form-control" id="motoImagem" accept="image/*"><div id="previewMotoImg"></div></div><div class="mb-3"><label>Cliente</label><select class="form-select" id="motoClienteId" required></select></div><div class="mb-3"><label>Modelo</label><input type="text" class="form-control" id="motoModelo" required></div><div class="mb-3"><label>Placa</label><input type="text" class="form-control" id="motoPlaca" required></div><div class="mb-3"><label>KM Atual</label><input type="number" class="form-control" id="motoKmAtual"></div><button type="submit" class="btn btn-primary w-100">Salvar</button></form></div></div></div></div>
+
+    <!-- Funcionario Modal -->
+    <div class="modal fade" id="funcionarioModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Funcionário</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="funcionarioForm"><input type="hidden" id="funcionarioId"><div class="mb-3"><label>Nome</label><input type="text" class="form-control" id="funcNome" required></div><div class="mb-3"><label>Função</label><input type="text" class="form-control" id="funcFuncao"></div><button type="submit" class="btn btn-primary w-100">Salvar</button></form></div></div></div></div>
+
+    <!-- Fornecedor Modal -->
+    <div class="modal fade" id="fornecedorModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Fornecedor</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="fornecedorForm"><input type="hidden" id="fornId"><div class="mb-3"><label>Nome</label><input type="text" class="form-control" id="fornNome" required></div><div class="mb-3"><label>Categoria</label><input type="text" class="form-control" id="fornCat"></div><button type="submit" class="btn btn-primary w-100">Salvar</button></form></div></div></div></div>
+
+    <!-- Compra Modal -->
+    <div class="modal fade" id="purchaseModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Registrar Compra</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="purchaseForm"><div class="mb-3"><label>Fornecedor</label><select class="form-select" id="purchForn" required></select></div><div class="mb-3"><label>Data</label><input type="date" class="form-control" id="purchDate" required></div><div id="purchItems"></div><button type="button" class="btn btn-sm btn-outline-light mb-3" onclick="addPurchItem()">+ Item</button><button type="submit" class="btn btn-primary w-100">Salvar Compra (Lança Financeiro e Estoque)</button></form></div></div></div></div>
+
+    <!-- Financeiro Manual Modal -->
+    <div class="modal fade" id="financeiroModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Transação</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="finForm"><input type="hidden" id="finId"><input type="hidden" id="finOriginType"><div class="mb-3"><label>Tipo</label><select class="form-select" id="finTipo"><option>Entrada</option><option>Saída</option></select></div><div class="mb-3"><label>Descrição</label><input type="text" class="form-control" id="finDesc" required></div><div class="mb-3"><label>Valor</label><input type="number" step="0.01" class="form-control" id="finValor" required></div><div class="mb-3"><label>Data</label><input type="date" class="form-control" id="finData" required></div><button type="submit" class="btn btn-primary w-100" id="finSaveBtn">Salvar</button></form></div></div></div></div>
+
+    <!-- OS / Serviço Modal (Com Checklist) -->
+    <div class="modal fade" id="servicoModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="clienteModalLabel">Adicionar/Editar Cliente</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
+                <div class="modal-header"><h5 class="modal-title">Ordem de Serviço</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
-                    <form id="clienteForm">
-                        <input type="hidden" id="clienteId">
-                        <div class="mb-3">
-                            <label class="form-label">Nome Completo</label>
-                            <input type="text" class="form-control" id="clienteNome" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">WhatsApp (Apenas números com DDD)</label>
-                            <input type="text" class="form-control" id="clienteContato" placeholder="Ex: 11999999999" required>
-                        </div>
-                        <hr class="border-secondary my-4">
-                        <h6 class="text-warning mb-3"><i class="bi bi-key me-2"></i>Credenciais de Acesso ao Painel</h6>
-                        <div class="mb-3">
-                            <label class="form-label">E-mail (Usado para Login)</label>
-                            <input type="email" class="form-control" id="clienteEmail" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Senha Provisória</label>
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="clienteSenha" required>
-                                <button class="btn btn-outline-warning" type="button" onclick="gerarSenha()"><i class="bi bi-arrow-clockwise"></i> Gerar</button>
+                    <form id="servicoForm">
+                        <input type="hidden" id="osId">
+                        <ul class="nav nav-tabs mb-3"><li class="nav-item"><button class="nav-link active text-white" data-bs-toggle="tab" data-bs-target="#osGeral" type="button">Geral</button></li><li class="nav-item"><button class="nav-link text-white" data-bs-toggle="tab" data-bs-target="#osChecklist" type="button">Checklist</button></li></ul>
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="osGeral">
+                                <div class="row"><div class="col-md-6 mb-2"><label>Cliente</label><select class="form-select" id="osCliente" required onchange="loadOsMotos()"></select></div><div class="col-md-6 mb-2"><label>Moto</label><select class="form-select" id="osMoto" required></select></div></div>
+                                <div class="mb-2"><label>Serviço a realizar</label><textarea class="form-control" id="osDesc" required></textarea></div>
+                                <div class="row"><div class="col-md-4 mb-2"><label>Status</label><select class="form-select" id="osStatus"><option>Aguardando Orçamento</option><option>Orçamento Enviado</option><option>Aprovado</option><option>Em Andamento</option><option>Concluido</option><option>Cancelado</option></select></div><div class="col-md-4 mb-2"><label>Mecânico</label><select class="form-select" id="osMec"></select></div><div class="col-md-4 mb-2"><label>Data</label><input type="date" class="form-control" id="osData" required></div></div>
+                                <hr>
+                                <div class="mb-2"><label>Mão de Obra (R$)</label><input type="number" step="0.01" class="form-control" id="osMaoObra" value="0" oninput="calcOsTotal()"></div>
+                                <div class="mb-2"><label>Peças</label><div id="osPecasContainer"></div><button type="button" class="btn btn-sm btn-outline-light mt-1" onclick="addOsPeca()">+ Peça</button></div>
+                                <div><label>Total Orçamento</label><input type="text" class="form-control bg-dark text-warning fw-bold" id="osTotal" readonly></div>
                             </div>
-                            <small class="text-white-50">Esta senha será enviada ao cliente pelo WhatsApp.</small>
+                            <div class="tab-pane fade" id="osChecklist">
+                                <div class="checklist-box">
+                                    <div class="mb-2"><label>Combustível</label><select class="form-select" id="chkComb"><option>Não Verificado</option><option>Reserva</option><option>Meio Tanque</option><option>Cheio</option></select></div>
+                                    <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="chkPainel"><label>Painel OK</label></div>
+                                    <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="chkPneus"><label>Pneus OK</label></div>
+                                    <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="chkCare"><label>Carenagem sem avarias</label></div>
+                                    <div class="mt-2"><label>Avarias notadas:</label><textarea class="form-control" id="chkObs"></textarea></div>
+                                </div>
+                            </div>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100 mt-3"><i class="bi bi-save me-2"></i>Salvar e Criar Acesso</button>
+                        <button type="submit" class="btn btn-primary w-100 mt-3">Salvar OS</button>
                     </form>
                 </div>
             </div>
@@ -218,257 +246,258 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // =====================================================================
-        // CONFIGURAÇÕES DO SISTEMA (COLE SUAS CHAVES AQUI)
+        // CHAVES DO FIREBASE REAIS DO THIAGO (NÃO ALTERAR)
         // =====================================================================
         const firebaseConfig = {
-  apiKey: "AIzaSyAq6gEJlUGuzJmrNf-lVY0cqdOWsJ9xNeo",
-  authDomain: "evolution-179d0.firebaseapp.com",
-  projectId: "evolution-179d0",
-  storageBucket: "evolution-179d0.firebasestorage.app",
-  messagingSenderId: "349908951188",
-  appId: "1:349908951188:web:457832d484a83f45b19481"
-};
+            apiKey: "AIzaSyAq6gEJlUGuzJmrNf-lVY0cqdOWsJ9xNeo",
+            authDomain: "evolution-179d0.firebaseapp.com",
+            projectId: "evolution-179d0",
+            storageBucket: "evolution-179d0.firebasestorage.app",
+            messagingSenderId: "349908951188",
+            appId: "1:349908951188:web:457832d484a83f45b19481"
+        };
 
+        // =====================================================================
+        // CHAVES DO CLOUDINARY (COLOQUE AQUI PARA HABILITAR UPLOAD DE FOTOS)
+        // =====================================================================
+        const cloudinaryConfig = {
+            cloudName: "", // EX: "dxyxyz123"
+            uploadPreset: "" // EX: "meu_preset_unsigned"
+        };
 
-        let firebaseApp, auth, db; 
-        let secondaryApp, secondaryAuth; // O segredo para criar usuários sem deslogar o admin
-
-        // Função de Mensagem Elegante (Substitui o alert)
-        function showToast(message, type = 'info') {
-            const toastContainer = document.getElementById('toastContainer');
-            const bgClass = type === 'error' ? 'bg-danger' : (type === 'success' ? 'bg-success' : 'bg-primary');
-            const toastId = 'toast' + Date.now();
-            
-            const toastHTML = `
-                <div id="${toastId}" class="toast align-items-center text-white ${bgClass} border-0 show" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="4000">
-                    <div class="d-flex">
-                        <div class="toast-body">${message}</div>
-                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-                    </div>
-                </div>
-            `;
-            toastContainer.insertAdjacentHTML('beforeend', toastHTML);
-            
-            setTimeout(() => {
-                const toastEl = document.getElementById(toastId);
-                if(toastEl) toastEl.remove();
-            }, 4000);
+        let firebaseApp, auth, db, secondaryApp, secondaryAuth; 
+        
+        function showToast(msg, type='info') {
+            const tc = document.getElementById('toastContainer');
+            const bg = type==='error'?'bg-danger':(type==='success'?'bg-success':'bg-primary');
+            const id = 't'+Date.now();
+            tc.insertAdjacentHTML('beforeend', `<div id="${id}" class="toast align-items-center text-white ${bg} border-0 show"><div class="d-flex"><div class="toast-body">${msg}</div><button class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div>`);
+            setTimeout(()=>document.getElementById(id)?.remove(), 4000);
         }
 
-        async function initializeFirebase() {
-            if (!firebaseConfig.apiKey) {
-                showToast("Por favor, insira as chaves do Firebase no código-fonte.", "error");
-                return false;
-            }
+        async function initFirebase() {
             try {
-                if (!firebaseApp) { 
+                if(!firebaseApp) {
                     firebaseApp = firebase.initializeApp(firebaseConfig);
                     auth = firebaseApp.auth();
                     db = firebaseApp.firestore();
-                    
-                    // Inicializa a Segunda Instância (A Mágica do Dev Sênior)
-                    secondaryApp = firebase.initializeApp(firebaseConfig, "SecondaryApp");
+                    secondaryApp = firebase.initializeApp(firebaseConfig, "SecApp");
                     secondaryAuth = secondaryApp.auth();
                 }
-                return true;
-            } catch (error) {
-                showToast("Erro Firebase: " + error.message, "error");
-                return false;
-            }
+                auth.onAuthStateChanged(u => {
+                    if(u) {
+                        document.getElementById('loginScreen').style.display='none';
+                        document.getElementById('adminPanel').style.display='flex';
+                        setupListeners(); showAdminSection('agendamentos');
+                    } else {
+                        document.getElementById('adminPanel').style.display='none';
+                        document.getElementById('loginScreen').style.display='flex';
+                    }
+                });
+            } catch(e) { console.error(e); showToast("Erro Crítico Firebase.", "error"); }
         }
 
-        async function adminLogin(email, password) {
-            try {
-                await auth.signInWithEmailAndPassword(email, password);
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('adminPanel').style.display = 'flex';
-                setupFirestoreListeners(); 
-                showAdminSection('clientesMotos'); 
-                showToast("Login realizado com sucesso!", "success");
-            } catch (error) {
-                showToast("Erro no login. Verifique e-mail e senha.", "error");
-            }
-        }
-
-        function adminLogout() {
-            auth.signOut().then(() => {
-                document.getElementById('adminPanel').style.display = 'none';
-                document.getElementById('loginScreen').style.display = 'flex';
-            });
-        }
-
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        document.getElementById('loginForm').addEventListener('submit', async e => {
             e.preventDefault();
-            adminLogin(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value);
+            try {
+                await auth.signInWithEmailAndPassword(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value);
+            } catch(err) {
+                console.error("Erro Auth:", err); // Printando erro real pro Thiago ver no console
+                showToast(`Erro no login: ${err.message}`, "error"); 
+            }
+        });
+        function adminLogout() { auth.signOut(); }
+
+        // --- UPLOAD CLOUDINARY ---
+        async function uploadCloudinary(file) {
+            if(!cloudinaryConfig.cloudName || !cloudinaryConfig.uploadPreset) return null;
+            const fd = new FormData(); fd.append('file', file); fd.append('upload_preset', cloudinaryConfig.uploadPreset);
+            try {
+                const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/image/upload`, {method:'POST', body:fd});
+                const data = await res.json();
+                return data.secure_url || null;
+            } catch(e) { console.error(e); return null; }
+        }
+
+        // --- LISTENERS ---
+        let est=[], cli=[], mot=[], func=[], forn=[], serv=[], fin=[], msg=[];
+        function setupListeners() {
+            db.collection('estoqueItems').onSnapshot(s => { est = s.docs.map(d=>({id:d.id,...d.data()})); renderEstoque(); });
+            db.collection('clientes').onSnapshot(s => { cli = s.docs.map(d=>({id:d.id,...d.data()})); renderClientes(); });
+            db.collection('motos').onSnapshot(s => { mot = s.docs.map(d=>({id:d.id,...d.data()})); renderMotos(); });
+            db.collection('funcionarios').onSnapshot(s => { func = s.docs.map(d=>({id:d.id,...d.data()})); renderFunc(); });
+            db.collection('fornecedores').onSnapshot(s => { forn = s.docs.map(d=>({id:d.id,...d.data()})); renderForn(); });
+            db.collection('servicos').onSnapshot(s => { serv = s.docs.map(d=>({id:d.id,...d.data()})); renderServicos(); });
+            db.collection('financeiroItems').onSnapshot(s => { fin = s.docs.map(d=>({id:d.id,...d.data()})); renderFin(); });
+            db.collection('mensagens').orderBy('timestamp','asc').onSnapshot(s => { msg = s.docs.map(d=>({id:d.id,...d.data()})); if(chatActiveClienteId) openChatWith(chatActiveClienteId, document.getElementById('chatActiveClientName').innerText); });
+        }
+        function showAdminSection(id) { document.querySelectorAll('.admin-section').forEach(s=>s.style.display='none'); document.getElementById(id).style.display='block'; }
+
+        // --- ESTOQUE ---
+        function renderEstoque() {
+            document.getElementById('listaEstoque').innerHTML = est.map(i=>`<tr><td>${i.img?`<img src="${i.img}" width="40" height="40" style="object-fit:cover">`:'-'}</td><td>${i.nome}</td><td>R$ ${i.custo}</td><td>R$ ${i.venda}</td><td>${i.qtd}</td><td><button class="btn btn-sm btn-warning" onclick="prepareEstoqueModal('edit','${i.id}')" data-bs-toggle="modal" data-bs-target="#estoqueModal">Ed</button> <button class="btn btn-sm btn-danger" onclick="delEstoque('${i.id}')">X</button></td></tr>`).join('');
+            document.getElementById('adjItem').innerHTML = est.map(i=>`<option value="${i.id}">${i.nome} (Qtd: ${i.qtd})</option>`).join('');
+        }
+        async function prepareEstoqueModal(m, id='') {
+            document.getElementById('estoqueForm').reset(); document.getElementById('previewEstoqueImg').innerHTML='';
+            if(m==='edit'){
+                const item = est.find(x=>x.id===id);
+                document.getElementById('estoqueId').value=item.id; document.getElementById('estoqueNome').value=item.nome; document.getElementById('estoqueCusto').value=item.custo; document.getElementById('estoqueVenda').value=item.venda; document.getElementById('estoqueQuantidade').value=item.qtd;
+                if(item.img) document.getElementById('previewEstoqueImg').innerHTML=`<img src="${item.img}" width="80">`;
+            } else { document.getElementById('estoqueId').value=''; }
+        }
+        document.getElementById('estoqueForm').addEventListener('submit', async e => {
+            e.preventDefault();
+            const file = document.getElementById('estoqueImagem').files[0];
+            let img = file ? await uploadCloudinary(file) : '';
+            const data = { nome: document.getElementById('estoqueNome').value, custo: parseFloat(document.getElementById('estoqueCusto').value), venda: parseFloat(document.getElementById('estoqueVenda').value), qtd: parseInt(document.getElementById('estoqueQuantidade').value) };
+            const id = document.getElementById('estoqueId').value;
+            if(id) { const old = est.find(x=>x.id===id); if(!img) img = old.img; data.img = img; await db.collection('estoqueItems').doc(id).update(data); }
+            else { data.img = img; await db.collection('estoqueItems').add(data); }
+            bootstrap.Modal.getInstance(document.getElementById('estoqueModal')).hide();
+        });
+        function delEstoque(id) { if(confirm("Deletar peça?")) db.collection('estoqueItems').doc(id).delete(); }
+        
+        function prepareStockAdjustmentModal(type) { document.getElementById('adjType').value=type; document.getElementById('stockAdjTitle').innerText=type==='add'?'Add Estoque':'Remover Estoque'; }
+        document.getElementById('stockAdjustmentForm').addEventListener('submit', async e => {
+            e.preventDefault();
+            const id=document.getElementById('adjItem').value; const type=document.getElementById('adjType').value; const q=parseInt(document.getElementById('adjQtd').value);
+            const item = est.find(x=>x.id===id);
+            if(type==='remove' && item.qtd < q) return showToast('Sem saldo', 'error');
+            const nQtd = type==='add' ? item.qtd+q : item.qtd-q;
+            await db.collection('estoqueItems').doc(id).update({qtd: nQtd});
+            if(type==='remove') await db.collection('financeiroItems').add({tipo:'Saída', descricao:`Ajuste: ${item.nome} (-${q})`, valor: item.custo*q, data: new Date().toISOString().split('T')[0], originType:'ajuste'});
+            bootstrap.Modal.getInstance(document.getElementById('stockAdjustmentModal')).hide();
         });
 
-        // Coleções do banco de dados
-        let clientesRef, mensagensRef;
-        let clientes = [];
-        let chatActiveClienteId = null;
-
-        function setupFirestoreListeners() {
-            if (!db) return;
-            clientesRef = db.collection('clientes');
-            mensagensRef = db.collection('mensagens');
-
-            clientesRef.onSnapshot(snapshot => {
-                clientes = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                renderClientes();
-                renderChatClientList();
-            });
-        }
-
-        function showAdminSection(sectionId) {
-            document.querySelectorAll('.admin-section').forEach(sec => sec.style.display = 'none');
-            document.getElementById(sectionId).style.display = 'block';
-            document.querySelectorAll('#navbarNavAdmin .nav-link').forEach(link => link.classList.remove('active'));
-            event.target.classList.add('active');
-        }
-
-        // --- Lógica de Clientes com Auth ---
+        // --- CLIENTES ---
         function renderClientes() {
-            const list = document.getElementById('listaClientes');
-            list.innerHTML = '';
-            clientes.forEach(cliente => {
-                list.innerHTML += `
-                    <tr>
-                        <td>${cliente.nome}</td>
-                        <td>${cliente.contato}</td>
-                        <td>${cliente.email || 'Sem Acesso'}</td>
-                        <td>
-                            <button class="btn btn-sm btn-info me-1" onclick="sendWhatsAppCredentials('${cliente.id}')" title="Enviar Acesso via WhatsApp">
-                                <i class="bi bi-whatsapp"></i>
-                            </button>
-                            <button class="btn btn-sm btn-warning" onclick="prepareClienteModal('edit', '${cliente.id}')">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
+            document.getElementById('listaClientes').innerHTML = cli.map(c=>`<tr><td>${c.nome}</td><td>${c.contato}</td><td>${c.email||'-'}</td><td><button class="btn btn-sm btn-info" onclick="msgWhats('${c.nome}','${c.contato}','${c.email}','${c.senhaProv}')"><i class="bi bi-whatsapp"></i></button> <button class="btn btn-sm btn-warning" onclick="prepareClienteModal('edit','${c.id}')" data-bs-toggle="modal" data-bs-target="#clienteModal">Ed</button></td></tr>`).join('');
+            document.getElementById('osCliente').innerHTML = '<option value="">Sel. Cliente</option>'+cli.map(c=>`<option value="${c.id}">${c.nome}</option>`).join('');
+            document.getElementById('motoClienteId').innerHTML = cli.map(c=>`<option value="${c.id}">${c.nome}</option>`).join('');
+            document.getElementById('chatClientList').innerHTML = cli.map(c=>`<button class="list-group-item list-group-item-action bg-dark text-white" onclick="openChatWith('${c.id}', '${c.nome}')">${c.nome}</button>`).join('');
         }
-
-        function gerarSenha() {
-            const senha = Math.random().toString(36).slice(-6);
-            document.getElementById('clienteSenha').value = senha;
-        }
-
-        function prepareClienteModal(mode, id = null) {
+        function gerarSenha() { document.getElementById('clienteSenha').value = Math.random().toString(36).slice(-6); }
+        function prepareClienteModal(m, id='') {
             document.getElementById('clienteForm').reset();
-            if (mode === 'add') {
-                document.getElementById('clienteId').value = '';
-                gerarSenha();
-                document.getElementById('clienteEmail').disabled = false;
-            } else {
-                const c = clientes.find(i => i.id === id);
-                document.getElementById('clienteId').value = c.id;
-                document.getElementById('clienteNome').value = c.nome;
-                document.getElementById('clienteContato').value = c.contato;
-                document.getElementById('clienteEmail').value = c.email || '';
-                document.getElementById('clienteSenha').value = c.senhaProvisoria || '';
-                document.getElementById('clienteEmail').disabled = !!c.email; // Se já tem email, evita trocar para não quebrar o Auth
-            }
+            if(m==='edit') { const c=cli.find(x=>x.id===id); document.getElementById('clienteId').value=c.id; document.getElementById('clienteNome').value=c.nome; document.getElementById('clienteContato').value=c.contato; document.getElementById('clienteEmail').value=c.email||''; document.getElementById('clienteSenha').value=c.senhaProv||''; document.getElementById('clienteEmail').disabled=!!c.email; }
+            else { document.getElementById('clienteId').value=''; gerarSenha(); document.getElementById('clienteEmail').disabled=false; }
         }
-
-        document.getElementById('clienteForm').addEventListener('submit', async function(e) {
+        document.getElementById('clienteForm').addEventListener('submit', async e => {
             e.preventDefault();
+            const data = { nome:document.getElementById('clienteNome').value, contato:document.getElementById('clienteContato').value, email:document.getElementById('clienteEmail').value, senhaProv:document.getElementById('clienteSenha').value };
             const id = document.getElementById('clienteId').value;
-            const nome = document.getElementById('clienteNome').value;
-            const contato = document.getElementById('clienteContato').value;
-            const email = document.getElementById('clienteEmail').value;
-            const senha = document.getElementById('clienteSenha').value;
-
             try {
-                if (!id) {
-                    // 1. Cria usuário no Firebase Auth usando a Segunda Instância (Não desloga o Admin)
-                    await secondaryAuth.createUserWithEmailAndPassword(email, senha);
-                    
-                    // 2. Salva no Firestore
-                    await clientesRef.add({ nome, contato, email, senhaProvisoria: senha });
-                    showToast("Cliente e acesso criados com sucesso!", "success");
-                } else {
-                    await clientesRef.doc(id).update({ nome, contato, senhaProvisoria: senha });
-                    showToast("Cliente atualizado!", "success");
-                }
-                bootstrap.Modal.getInstance(document.getElementById('clienteModal')).hide();
-            } catch (error) {
-                showToast("Erro: " + error.message, "error");
+                if(id) { await db.collection('clientes').doc(id).update(data); }
+                else { await secondaryAuth.createUserWithEmailAndPassword(data.email, data.senhaProv); await db.collection('clientes').add(data); }
+                bootstrap.Modal.getInstance(document.getElementById('clienteModal')).hide(); showToast("Salvo!");
+            } catch(err) { showToast(err.message, "error"); console.error(err); }
+        });
+        function msgWhats(n, t, e, s) { const url="https://seusite.com/cliente"; window.open(`https://wa.me/55${t}?text=${encodeURIComponent(`Olá ${n}! Acesso Oficina: ${url} | Usuário: ${e} | Senha: ${s}`)}`,'_blank'); }
+
+        // --- MOTOS ---
+        function renderMotos() {
+            document.getElementById('listaMotos').innerHTML = mot.map(m=>{const c=cli.find(x=>x.id===m.clienteId); return `<tr><td>${m.img?`<img src="${m.img}" width="40">`:'-'}</td><td>${c?c.nome:'-'}</td><td>${m.modelo} / ${m.placa}</td><td>${m.km}</td><td><button class="btn btn-sm btn-danger" onclick="delMoto('${m.id}')">X</button></td></tr>`;}).join('');
+        }
+        document.getElementById('motoForm').addEventListener('submit', async e => {
+            e.preventDefault(); const file = document.getElementById('motoImagem').files[0]; const img = file ? await uploadCloudinary(file) : '';
+            await db.collection('motos').add({clienteId:document.getElementById('motoClienteId').value, modelo:document.getElementById('motoModelo').value, placa:document.getElementById('motoPlaca').value, km:document.getElementById('motoKmAtual').value, img});
+            bootstrap.Modal.getInstance(document.getElementById('motoModal')).hide();
+        });
+        function delMoto(id) { if(confirm("Deletar?")) db.collection('motos').doc(id).delete(); }
+
+        // --- FUNCS & FORN ---
+        function renderFunc() { document.getElementById('listaFuncionarios').innerHTML = func.map(f=>`<tr><td>${f.nome}</td><td>${f.funcao}</td><td><button class="btn btn-sm btn-danger" onclick="db.collection('funcionarios').doc('${f.id}').delete()">X</button></td></tr>`).join(''); document.getElementById('osMec').innerHTML='<option value="">Sel. Mecânico</option>'+func.map(f=>`<option value="${f.id}">${f.nome}</option>`).join(''); }
+        document.getElementById('funcionarioForm').addEventListener('submit', e=>{ e.preventDefault(); db.collection('funcionarios').add({nome:document.getElementById('funcNome').value, funcao:document.getElementById('funcFuncao').value}); bootstrap.Modal.getInstance(document.getElementById('funcionarioModal')).hide(); });
+        
+        function renderForn() { document.getElementById('listaFornecedores').innerHTML = forn.map(f=>`<tr><td>${f.nome}</td><td>${f.cat}</td><td><button class="btn btn-sm btn-danger" onclick="db.collection('fornecedores').doc('${f.id}').delete()">X</button></td></tr>`).join(''); document.getElementById('purchForn').innerHTML = forn.map(f=>`<option value="${f.id}">${f.nome}</option>`).join(''); }
+        document.getElementById('fornecedorForm').addEventListener('submit', e=>{ e.preventDefault(); db.collection('fornecedores').add({nome:document.getElementById('fornNome').value, cat:document.getElementById('fornCat').value}); bootstrap.Modal.getInstance(document.getElementById('fornecedorModal')).hide(); });
+
+        // --- SERVICOS (OS + CHECKLIST) ---
+        function loadOsMotos() { const cid = document.getElementById('osCliente').value; document.getElementById('osMoto').innerHTML = mot.filter(m=>m.clienteId===cid).map(m=>`<option value="${m.id}">${m.modelo} (${m.placa})</option>`).join(''); }
+        function addOsPeca() {
+            const div = document.createElement('div'); div.className='d-flex mb-1';
+            div.innerHTML = `<select class="form-select form-select-sm me-1 os-peca-sel" onchange="calcOsTotal()"><option value="">Sel. Peça</option>${est.map(i=>`<option value="${i.id}" data-v="${i.venda}">${i.nome} (R$${i.venda})</option>`).join('')}</select><input type="number" class="form-control form-control-sm me-1 os-peca-qtd" style="width:60px" value="1" min="1" oninput="calcOsTotal()"><button type="button" class="btn btn-sm btn-danger" onclick="this.parentElement.remove(); calcOsTotal()">X</button>`;
+            document.getElementById('osPecasContainer').appendChild(div);
+        }
+        function calcOsTotal() {
+            let mo = parseFloat(document.getElementById('osMaoObra').value)||0;
+            let pTot = Array.from(document.querySelectorAll('.os-peca-sel')).reduce((sum, sel) => {
+                const opt = sel.options[sel.selectedIndex];
+                const q = sel.nextElementSibling.value;
+                return sum + (opt.value ? parseFloat(opt.getAttribute('data-v')) * parseInt(q) : 0);
+            }, 0);
+            document.getElementById('osTotal').value = (mo + pTot).toFixed(2);
+        }
+        function renderServicos() {
+            document.getElementById('listaAgendamentos').innerHTML = serv.map(s=>{
+                const m = mot.find(x=>x.id===s.motoId); const c = cli.find(x=>x.id===s.clienteId);
+                return `<div class="col-md-4"><div class="servico-card status-${s.status.toLowerCase().replace(/\s/g,'-')}"><h6>${c?c.nome:'-'} / ${m?m.placa:'-'}</h6><small>${s.desc}</small><br><strong>Status: ${s.status}</strong><br><small>Total: R$ ${s.total}</small><div class="mt-2 text-end"><button class="btn btn-sm btn-warning" onclick="prepareServicoModal('edit','${s.id}')" data-bs-toggle="modal" data-bs-target="#servicoModal">Editar</button></div></div></div>`;
+            }).join('');
+        }
+        function prepareServicoModal(m, id='') {
+            document.getElementById('servicoForm').reset(); document.getElementById('osPecasContainer').innerHTML='';
+            document.getElementById('osData').value = new Date().toISOString().split('T')[0];
+            if(m==='edit') {
+                const s = serv.find(x=>x.id===id);
+                document.getElementById('osId').value=s.id; document.getElementById('osCliente').value=s.clienteId; loadOsMotos(); document.getElementById('osMoto').value=s.motoId;
+                document.getElementById('osDesc').value=s.desc; document.getElementById('osStatus').value=s.status; document.getElementById('osMec').value=s.mecId||''; document.getElementById('osMaoObra').value=s.maoObra;
+                if(s.pecas) s.pecas.forEach(p => { addOsPeca(); const lastDiv = document.getElementById('osPecasContainer').lastElementChild; lastDiv.querySelector('.os-peca-sel').value = p.id; lastDiv.querySelector('.os-peca-qtd').value = p.qtd; });
+                if(s.check) { document.getElementById('chkComb').value=s.check.comb; document.getElementById('chkPainel').checked=s.check.painel; document.getElementById('chkPneus').checked=s.check.pneus; document.getElementById('chkCare').checked=s.check.care; document.getElementById('chkObs').value=s.check.obs; }
+            } else { document.getElementById('osId').value=''; }
+            calcOsTotal();
+        }
+        document.getElementById('servicoForm').addEventListener('submit', async e => {
+            e.preventDefault();
+            const id = document.getElementById('osId').value;
+            const status = document.getElementById('osStatus').value;
+            const total = parseFloat(document.getElementById('osTotal').value);
+            const pecas = Array.from(document.querySelectorAll('.os-peca-sel')).filter(s=>s.value).map(s=>({id: s.value, qtd: parseInt(s.nextElementSibling.value)}));
+            const data = {
+                clienteId: document.getElementById('osCliente').value, motoId: document.getElementById('osMoto').value, desc: document.getElementById('osDesc').value, status: status, mecId: document.getElementById('osMec').value, data: document.getElementById('osData').value,
+                maoObra: parseFloat(document.getElementById('osMaoObra').value), total: total, pecas: pecas,
+                check: { comb: document.getElementById('chkComb').value, painel: document.getElementById('chkPainel').checked, pneus: document.getElementById('chkPneus').checked, care: document.getElementById('chkCare').checked, obs: document.getElementById('chkObs').value }
+            };
+
+            // Lógica de Estoque e Finança automática para OS Concluída
+            if(status === 'Concluido' && (!id || serv.find(x=>x.id===id).status !== 'Concluido')) {
+                pecas.forEach(p => { const item=est.find(x=>x.id===p.id); if(item) db.collection('estoqueItems').doc(p.id).update({qtd: item.qtd - p.qtd}); });
+                await db.collection('financeiroItems').add({tipo:'Entrada', descricao:`OS: ${data.desc}`, valor: total, data: new Date().toISOString().split('T')[0], originType:'servico', originId:id||'novo'});
             }
+
+            if(id) await db.collection('servicos').doc(id).update(data); else await db.collection('servicos').add(data);
+            bootstrap.Modal.getInstance(document.getElementById('servicoModal')).hide();
         });
 
-        function sendWhatsAppCredentials(id) {
-            const c = clientes.find(i => i.id === id);
-            if (!c || !c.email) { showToast("Cliente sem credenciais configuradas.", "error"); return; }
-            
-            // Substitua esta URL pela URL real onde você hospedará o painel do cliente
-            const urlPainel = "https://seusite.com/cliente.html"; 
-            const msg = `Olá *${c.nome}*! Bem-vindo à Evolution Motors. 🏍️\n\nSeu painel exclusivo para acompanhar serviços e manutenções está pronto!\n\n🌐 *Acesse:* ${urlPainel}\n📧 *Usuário:* ${c.email}\n🔑 *Senha:* ${c.senhaProvisoria}\n\nRecomendamos guardar esta mensagem.`;
-            
-            const link = `https://wa.me/55${c.contato}?text=${encodeURIComponent(msg)}`;
-            window.open(link, '_blank');
+        // --- FINANCEIRO ---
+        function renderFin() {
+            let ent=0, sai=0;
+            document.getElementById('listaFinanceiro').innerHTML = fin.sort((a,b)=>new Date(b.data)-new Date(a.data)).map(f=>{
+                if(f.tipo==='Entrada') ent+=f.valor; else sai+=f.valor;
+                return `<tr class="${f.tipo==='Entrada'?'table-success':'table-danger'}"><td>${f.tipo}</td><td>${f.descricao}</td><td>R$ ${f.valor}</td><td>${f.data}</td><td>${f.originType||'Manual'}</td><td>${!f.originType?`<button class="btn btn-sm btn-danger" onclick="db.collection('financeiroItems').doc('${f.id}').delete()">X</button>`:'Auto'}</td></tr>`;
+            }).join('');
+            document.getElementById('totEnt').innerText = `R$ ${ent.toFixed(2)}`; document.getElementById('totSai').innerText = `R$ ${sai.toFixed(2)}`; document.getElementById('totSal').innerText = `R$ ${(ent-sai).toFixed(2)}`;
         }
+        document.getElementById('finForm').addEventListener('submit', e=>{ e.preventDefault(); db.collection('financeiroItems').add({tipo:document.getElementById('finTipo').value, descricao:document.getElementById('finDesc').value, valor:parseFloat(document.getElementById('finValor').value), data:document.getElementById('finData').value}); bootstrap.Modal.getInstance(document.getElementById('financeiroModal')).hide(); });
 
-        // --- Lógica de Chat Admin ---
-        function renderChatClientList() {
-            const list = document.getElementById('chatClientList');
-            list.innerHTML = '';
-            clientes.forEach(c => {
-                const btn = document.createElement('button');
-                btn.className = 'list-group-item list-group-item-action bg-dark text-white border-secondary';
-                btn.innerHTML = `<i class="bi bi-person-circle me-2"></i>${c.nome}`;
-                btn.onclick = () => openChatWith(c.id, c.nome);
-                list.appendChild(btn);
+        // --- CHAT ADMIN ---
+        function openChatWith(id, nome) {
+            chatActiveClienteId = id; document.getElementById('chatActiveClientName').innerText = nome; document.getElementById('chatInputArea').style.display='flex';
+            const area = document.getElementById('chatMessagesArea'); area.innerHTML='';
+            msg.filter(m=>m.clienteId===id).forEach(m=>{
+                const time = m.timestamp ? new Date(m.timestamp.toDate()).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : '';
+                area.innerHTML+=`<div class="message ${m.sender==='admin'?'admin':'cliente'}">${m.text}<small>${time}</small></div>`;
             });
+            area.scrollTop = area.scrollHeight;
         }
-
-        let unsubscribeChat = null;
-        function openChatWith(clienteId, clienteNome) {
-            chatActiveClienteId = clienteId;
-            document.getElementById('chatActiveClientName').textContent = `Chat: ${clienteNome}`;
-            document.getElementById('chatInputArea').style.display = 'flex';
-            
-            if (unsubscribeChat) unsubscribeChat(); // Remove listener anterior
-            
-            unsubscribeChat = mensagensRef.where('clienteId', '==', clienteId)
-                .orderBy('timestamp', 'asc')
-                .onSnapshot(snapshot => {
-                    const area = document.getElementById('chatMessagesArea');
-                    area.innerHTML = '';
-                    snapshot.forEach(doc => {
-                        const msg = doc.data();
-                        const cssClass = msg.sender === 'admin' ? 'admin' : 'cliente';
-                        const time = msg.timestamp ? new Date(msg.timestamp.toDate()).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '';
-                        area.innerHTML += `
-                            <div class="message ${cssClass}">
-                                ${msg.text}
-                                <small>${time}</small>
-                            </div>
-                        `;
-                    });
-                    area.scrollTop = area.scrollHeight; // Rola pro fim
-                });
-        }
-
         async function enviarMensagemAdmin() {
-            const input = document.getElementById('chatMsgInput');
-            const texto = input.value.trim();
-            if (!texto || !chatActiveClienteId) return;
-
-            try {
-                await mensagensRef.add({
-                    clienteId: chatActiveClienteId,
-                    sender: 'admin',
-                    text: texto,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                input.value = '';
-            } catch (error) {
-                showToast("Erro ao enviar mensagem.", "error");
-            }
+            const txt = document.getElementById('chatMsgInput').value;
+            if(!txt || !chatActiveClienteId) return;
+            await db.collection('mensagens').add({clienteId:chatActiveClienteId, sender:'admin', text:txt, timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+            document.getElementById('chatMsgInput').value='';
         }
 
-        document.addEventListener('DOMContentLoaded', initializeFirebase);
+        document.addEventListener('DOMContentLoaded', initFirebase);
     </script>
 </body>
 </html>

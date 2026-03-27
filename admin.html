@@ -3,81 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Evolution Motors - Painel de Controle</title>
-    
-    <!-- Firebase SDKs (Apenas Banco de Dados) -->
+    <title>Evolution Motors - Painel Admin</title>
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     
-    <!-- Bootstrap CSS & Icons -->
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     
     <style>
-        :root { 
-            --bs-body-bg: #121212; 
-            --bs-dark-card: #1e1e1e; 
-            --bs-accent: #e65100; 
-            --bs-text-main: #ffffff;
+        :root {
+            --bs-body-bg: #212529;
+            --bs-dark-card: #343a40;
+            --bs-accent: #e65100;
         }
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: var(--bs-body-bg); 
-            color: var(--bs-text-main); 
-            min-height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bs-body-bg);
+            color: #ffffff; /* Forçado branco absoluto */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
-        .navbar { background-color: #000000 !important; border-bottom: 2px solid var(--bs-accent); }
-        .navbar-brand { color: var(--bs-accent) !important; font-weight: 900; letter-spacing: 1px; }
-        .navbar-nav .nav-link { color: #ffffff !important; font-weight: 600; padding: 10px 15px; }
-        .navbar-nav .nav-link.active { background-color: var(--bs-accent); border-radius: 8px; color: #fff !important; }
         
-        .card { background-color: var(--bs-dark-card); border: 1px solid #333; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
-        .card-header { background-color: #2c2c2c; color: white; border-bottom: 1px solid #444; border-radius: 12px 12px 0 0; font-weight: bold; font-size: 1.1rem; }
+        /* Forçar todos os textos para branco para evitar fundo escuro com letra preta */
+        h1, h2, h3, h4, h5, h6, p, label, div, span { color: #ffffff; }
+
+        .navbar { background-color: var(--bs-dark-card) !important; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .navbar-brand { font-weight: bold; color: #ffffff !important; }
+        .navbar-nav .nav-link { color: #ffffff !important; }
+        .navbar-nav .nav-link.active { color: var(--bs-accent) !important; border-bottom: 2px solid var(--bs-accent); }
+        .navbar-toggler-icon { filter: invert(1) grayscale(100%) brightness(200%); }
         
-        /* Botões de Alto Contraste */
-        .btn-primary { background-color: var(--bs-accent); border: none; font-weight: bold; color: white; }
-        .btn-primary:hover { background-color: #c94400; }
-        .btn-success { font-weight: bold; color: white; }
-        .btn-danger { font-weight: bold; color: white; }
-        .btn-info { font-weight: bold; color: black; }
-        .btn-warning { font-weight: bold; color: black; }
-        .btn-light { font-weight: bold; color: black; }
+        .container-fluid { padding-top: 20px; flex-grow: 1; }
         
-        /* Formulários e Tabelas de Alto Contraste */
-        .form-control, .form-select { background-color: #2c2c2c; color: #ffffff; border: 1px solid #555; }
-        .form-control:focus, .form-select:focus { background-color: #2c2c2c; color: #ffffff; border-color: var(--bs-accent); box-shadow: none; }
-        .form-label { font-weight: bold; color: #ffffff; }
+        .card {
+            background-color: var(--bs-dark-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.75rem;
+            margin-bottom: 20px;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
+        }
+        .card-header {
+            background-color: var(--bs-accent);
+            color: #ffffff !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-top-left-radius: calc(0.75rem - 1px);
+            border-top-right-radius: calc(0.75rem - 1px);
+        }
         
-        .table { color: #ffffff; margin-top: 15px; }
-        .table thead th { background-color: #000000; color: var(--bs-accent); font-weight: bold; border-bottom: 2px solid #555; }
-        .table tbody tr { border-bottom: 1px solid #333; }
-        .table tbody tr:hover { background-color: #2a2a2a; }
-        .table td { vertical-align: middle; }
+        .btn-primary { background-color: var(--bs-accent); border-color: var(--bs-accent); color: #ffffff !important; font-weight: bold;}
+        .btn-primary:hover { background-color: #c94400; border-color: #c94400; }
+        .btn-light { color: var(--bs-dark-card) !important; font-weight: bold; } /* Botões claros devem ter texto escuro */
         
-        .modal-content { background-color: var(--bs-dark-card); color: #ffffff; border: 1px solid #555; }
-        .modal-header { background-color: #000000; border-bottom: 2px solid var(--bs-accent); }
-        .btn-close { filter: invert(1); }
+        /* Formulários Forçados */
+        .form-control, .form-select {
+            background-color: #495057 !important;
+            color: #ffffff !important;
+            border-color: #6c757d !important;
+        }
+        .form-control:focus, .form-select:focus { border-color: var(--bs-accent) !important; box-shadow: none; }
+        .form-control::placeholder { color: #adb5bd !important; }
         
-        /* Cores de Status da OS */
-        .servico-card { border-left: 6px solid; margin-bottom: 15px; padding: 15px; border-radius: 8px; background-color: #2c2c2c; }
+        /* Tabelas Forçadas */
+        .table { color: #ffffff !important; }
+        .table th, .table td { color: #ffffff !important; border-color: #555; vertical-align: middle;}
+        .table thead th { background-color: #495057 !important; border-bottom: 2px solid #6c757d !important; }
+        .table-striped tbody tr:nth-of-type(odd) { background-color: rgba(255, 255, 255, 0.05) !important; }
+        .table-hover tbody tr:hover { background-color: rgba(255, 255, 255, 0.1) !important; }
+
+        /* Modais */
+        .modal-content { background-color: var(--bs-dark-card); border: 1px solid #6c757d; }
+        .modal-header { background-color: var(--bs-accent); color: #ffffff; border-bottom: none; }
+        .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
+
+        /* OS Cards */
+        .servico-card { 
+            border-left: 5px solid; margin-bottom: 10px; padding: 15px;
+            border-radius: 0.5rem; background-color: #3f464e; 
+        }
         .status-aguardando-orcamento { border-color: #ffc107; } 
-        .status-orcamento-enviado { border-color: #0dcaf0; } 
-        .status-aprovado { border-color: #0d6efd; } 
+        .status-orcamento-enviado { border-color: #0d6efd; } 
+        .status-aprovado { border-color: #28a745; } 
         .status-em-andamento { border-color: #fd7e14; } 
-        .status-concluido { border-color: #198754; }
-        .status-cancelado { border-color: #dc3545; }
-        
-        /* Chat Box */
-        .chat-container { height: 500px; display: flex; flex-direction: column; background-color: #000000; border-radius: 8px; border: 1px solid #333; }
+        .status-concluido { border-color: #198754; } 
+        .status-cancelado { border-color: #dc3545; } 
+
+        /* Chat */
+        .chat-container { height: 450px; display: flex; flex-direction: column; background-color: #212529; border-radius: 0.5rem; border: 1px solid #444;}
         .chat-messages { flex-grow: 1; overflow-y: auto; padding: 15px; }
-        .message { margin-bottom: 15px; max-width: 80%; padding: 12px; border-radius: 12px; font-size: 1rem; }
-        .message.admin { background-color: var(--bs-accent); color: white; align-self: flex-end; margin-left: auto; border-bottom-right-radius: 0; }
-        .message.cliente { background-color: #333333; color: white; align-self: flex-start; margin-right: auto; border-bottom-left-radius: 0; border: 1px solid #555; }
-        .message small { display: block; font-size: 0.75rem; opacity: 0.8; text-align: right; margin-top: 5px; }
-        .chat-input { padding: 15px; background-color: #1e1e1e; border-top: 1px solid #333; display: flex; gap: 10px; }
-        
+        .message { margin-bottom: 10px; max-width: 80%; padding: 10px 15px; border-radius: 15px; }
+        .message.admin { background-color: var(--bs-accent); align-self: flex-end; margin-left: auto; border-bottom-right-radius: 0; }
+        .message.cliente { background-color: #495057; align-self: flex-start; margin-right: auto; border-bottom-left-radius: 0; border: 1px solid #555;}
+        .chat-input { padding: 10px; background-color: #343a40; display: flex; gap: 10px; border-top: 1px solid #444;}
+
         .toast-container { position: fixed; top: 20px; right: 20px; z-index: 1055; }
     </style>
 </head>
@@ -86,93 +106,94 @@
 
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#"><i class="bi bi-tools me-2"></i>EVOLUTION ADMIN</a>
-            <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <a class="navbar-brand" href="#"><i class="bi bi-tools me-2"></i>Evolution Motors - Admin</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAdmin">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link active" href="#" onclick="mudarAba('agendamentos')">Ordens de Serviço</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#" onclick="mudarAba('estoque')">Estoque</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#" onclick="mudarAba('clientesMotos')">Clientes & Motos</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#" onclick="mudarAba('compras')">Compras (NF)</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#" onclick="mudarAba('financeiro')">Financeiro / Caixa</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#" onclick="mudarAba('mensagens')">Chat ao Vivo</a></li>
+            <div class="collapse navbar-collapse" id="navbarNavAdmin">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link active" href="#" onclick="showAdminSection('agendamentos')"><i class="bi bi-calendar-check me-1"></i>Serviços (OS)</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showAdminSection('estoque')"><i class="bi bi-box-seam me-1"></i>Estoque</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showAdminSection('clientesMotos')"><i class="bi bi-people-fill me-1"></i>Clientes & Motos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showAdminSection('funcionarios')"><i class="bi bi-person-badge-fill me-1"></i>Funcionários</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showAdminSection('fornecedores')"><i class="bi bi-truck me-1"></i>Compras (NF)</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showAdminSection('financeiro')"><i class="bi bi-currency-dollar me-1"></i>Financeiro</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showAdminSection('mensagens')"><i class="bi bi-chat-dots me-1"></i>Chat Cliente</a></li>
                 </ul>
-                <button class="btn btn-danger fw-bold" onclick="sairDoSistema()"><i class="bi bi-box-arrow-right"></i> Sair</button>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link text-danger" href="#" onclick="adminLogout()"><i class="bi bi-box-arrow-right me-1"></i> Sair</a></li>
+                </ul>
             </div>
         </div>
     </nav>
 
-    <div class="container-fluid mt-4 flex-grow-1">
+    <div class="container-fluid flex-grow-1">
         
-        <!-- MÓDULO: ORDENS DE SERVIÇO -->
+        <!-- SERVIÇOS (OS) -->
         <section id="agendamentos" class="admin-section">
-            <div class="card border-0">
-                <div class="card-header d-flex justify-content-between align-items-center bg-dark border-bottom border-warning">
-                    <h4 class="mb-0 text-warning"><i class="bi bi-card-checklist me-2"></i> Quadro de Serviços</h4>
-                    <button class="btn btn-warning btn-lg fw-bold" data-bs-toggle="modal" data-bs-target="#modalOS" onclick="prepararModalOS('add')">
-                        <i class="bi bi-plus-lg"></i> CRIAR NOVA O.S.
-                    </button>
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-card-checklist me-2"></i>Gerenciamento de O.S.</h5>
+                    <button class="btn btn-light btn-sm fw-bold" data-bs-toggle="modal" data-bs-target="#servicoModal" onclick="prepareServicoModal('add')">Nova OS</button>
                 </div>
-                <div class="card-body bg-black">
-                    <div class="row" id="containerOS">
-                        <!-- OS renderizadas aqui -->
-                    </div>
+                <div class="card-body">
+                    <div class="row" id="listaAgendamentos"></div>
                 </div>
             </div>
         </section>
 
-        <!-- MÓDULO: ESTOQUE -->
+        <!-- ESTOQUE -->
         <section id="estoque" class="admin-section" style="display:none;">
-            <div class="card border-0">
-                <div class="card-header d-flex justify-content-between align-items-center bg-dark">
-                    <h4 class="mb-0"><i class="bi bi-box-seam me-2"></i> Gestão de Estoque</h4>
-                    <button class="btn btn-primary fw-bold" data-bs-toggle="modal" data-bs-target="#modalPeca" onclick="prepararModalPeca('add')">Cadastrar Peça</button>
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
+                    <h5 class="mb-0"><i class="bi bi-box-seam me-2"></i>Controle de Estoque</h5>
+                    <div>
+                        <button class="btn btn-light btn-sm fw-bold mb-1" data-bs-toggle="modal" data-bs-target="#stockAdjustmentModal" onclick="prepareStockAdjustmentModal('add')">+ Qtd</button>
+                        <button class="btn btn-light btn-sm fw-bold mb-1" data-bs-toggle="modal" data-bs-target="#stockAdjustmentModal" onclick="prepareStockAdjustmentModal('remove')">- Qtd</button>
+                        <button class="btn btn-light btn-sm fw-bold mb-1 ms-2" data-bs-toggle="modal" data-bs-target="#estoqueModal" onclick="prepareEstoqueModal('add')">Nova Peça</button>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle">
-                            <thead>
-                                <tr><th>Img</th><th>Nome da Peça</th><th>Custo (R$)</th><th>Venda (R$)</th><th>Qtd. Disponível</th><th>Ações</th></tr>
-                            </thead>
-                            <tbody id="tabelaEstoque"></tbody>
+                        <table class="table table-hover table-striped">
+                            <thead><tr><th>Img</th><th>Nome</th><th>Custo</th><th>Venda</th><th>Qtd.</th><th>Ações</th></tr></thead>
+                            <tbody id="listaEstoque"></tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- MÓDULO: CLIENTES & MOTOS -->
+        <!-- CLIENTES E MOTOS -->
         <section id="clientesMotos" class="admin-section" style="display:none;">
             <div class="row">
                 <div class="col-lg-6">
-                    <div class="card border-0">
-                        <div class="card-header d-flex justify-content-between align-items-center bg-dark">
-                            <h5 class="mb-0 text-white">Clientes Cadastrados</h5>
-                            <button class="btn btn-primary btn-sm fw-bold" data-bs-toggle="modal" data-bs-target="#modalCliente" onclick="prepararModalCliente('add')">Novo Cliente</button>
+                    <div class="card mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="bi bi-people-fill me-2"></i>Clientes</h5>
+                            <button class="btn btn-light btn-sm fw-bold" data-bs-toggle="modal" data-bs-target="#clienteModal" onclick="prepareClienteModal('add')">Novo Cliente</button>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-hover">
+                                <table class="table table-hover table-striped">
                                     <thead><tr><th>Nome</th><th>Contato</th><th>Acesso Web</th><th>Ações</th></tr></thead>
-                                    <tbody id="tabelaClientes"></tbody>
+                                    <tbody id="listaClientes"></tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-6">
-                    <div class="card border-0">
-                        <div class="card-header d-flex justify-content-between align-items-center bg-dark">
-                            <h5 class="mb-0 text-white">Motos Cadastradas</h5>
-                            <button class="btn btn-primary btn-sm fw-bold" data-bs-toggle="modal" data-bs-target="#modalMoto" onclick="prepararModalMoto('add')">Nova Moto</button>
+                    <div class="card mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="bi bi-motorbike me-2"></i>Motos</h5>
+                            <button class="btn btn-light btn-sm fw-bold" data-bs-toggle="modal" data-bs-target="#motoModal" onclick="prepareMotoModal('add')">Nova Moto</button>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-hover">
-                                    <thead><tr><th>Dono</th><th>Moto/Placa</th><th>KM</th><th>Ações</th></tr></thead>
-                                    <tbody id="tabelaMotos"></tbody>
+                                <table class="table table-hover table-striped">
+                                    <thead><tr><th>Moto/Placa</th><th>Dono</th><th>KM</th><th>Ações</th></tr></thead>
+                                    <tbody id="listaMotos"></tbody>
                                 </table>
                             </div>
                         </div>
@@ -181,99 +202,56 @@
             </div>
         </section>
 
-        <!-- MÓDULO: COMPRAS (ENTRADA DE NF) E FORNECEDORES -->
-        <section id="compras" class="admin-section" style="display:none;">
-            <div class="row">
-                <div class="col-lg-8">
-                    <div class="card border-0 border-warning border-start">
-                        <div class="card-header bg-dark d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0 text-warning"><i class="bi bi-receipt me-2"></i> Lançamento de Compras (NFe)</h5>
-                            <button class="btn btn-warning fw-bold" data-bs-toggle="modal" data-bs-target="#modalCompra" onclick="prepararModalCompra()">Registrar Nova Compra</button>
-                        </div>
-                        <div class="card-body">
-                            <p class="text-white-50">Registre aqui as compras de peças. O sistema irá automaticamente adicionar as quantidades ao seu estoque e lançar a despesa no fluxo de caixa com o número da Nota Fiscal.</p>
-                            <div class="table-responsive">
-                                <table class="table table-hover">
-                                    <thead><tr><th>Data</th><th>NF</th><th>Fornecedor</th><th>Valor Total</th><th>Status</th></tr></thead>
-                                    <tbody id="tabelaHistoricoCompras"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="card border-0">
-                        <div class="card-header bg-dark d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0">Fornecedores</h5>
-                            <button class="btn btn-primary btn-sm fw-bold" data-bs-toggle="modal" data-bs-target="#modalFornecedor">Novo</button>
-                        </div>
-                        <div class="card-body">
-                            <table class="table table-hover">
-                                <thead><tr><th>Empresa</th><th>Ações</th></tr></thead>
-                                <tbody id="tabelaFornecedores"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- MÓDULO: FINANCEIRO E CAIXA -->
-        <section id="financeiro" class="admin-section" style="display:none;">
-            <div class="card border-0">
-                <div class="card-header bg-dark d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0 text-white"><i class="bi bi-cash-coin me-2 text-success"></i> Fluxo de Caixa e Recebimentos</h4>
-                    <button class="btn btn-primary fw-bold" data-bs-toggle="modal" data-bs-target="#modalFinanceiroManual">Lançamento Avulso</button>
+        <!-- FUNCIONARIOS -->
+        <section id="funcionarios" class="admin-section" style="display:none;">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-person-badge-fill me-2"></i>Funcionários</h5>
+                    <button class="btn btn-light btn-sm fw-bold" data-bs-toggle="modal" data-bs-target="#funcionarioModal" onclick="prepareFuncionarioModal('add')">Novo</button>
                 </div>
                 <div class="card-body">
-                    <div class="row mb-4 text-center g-3">
-                        <div class="col-md-4"><div class="p-4 bg-success rounded-3 shadow border border-success"><h5 class="text-white fw-bold mb-2">Entradas</h5><h2 id="caixaEntradas" class="mb-0 fw-bold text-white">R$ 0,00</h2></div></div>
-                        <div class="col-md-4"><div class="p-4 bg-danger rounded-3 shadow border border-danger"><h5 class="text-white fw-bold mb-2">Saídas / Despesas</h5><h2 id="caixaSaidas" class="mb-0 fw-bold text-white">R$ 0,00</h2></div></div>
-                        <div class="col-md-4"><div class="p-4 rounded-3 shadow" style="background-color: #0dcaf0; color: black;"><h5 class="fw-bold mb-2">Saldo Líquido</h5><h2 id="caixaSaldo" class="mb-0 fw-bold">R$ 0,00</h2></div></div>
-                    </div>
-                    
-                    <h5 class="text-warning mt-4 mb-3 border-bottom border-secondary pb-2">Histórico Detalhado</h5>
                     <div class="table-responsive">
-                        <table class="table table-hover table-dark align-middle">
-                            <thead>
-                                <tr>
-                                    <th>Data</th>
-                                    <th>Tipo</th>
-                                    <th>Descrição / Origem</th>
-                                    <th>Valor</th>
-                                    <th>Forma Pagto.</th>
-                                    <th>Nota/Recibo</th>
-                                    <th>Excluir</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabelaFluxoCaixa"></tbody>
+                        <table class="table table-hover table-striped">
+                            <thead><tr><th>Nome</th><th>Função</th><th>Ações</th></tr></thead>
+                            <tbody id="listaFuncionarios"></tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- MÓDULO: CHAT -->
-        <section id="mensagens" class="admin-section" style="display:none;">
-            <div class="row h-100">
-                <div class="col-md-4">
-                    <div class="card h-100 border-0">
-                        <div class="card-header bg-dark"><h5>Lista de Clientes</h5></div>
-                        <div class="list-group list-group-flush bg-black" id="chatListaClientes" style="overflow-y: auto; max-height: 600px;"></div>
+        <!-- COMPRAS NF E FORNECEDORES -->
+        <section id="fornecedores" class="admin-section" style="display:none;">
+            <div class="row">
+                <div class="col-lg-7">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="bi bi-receipt me-2"></i>Lançar Compras (NF)</h5>
+                            <button class="btn btn-light btn-sm fw-bold" data-bs-toggle="modal" data-bs-target="#purchaseModal" onclick="preparePurchaseModal()">Registrar Compra</button>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-white-50 small">Registrar a compra abastece o estoque e lança a despesa automaticamente no Caixa.</p>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead><tr><th>Data</th><th>Fornecedor</th><th>Nº Nota</th><th>Valor</th></tr></thead>
+                                    <tbody id="listaHistoricoCompras"></tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-8">
-                    <div class="card h-100 border-0">
-                        <div class="card-header bg-dark"><h5 id="chatNomeCliente" class="text-warning">Selecione um cliente para conversar</h5></div>
-                        <div class="card-body p-0 d-flex flex-column">
-                            <div class="chat-container border-0 w-100">
-                                <div class="chat-messages" id="chatAreaMensagens">
-                                    <div class="text-center text-white-50 mt-5 pt-5"><i class="bi bi-chat-dots fs-1"></i><br>O chat aparecerá aqui.</div>
-                                </div>
-                                <div class="chat-input" id="chatAreaInput" style="display:none;">
-                                    <input type="text" class="form-control fs-5" id="inputChatAdmin" placeholder="Digite sua mensagem...">
-                                    <button class="btn btn-primary px-4 fw-bold" onclick="enviarChat()"><i class="bi bi-send-fill"></i></button>
-                                </div>
+                <div class="col-lg-5">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Fornecedores</h5>
+                            <button class="btn btn-light btn-sm fw-bold" data-bs-toggle="modal" data-bs-target="#fornecedorModal" onclick="prepareFornecedorModal('add')">Novo</button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-striped">
+                                    <thead><tr><th>Empresa</th><th>Ações</th></tr></thead>
+                                    <tbody id="listaFornecedores"></tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -281,232 +259,118 @@
             </div>
         </section>
 
-    </div>
-
-    <!-- ========================================================================================= -->
-    <!-- MODALS COMPLETOS E DETALHADOS -->
-    <!-- ========================================================================================= -->
-
-    <!-- Modal Ordem de Serviço -->
-    <div class="modal fade" id="modalOS" tabindex="-1">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header bg-warning">
-                    <h4 class="modal-title text-dark fw-bold"><i class="bi bi-tools me-2"></i> Ordem de Serviço</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <!-- FINANCEIRO -->
+        <section id="financeiro" class="admin-section" style="display:none;">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-currency-dollar me-2"></i>Controle Financeiro</h5>
+                    <button class="btn btn-light btn-sm fw-bold" data-bs-toggle="modal" data-bs-target="#financeiroModal" onclick="prepareFinanceiroModal('add')">Lançamento Avulso</button>
                 </div>
-                <div class="modal-body p-4 bg-dark">
-                    <form id="formOS" onsubmit="salvarOS(event)">
-                        <input type="hidden" id="osId">
-                        
-                        <div class="row g-4 mb-4">
-                            <div class="col-md-6">
-                                <label class="form-label text-warning">Cliente</label>
-                                <select class="form-select form-select-lg" id="osCliente" required onchange="filtrarMotosOS()"></select>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label text-warning">Moto Específica</label>
-                                <select class="form-select form-select-lg" id="osMoto" required></select>
-                            </div>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="form-label">Problema Relatado / Serviço Solicitado</label>
-                            <textarea class="form-control" id="osDescricao" rows="3" required placeholder="Descreva o problema..."></textarea>
-                        </div>
-
-                        <div class="row g-3 mb-4 p-3 border border-secondary rounded" style="background-color: #212529;">
-                            <div class="col-md-4">
-                                <label class="form-label text-info fw-bold">Status da O.S.</label>
-                                <select class="form-select border-info text-info fw-bold bg-black" id="osStatus" onchange="verificarStatusOS()">
-                                    <option value="Aguardando Orçamento">Aguardando Orçamento</option>
-                                    <option value="Orçamento Enviado">Orçamento Enviado</option>
-                                    <option value="Aprovado">Aprovado pelo Cliente</option>
-                                    <option value="Em Andamento">Em Andamento</option>
-                                    <option value="Concluido">Concluído (Baixa Estoque/Caixa)</option>
-                                    <option value="Cancelado">Cancelado</option>
-                                </select>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Data de Entrada</label>
-                                <input type="date" class="form-control" id="osData" required>
-                            </div>
-                        </div>
-
-                        <!-- CHECKLIST DE ENTRADA -->
-                        <div class="bg-black p-3 rounded mb-4 border border-secondary">
-                            <h5 class="text-white border-bottom border-secondary pb-2 mb-3"><i class="bi bi-clipboard-check text-success"></i> Checklist de Segurança (Recebimento)</h5>
-                            <div class="row">
-                                <div class="col-md-4 mb-3">
-                                    <label class="form-label">Nível Combustível</label>
-                                    <select class="form-select" id="chkCombustivel">
-                                        <option>Não Verificado</option><option>Reserva</option><option>Meio Tanque</option><option>Cheio</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-8 d-flex align-items-center gap-4 mt-2">
-                                    <div class="form-check form-switch fs-5"><input class="form-check-input" type="checkbox" id="chkPainel"><label class="form-check-label text-white ms-2">Painel/Elétrica OK</label></div>
-                                    <div class="form-check form-switch fs-5"><input class="form-check-input" type="checkbox" id="chkPneus"><label class="form-check-label text-white ms-2">Pneus OK</label></div>
-                                    <div class="form-check form-switch fs-5"><input class="form-check-input" type="checkbox" id="chkCarenagem"><label class="form-check-label text-white ms-2">Carenagem OK</label></div>
-                                </div>
-                            </div>
-                            <div class="mt-2">
-                                <label class="form-label text-white-50">Observações de avarias prévias (Arranhões, quebrados):</label>
-                                <input type="text" class="form-control" id="chkAvarias" placeholder="Ex: Tanque arranhado lado direito...">
-                            </div>
-                        </div>
-
-                        <!-- ORÇAMENTO -->
-                        <div class="bg-black p-4 rounded border border-warning shadow-lg">
-                            <h5 class="text-warning mb-4"><i class="bi bi-calculator"></i> Orçamento e Peças</h5>
-                            
-                            <div class="row align-items-end mb-4">
-                                <div class="col-md-4">
-                                    <label class="form-label fw-bold">Mão de Obra (R$)</label>
-                                    <input type="number" step="0.01" class="form-control form-control-lg bg-dark text-white border-secondary" id="osMaoObra" value="0" oninput="calcularTotalOS()">
-                                </div>
-                            </div>
-
-                            <label class="form-label fw-bold">Peças Inseridas na OS</label>
-                            <div id="containerPecasOS" class="d-flex flex-column gap-2 mb-3"></div>
-                            <button type="button" class="btn btn-outline-info fw-bold mb-4" onclick="adicionarPecaOS()"><i class="bi bi-plus-lg"></i> Adicionar Peça do Estoque</button>
-
-                            <div class="d-flex justify-content-between align-items-center p-3 bg-secondary bg-opacity-25 rounded border border-success">
-                                <h4 class="mb-0 text-white">VALOR TOTAL DA O.S.</h4>
-                                <h2 class="mb-0 text-success fw-bold">R$ <span id="osTotalValor">0.00</span></h2>
-                                <input type="hidden" id="osTotalHidden" value="0">
-                            </div>
-                        </div>
-
-                        <!-- ÁREA DE PAGAMENTO (Só aparece se o status for Concluído) -->
-                        <div id="areaPagamentoOS" class="bg-success bg-opacity-10 p-4 rounded border border-success mt-4 d-none">
-                            <h5 class="text-success fw-bold mb-3"><i class="bi bi-wallet-fill"></i> Dados para o Pagamento e Caixa</h5>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="form-label fw-bold">Forma de Pagamento</label>
-                                    <select class="form-select form-select-lg fw-bold" id="osFormaPagamento" onchange="verificarParcelas()">
-                                        <option value="Dinheiro">Dinheiro Físico</option>
-                                        <option value="Pix">PIX</option>
-                                        <option value="Débito">Cartão de Débito</option>
-                                        <option value="Crédito">Cartão de Crédito</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6" id="divParcelas" style="display:none;">
-                                    <label class="form-label fw-bold">Número de Parcelas</label>
-                                    <select class="form-select form-select-lg" id="osParcelas">
-                                        <option value="1x">1x (À vista no Crédito)</option>
-                                        <option value="2x">2x Sem Juros</option>
-                                        <option value="3x">3x Sem Juros</option>
-                                        <option value="4x">4x Sem Juros</option>
-                                        <option value="5x">5x Sem Juros</option>
-                                        <option value="6x">6x Sem Juros</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <p class="text-success mt-3 mb-0 fw-bold"><i class="bi bi-info-circle"></i> Ao salvar como Concluído, as peças serão baixadas do estoque e o valor entrará no Fluxo de Caixa.</p>
-                        </div>
-
-                        <div class="text-end mt-4 pt-3 border-top border-secondary">
-                            <button type="submit" class="btn btn-warning btn-lg px-5 fw-bold text-dark shadow-lg">SALVAR ORDEM DE SERVIÇO</button>
-                        </div>
-                    </form>
+                <div class="card-body">
+                    <div class="row mb-4 text-center">
+                        <div class="col-md-4"><div class="p-3 mb-3" style="background-color:#198754; border-radius:8px;"><h5>Entradas</h5><h3 id="totEnt" class="mb-0 fw-bold">R$ 0,00</h3></div></div>
+                        <div class="col-md-4"><div class="p-3 mb-3" style="background-color:#dc3545; border-radius:8px;"><h5>Saídas</h5><h3 id="totSai" class="mb-0 fw-bold">R$ 0,00</h3></div></div>
+                        <div class="col-md-4"><div class="p-3 mb-3" style="background-color:#0d6efd; border-radius:8px;"><h5>Saldo</h5><h3 id="totSal" class="mb-0 fw-bold">R$ 0,00</h3></div></div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped">
+                            <thead><tr><th>Tipo</th><th>Descrição</th><th>Valor</th><th>Data</th><th>Pgto/NF</th><th>Origem</th><th>Excluir</th></tr></thead>
+                            <tbody id="listaFinanceiro"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </section>
 
-    <!-- Modal Registrar Compra (Entrada NF) -->
-    <div class="modal fade" id="modalCompra" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header bg-primary">
-                    <h5 class="modal-title fw-bold text-white"><i class="bi bi-box-arrow-in-down"></i> Registrar Compra de Peças (NF)</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <!-- CHAT -->
+        <section id="mensagens" class="admin-section" style="display:none;">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-header"><h5 class="mb-0">Lista de Clientes</h5></div>
+                        <div class="list-group list-group-flush bg-dark" id="chatClientList" style="overflow-y: auto; max-height:500px;"></div>
+                    </div>
                 </div>
-                <div class="modal-body p-4 bg-dark">
-                    <form id="formCompra" onsubmit="salvarCompra(event)">
-                        <div class="row g-3 mb-4">
-                            <div class="col-md-5">
-                                <label class="form-label">Fornecedor</label>
-                                <select class="form-select" id="compraFornecedor" required></select>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Número da NF / Recibo</label>
-                                <input type="text" class="form-control" id="compraNF" placeholder="Ex: NF-12345" required>
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label">Data</label>
-                                <input type="date" class="form-control" id="compraData" required>
+                <div class="col-md-8 mb-3">
+                    <div class="card h-100">
+                        <div class="card-header"><h5 class="mb-0" id="chatActiveClientName">Selecione um cliente</h5></div>
+                        <div class="card-body p-0">
+                            <div class="chat-container border-0">
+                                <div class="chat-messages" id="chatMessagesArea"></div>
+                                <div class="chat-input" style="display:none;" id="chatInputArea">
+                                    <input type="text" class="form-control" id="chatMsgInput" placeholder="Sua resposta...">
+                                    <button class="btn btn-primary" onclick="enviarMensagemAdmin()"><i class="bi bi-send"></i></button>
+                                </div>
                             </div>
                         </div>
-
-                        <h6 class="text-info fw-bold border-bottom border-secondary pb-2 mb-3">Peças Adquiridas nesta Nota</h6>
-                        <div id="containerPecasCompra" class="d-flex flex-column gap-2 mb-3"></div>
-                        <button type="button" class="btn btn-sm btn-outline-info fw-bold mb-4" onclick="adicionarPecaCompra()">+ Lançar Peça da Nota</button>
-
-                        <div class="bg-black p-3 rounded border border-secondary text-end">
-                            <label class="form-label text-white-50">Valor Total da Nota (Será lançado como Despesa)</label>
-                            <div class="input-group justify-content-end">
-                                <span class="input-group-text bg-danger text-white border-danger">R$</span>
-                                <input type="number" step="0.01" class="form-control form-control-lg bg-danger text-white border-danger fw-bold" id="compraValorTotal" style="max-width: 200px;" required readonly>
-                            </div>
-                        </div>
-
-                        <div class="text-end mt-4">
-                            <button type="submit" class="btn btn-primary btn-lg fw-bold">Dar Entrada no Estoque e no Caixa</button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
     </div>
 
-    <!-- Modal Cadastro Peça (Estoque) -->
-    <div class="modal fade" id="modalPeca" tabindex="-1">
+    <!-- ==================== MODALS ==================== -->
+    
+    <!-- Modal Estoque -->
+    <div class="modal fade" id="estoqueModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header"><h5 class="modal-title">Ficha da Peça</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-header"><h5 class="modal-title">Peça/Produto</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
-                    <form id="formPeca" onsubmit="salvarPeca(event)">
-                        <input type="hidden" id="pecaId">
-                        <div class="mb-3"><label class="form-label">Imagem (Upload pelo Cloudinary)</label><input type="file" class="form-control bg-dark" id="pecaImg"></div>
-                        <div class="mb-3"><label class="form-label">Nome da Peça</label><input type="text" class="form-control bg-dark" id="pecaNome" required></div>
+                    <form id="estoqueForm" onsubmit="salvarEstoque(event)">
+                        <input type="hidden" id="estoqueId">
+                        <div class="mb-3"><label>Imagem da Peça</label><input type="file" class="form-control" id="estoqueImagem"><div id="previewEstoqueImg" class="mt-2"></div></div>
+                        <div class="mb-3"><label>Nome</label><input type="text" class="form-control" id="estoqueNome" required></div>
                         <div class="row">
-                            <div class="col-6 mb-3"><label class="form-label">Preço de Custo</label><input type="number" step="0.01" class="form-control bg-dark text-danger fw-bold" id="pecaCusto" required></div>
-                            <div class="col-6 mb-3"><label class="form-label">Preço de Venda</label><input type="number" step="0.01" class="form-control bg-dark text-success fw-bold" id="pecaVenda" required></div>
+                            <div class="col-6 mb-3"><label>Custo (R$)</label><input type="number" step="0.01" class="form-control" id="estoqueCusto" required></div>
+                            <div class="col-6 mb-3"><label>Venda (R$)</label><input type="number" step="0.01" class="form-control" id="estoqueVenda" required></div>
                         </div>
-                        <div class="mb-3"><label class="form-label">Qtd. Atual</label><input type="number" class="form-control bg-dark" id="pecaQtd" required></div>
-                        <button type="submit" class="btn btn-primary w-100 fw-bold">Salvar Peça no Sistema</button>
+                        <div class="mb-3"><label>Qtd Inicial</label><input type="number" class="form-control" id="estoqueQuantidade" required></div>
+                        <button type="submit" class="btn btn-primary w-100">Salvar Peça</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal Ajuste Estoque Rápido -->
-    <div class="modal fade" id="stockAdjustmentModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="stockAdjTitle">Ajuste</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="stockAdjustmentForm" onsubmit="ajustarEstoque(event)"><input type="hidden" id="adjType"><div class="mb-3"><label class="form-label">Escolha a Peça</label><select class="form-select bg-dark" id="adjItem" required></select></div><div class="mb-3"><label class="form-label">Quantidade</label><input type="number" class="form-control bg-dark" id="adjQtd" required min="1"></div><button type="submit" class="btn btn-primary w-100 fw-bold">Confirmar Ajuste</button></form></div></div></div></div>
+    <!-- Ajuste Estoque Rápido -->
+    <div class="modal fade" id="stockAdjustmentModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header"><h5 class="modal-title" id="stockAdjTitle">Ajustar Estoque</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <form id="stockAdjustmentForm" onsubmit="ajustarEstoque(event)">
+                        <input type="hidden" id="adjType">
+                        <div class="mb-3"><label>Peça</label><select class="form-select" id="adjItem" required></select></div>
+                        <div class="mb-3"><label>Quantidade</label><input type="number" class="form-control" id="adjQtd" required min="1"></div>
+                        <button type="submit" class="btn btn-primary w-100">Confirmar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <!-- Modal Cliente (Cria Login Direto) -->
-    <div class="modal fade" id="modalCliente" tabindex="-1">
+    <!-- Modal Cliente -->
+    <div class="modal fade" id="clienteModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header"><h5 class="modal-title">Ficha do Cliente</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
-                    <form id="formCliente" onsubmit="salvarCliente(event)">
+                    <form id="clienteForm" onsubmit="salvarCliente(event)">
                         <input type="hidden" id="clienteId">
-                        <div class="mb-3"><label class="form-label">Nome Completo</label><input type="text" class="form-control bg-dark" id="clienteNome" required></div>
-                        <div class="mb-3"><label class="form-label">WhatsApp (Apenas números com DDD)</label><input type="text" class="form-control bg-dark" id="clienteContato" required placeholder="Ex: 11999999999"></div>
-                        <hr class="border-secondary mt-4 mb-3">
-                        <h6 class="text-info fw-bold mb-3"><i class="bi bi-phone"></i> Acesso ao App do Cliente</h6>
-                        <div class="mb-3"><label class="form-label">E-mail de Login</label><input type="email" class="form-control bg-dark" id="clienteEmail"></div>
-                        <div class="mb-4">
-                            <label class="form-label">Senha Provisória</label>
+                        <div class="mb-3"><label>Nome Completo</label><input type="text" class="form-control" id="clienteNome" required></div>
+                        <div class="mb-3"><label>WhatsApp (Somente números e DDD)</label><input type="text" class="form-control" id="clienteContato" required placeholder="Ex: 11999999999"></div>
+                        <hr class="border-secondary">
+                        <h6 class="text-warning">Login do App do Cliente</h6>
+                        <div class="mb-3"><label>E-mail</label><input type="email" class="form-control" id="clienteEmail" required></div>
+                        <div class="mb-3">
+                            <label>Senha Provisória</label>
                             <div class="input-group">
-                                <input type="text" class="form-control bg-dark" id="clienteSenha">
-                                <button class="btn btn-secondary" type="button" onclick="document.getElementById('clienteSenha').value = Math.random().toString(36).slice(-6)">Gerar</button>
+                                <input type="text" class="form-control" id="clienteSenha" required>
+                                <button class="btn btn-warning fw-bold text-dark" type="button" onclick="document.getElementById('clienteSenha').value=Math.random().toString(36).slice(-6)">Gerar</button>
                             </div>
-                            <small class="text-white-50 d-block mt-1">O cliente usará esses dados no painel dele.</small>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100 fw-bold">Salvar Cliente e Gerar Acesso</button>
+                        <button type="submit" class="btn btn-primary w-100">Salvar Cliente</button>
                     </form>
                 </div>
             </div>
@@ -514,43 +378,225 @@
     </div>
 
     <!-- Modal Moto -->
-    <div class="modal fade" id="modalMoto" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Moto do Cliente</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="formMoto" onsubmit="salvarMoto(event)"><input type="hidden" id="motoId"><div class="mb-3"><label class="form-label">Foto</label><input type="file" class="form-control bg-dark" id="motoImg"></div><div class="mb-3"><label class="form-label">Proprietário</label><select class="form-select bg-dark" id="motoDono" required></select></div><div class="mb-3"><label class="form-label">Modelo e Ano</label><input type="text" class="form-control bg-dark" id="motoModelo" required placeholder="Ex: Honda CG 160 2023"></div><div class="mb-3"><label class="form-label">Placa</label><input type="text" class="form-control bg-dark fw-bold text-uppercase" id="motoPlaca" required></div><div class="mb-3"><label class="form-label">KM Atual</label><input type="number" class="form-control bg-dark" id="motoKm"></div><button type="submit" class="btn btn-primary w-100 fw-bold">Salvar Moto</button></form></div></div></div></div>
+    <div class="modal fade" id="motoModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header"><h5 class="modal-title">Moto do Cliente</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <form id="motoForm" onsubmit="salvarMoto(event)">
+                        <input type="hidden" id="motoId">
+                        <div class="mb-3"><label>Foto</label><input type="file" class="form-control" id="motoImagem"></div>
+                        <div class="mb-3"><label>Dono da Moto</label><select class="form-select" id="motoClienteId" required></select></div>
+                        <div class="mb-3"><label>Modelo / Ano</label><input type="text" class="form-control" id="motoModelo" required></div>
+                        <div class="mb-3"><label>Placa</label><input type="text" class="form-control text-uppercase" id="motoPlaca" required></div>
+                        <div class="mb-3"><label>KM Atual</label><input type="number" class="form-control" id="motoKmAtual"></div>
+                        <button type="submit" class="btn btn-primary w-100">Salvar Moto</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Modal Funcionario -->
-    <div class="modal fade" id="funcionarioModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Membro da Equipe</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form onsubmit="salvarFunc(event)"><div class="mb-3"><label class="form-label">Nome</label><input type="text" class="form-control bg-dark" id="funcNome" required></div><div class="mb-3"><label class="form-label">Cargo</label><input type="text" class="form-control bg-dark" id="funcCargo"></div><button type="submit" class="btn btn-primary w-100 fw-bold">Salvar</button></form></div></div></div></div>
+    <div class="modal fade" id="funcionarioModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header"><h5 class="modal-title">Funcionário</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <form id="funcionarioForm" onsubmit="salvarFuncionario(event)">
+                        <input type="hidden" id="funcionarioId">
+                        <div class="mb-3"><label>Nome</label><input type="text" class="form-control" id="funcNome" required></div>
+                        <div class="mb-3"><label>Função (Mecânico, Gerente...)</label><input type="text" class="form-control" id="funcFuncao"></div>
+                        <button type="submit" class="btn btn-primary w-100">Salvar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Modal Fornecedor -->
-    <div class="modal fade" id="fornecedorModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Novo Fornecedor</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form onsubmit="salvarFornecedor(event)"><div class="mb-3"><label class="form-label">Empresa</label><input type="text" class="form-control bg-dark" id="fornNome" required></div><div class="mb-3"><label class="form-label">Categoria (Ex: Óleo, Peças Honda)</label><input type="text" class="form-control bg-dark" id="fornCat"></div><button type="submit" class="btn btn-primary w-100 fw-bold">Salvar Empresa</button></form></div></div></div></div>
+    <div class="modal fade" id="fornecedorModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header"><h5 class="modal-title">Fornecedor</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <form id="fornecedorForm" onsubmit="salvarFornecedor(event)">
+                        <input type="hidden" id="fornId">
+                        <div class="mb-3"><label>Empresa</label><input type="text" class="form-control" id="fornNome" required></div>
+                        <div class="mb-3"><label>Categoria (Ex: Peças)</label><input type="text" class="form-control" id="fornCat"></div>
+                        <button type="submit" class="btn btn-primary w-100">Salvar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE COMPRAS (ENTRADA DE NF) -->
+    <div class="modal fade" id="purchaseModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header"><h5 class="modal-title">Registrar Compra (Entrada NF)</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <form id="purchaseForm" onsubmit="salvarCompra(event)">
+                        <div class="row">
+                            <div class="col-md-6 mb-3"><label>Fornecedor</label><select class="form-select" id="purchForn" required></select></div>
+                            <div class="col-md-6 mb-3"><label>Número da Nota Fiscal</label><input type="text" class="form-control" id="purchNF" required></div>
+                        </div>
+                        <div class="mb-3"><label>Data da Compra</label><input type="date" class="form-control" id="purchDate" required></div>
+                        
+                        <div class="mb-3 p-3 bg-dark rounded border border-secondary">
+                            <label class="text-warning mb-2 d-block">Peças da Nota (Serão adicionadas ao Estoque)</label>
+                            <div id="purchPecasContainer" class="d-flex flex-column gap-2 mb-2"></div>
+                            <button type="button" class="btn btn-sm btn-outline-info" onclick="addPecaCompra()">+ Inserir Peça da Nota</button>
+                        </div>
+                        
+                        <div class="mb-3"><label>Valor Total da Nota (R$)</label><input type="number" step="0.01" class="form-control fs-5 text-warning fw-bold" id="purchValorTotal" required readonly></div>
+                        <button type="submit" class="btn btn-primary w-100 fs-5 py-2">Registrar e Lançar Despesa</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Modal Financeiro Manual -->
-    <div class="modal fade" id="modalFinanceiroManual" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Lançamento de Caixa</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form onsubmit="salvarFinManual(event)"><div class="mb-3"><label class="form-label">Movimento</label><select class="form-select bg-dark fw-bold" id="finTipo"><option class="text-success" value="Entrada">Receita (Entrada)</option><option class="text-danger" value="Saída">Despesa (Saída)</option></select></div><div class="mb-3"><label class="form-label">Descrição / Motivo</label><input type="text" class="form-control bg-dark" id="finDesc" required placeholder="Ex: Conta de Luz"></div><div class="mb-3"><label class="form-label">Forma de Pagamento</label><select class="form-select bg-dark" id="finPgto"><option>Dinheiro</option><option>Pix</option><option>Cartão Débito</option><option>Cartão Crédito</option><option>Boleto / Transferência</option></select></div><div class="mb-3"><label class="form-label">Valor (R$)</label><input type="number" step="0.01" class="form-control bg-dark fw-bold fs-5" id="finVal" required></div><div class="mb-3"><label class="form-label">Data</label><input type="date" class="form-control bg-dark" id="finData" required></div><button type="submit" class="btn btn-primary w-100 fw-bold">Gravar no Caixa</button></form></div></div></div></div>
+    <div class="modal fade" id="financeiroModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header"><h5 class="modal-title">Lançamento de Caixa</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <form id="finForm" onsubmit="salvarFinanceiro(event)">
+                        <div class="mb-3"><label>Tipo</label><select class="form-select text-white" id="finTipo"><option class="text-success" value="Entrada">Entrada (Receita)</option><option class="text-danger" value="Saída">Saída (Despesa)</option></select></div>
+                        <div class="mb-3"><label>Descrição / Motivo</label><input type="text" class="form-control" id="finDesc" required></div>
+                        <div class="mb-3"><label>Valor (R$)</label><input type="number" step="0.01" class="form-control" id="finValor" required></div>
+                        <div class="mb-3"><label>Data</label><input type="date" class="form-control" id="finData" required></div>
+                        <button type="submit" class="btn btn-primary w-100">Salvar Transação</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <!-- MODAL DA ORDEM DE SERVIÇO (MÁGICA COMPLETA) -->
+    <div class="modal fade" id="servicoModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title text-dark fw-bold"><i class="bi bi-tools me-2"></i> Ordem de Serviço</h5>
+                    <button type="button" class="btn-close text-dark" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="servicoForm" onsubmit="salvarOS(event)">
+                        <input type="hidden" id="osId">
+                        
+                        <ul class="nav nav-tabs mb-3 border-secondary">
+                            <li class="nav-item"><button class="nav-link active text-white" data-bs-toggle="tab" data-bs-target="#osGeral" type="button">Dados da OS</button></li>
+                            <li class="nav-item"><button class="nav-link text-white" data-bs-toggle="tab" data-bs-target="#osChecklist" type="button">Checklist Pátio</button></li>
+                        </ul>
+                        
+                        <div class="tab-content">
+                            <!-- Aba Geral -->
+                            <div class="tab-pane fade show active" id="osGeral">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3"><label>Cliente</label><select class="form-select" id="osCliente" required onchange="loadOsMotos()"></select></div>
+                                    <div class="col-md-6 mb-3"><label>Moto</label><select class="form-select" id="osMoto" required></select></div>
+                                </div>
+                                <div class="mb-3"><label>Serviço a realizar / Problema Relatado</label><textarea class="form-control" id="osDesc" rows="2" required></textarea></div>
+                                <div class="row mb-3">
+                                    <div class="col-md-4"><label>Mecânico</label><select class="form-select" id="osMec"></select></div>
+                                    <div class="col-md-4"><label>Data</label><input type="date" class="form-control" id="osData" required></div>
+                                    <div class="col-md-4">
+                                        <label class="text-warning fw-bold">Status da O.S.</label>
+                                        <select class="form-select text-warning fw-bold border-warning" id="osStatus" onchange="verificarStatusOS()">
+                                            <option value="Aguardando Orçamento">Aguardando Orçamento</option>
+                                            <option value="Orçamento Enviado">Orçamento Enviado</option>
+                                            <option value="Aprovado">Aprovado pelo Cliente</option>
+                                            <option value="Em Andamento">Em Andamento</option>
+                                            <option value="Concluido">Concluído</option>
+                                            <option value="Cancelado">Cancelado</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <hr class="border-secondary">
+                                <div class="bg-dark p-3 rounded border border-secondary mb-3">
+                                    <h6 class="text-white mb-3"><i class="bi bi-calculator me-2"></i>Orçamento e Peças</h6>
+                                    <div class="row align-items-center mb-3">
+                                        <div class="col-md-4"><label>Mão de Obra (R$)</label></div>
+                                        <div class="col-md-8"><input type="number" step="0.01" class="form-control text-white" id="osMaoObra" value="0" oninput="calcOsTotal()"></div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="d-block mb-2 text-white-50">Peças Utilizadas:</label>
+                                        <div id="osPecasContainer" class="d-flex flex-column gap-2 mb-2"></div>
+                                        <button type="button" class="btn btn-sm btn-outline-info" onclick="addOsPeca()">+ Adicionar Peça da OS</button>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center p-2 rounded" style="background-color: rgba(25, 135, 84, 0.2); border: 1px solid #198754;">
+                                        <h5 class="mb-0 text-white">Total Orçamento:</h5>
+                                        <h3 class="mb-0 text-success fw-bold">R$ <span id="osTotalVisual">0.00</span></h3>
+                                        <input type="hidden" id="osTotal" value="0">
+                                    </div>
+                                </div>
+                                
+                                <!-- AREA DE PAGAMENTO: APARECE APENAS EM CONCLUÍDO -->
+                                <div id="areaPagamento" style="display:none;" class="mt-4 p-3 border border-success rounded" style="background-color: rgba(25, 135, 84, 0.1);">
+                                    <h5 class="text-success mb-3 fw-bold"><i class="bi bi-wallet2 me-2"></i>Dados do Pagamento e Caixa</h5>
+                                    <p class="small text-white-50 mb-3">Ao salvar como Concluído, o sistema baixa as peças do estoque e joga esse valor no caixa.</p>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label>Forma de Pagamento</label>
+                                            <select class="form-select" id="osFormaPagamento" onchange="verificarParcelas()">
+                                                <option value="Dinheiro">Dinheiro</option>
+                                                <option value="Pix">PIX</option>
+                                                <option value="Cartão de Débito">Cartão de Débito</option>
+                                                <option value="Cartão de Crédito">Cartão de Crédito</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6" id="divParcelas" style="display:none;">
+                                            <label>Número de Parcelas</label>
+                                            <select class="form-select" id="osParcelas">
+                                                <option value="1x">1x (À vista no Crédito)</option>
+                                                <option value="2x">2x</option>
+                                                <option value="3x">3x</option>
+                                                <option value="4x">4x</option>
+                                                <option value="5x">5x</option>
+                                                <option value="6x">6x</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Aba Checklist -->
+                            <div class="tab-pane fade" id="osChecklist">
+                                <div class="p-4 bg-dark rounded border border-secondary">
+                                    <h6 class="text-warning mb-4"><i class="bi bi-shield-check"></i> Análise de Recebimento</h6>
+                                    <div class="mb-3"><label>Nível de Combustível</label><select class="form-select" id="chkComb"><option>Não Verificado</option><option>Reserva</option><option>Meio Tanque</option><option>Cheio</option></select></div>
+                                    <div class="row mt-4 mb-4">
+                                        <div class="col-md-4"><div class="form-check form-switch fs-5"><input class="form-check-input bg-secondary border-0" type="checkbox" id="chkPainel"><label class="ms-2 text-white">Painel/Elétrica OK</label></div></div>
+                                        <div class="col-md-4"><div class="form-check form-switch fs-5"><input class="form-check-input bg-secondary border-0" type="checkbox" id="chkPneus"><label class="ms-2 text-white">Pneus OK</label></div></div>
+                                        <div class="col-md-4"><div class="form-check form-switch fs-5"><input class="form-check-input bg-secondary border-0" type="checkbox" id="chkCare"><label class="ms-2 text-white">Carenagem OK</label></div></div>
+                                    </div>
+                                    <div class="mt-3"><label>Avarias notadas na chegada (Riscos, Quebras):</label><textarea class="form-control" id="chkObs" rows="3"></textarea></div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-warning w-100 mt-4 py-3 fs-5 fw-bold text-dark">GRAVAR ORDEM DE SERVIÇO</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
+    
     <script>
-        // =========================================================================
-        // PROTEÇÃO DE SESSÃO
-        // =========================================================================
+        // Trava para evitar entrar direto na URL
         if (sessionStorage.getItem('evolution_admin_auth') !== 'true') {
-            if (window.location.protocol === 'blob:') {
-                console.log("Preview detectado. Acesso liberado para testes visuais.");
-            } else {
-                window.location.href = 'index.html';
+            if (window.location.protocol !== 'blob:') {
+                window.location.replace('index.html');
             }
         }
 
-        function sairDoSistema() {
-            sessionStorage.removeItem('evolution_admin_auth');
-            if (window.location.protocol === 'blob:') {
-                alert("Logout efetuado com sucesso! (No sistema real, você volta para a tela de login).");
-            } else {
-                window.location.href = 'index.html';
-            }
-        }
-
-        // =========================================================================
-        // FIREBASE (SOMENTE FIRESTORE) & CLOUDINARY
-        // =========================================================================
+        // As Suas Chaves Intactas
         const firebaseConfig = {
             apiKey: "AIzaSyAq6gEJlUGuzJmrNf-lVY0cqdOWsJ9xNeo",
             authDomain: "evolution-179d0.firebaseapp.com",
@@ -561,520 +607,242 @@
         };
         const cloudinaryConfig = { cloudName: "dmuvm1o6m", uploadPreset: "evolution" };
 
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        let db; 
+        let estoqueLista=[], clientesLista=[], motosLista=[], funcionariosLista=[], fornecedoresLista=[], servicosLista=[], financeiroLista=[], mensagensLista=[];
+        let chatActiveClienteId = null; 
 
-        // Arrays de Memória
-        let dbEstoque = [], dbClientes = [], dbMotos = [], dbFuncionarios = [], dbFornecedores = [], dbServicos = [], dbFinanceiro = [], dbMensagens = [];
-        let idClienteConversaAtiva = null;
-
-        // UI Helper
         function showToast(msg, type='info') {
             const tc = document.getElementById('toastContainer');
             const bg = type==='error'?'bg-danger':(type==='success'?'bg-success':'bg-primary');
             const id = 't'+Date.now();
-            tc.insertAdjacentHTML('beforeend', `<div id="${id}" class="toast align-items-center text-white ${bg} border-0 show shadow-lg" role="alert"><div class="d-flex"><div class="toast-body fw-bold">${msg}</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div>`);
-            setTimeout(() => document.getElementById(id)?.remove(), 5000);
+            tc.insertAdjacentHTML('beforeend', `<div id="${id}" class="toast align-items-center text-white ${bg} border-0 show shadow p-2" role="alert"><div class="d-flex"><div class="toast-body fw-bold">${msg}</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div>`);
+            setTimeout(() => document.getElementById(id)?.remove(), 4000);
         }
 
-        function mudarAba(idAba) {
-            document.querySelectorAll('.admin-section').forEach(el => el.style.display = 'none');
-            document.getElementById(idAba).style.display = 'block';
-            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
-            try { event.target.classList.add('active'); } catch(e){}
+        function adminLogout() {
+            sessionStorage.removeItem('evolution_admin_auth');
+            if (window.location.protocol === 'blob:') {
+                alert("Logout. Voltando para o login. (Na prévia precisa rodar o outro arquivo manualmente).");
+            } else {
+                window.location.replace('index.html');
+            }
         }
 
-        async function uploadImagem(file) {
-            if(!file || !cloudinaryConfig.cloudName) return null;
-            const fd = new FormData(); fd.append('file', file); fd.append('upload_preset', cloudinaryConfig.uploadPreset);
+        // INIT DO BANCO (SEM AUTH)
+        document.addEventListener('DOMContentLoaded', () => {
             try {
-                const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/image/upload`, { method: 'POST', body: fd });
-                return (await res.json()).secure_url;
-            } catch(e) { console.error(e); return null; }
-        }
+                if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+                db = firebase.firestore();
+                setupListeners();
+                showAdminSection('agendamentos');
+            } catch (err) { showToast("Erro DB", "error"); }
+        });
 
-        // =========================================================================
-        // MOTOR DE DADOS EM TEMPO REAL
-        // =========================================================================
-        function ligarMotorDados() {
-            db.collection('estoqueItems').onSnapshot(s => { dbEstoque = s.docs.map(d=>({id:d.id,...d.data()})); renderEstoque(); });
-            db.collection('clientes').onSnapshot(s => { dbClientes = s.docs.map(d=>({id:d.id,...d.data()})); renderClientes(); });
-            db.collection('motos').onSnapshot(s => { dbMotos = s.docs.map(d=>({id:d.id,...d.data()})); renderMotos(); });
-            db.collection('funcionarios').onSnapshot(s => { dbFuncionarios = s.docs.map(d=>({id:d.id,...d.data()})); renderFuncionarios(); });
-            db.collection('fornecedores').onSnapshot(s => { dbFornecedores = s.docs.map(d=>({id:d.id,...d.data()})); renderFornecedores(); });
-            db.collection('servicos').onSnapshot(s => { dbServicos = s.docs.map(d=>({id:d.id,...d.data()})); renderOS(); });
-            db.collection('financeiroItems').onSnapshot(s => { dbFinanceiro = s.docs.map(d=>({id:d.id,...d.data()})); renderCaixa(); });
-            db.collection('mensagens').orderBy('timestamp','asc').onSnapshot(s => { 
-                dbMensagens = s.docs.map(d=>({id:d.id,...d.data()})); 
-                if(idClienteConversaAtiva) abrirChat(idClienteConversaAtiva, document.getElementById('chatNomeCliente').innerText); 
+        function safeListen(col, cb) { try { db.collection(col).onSnapshot(cb); } catch(e){} }
+        
+        function setupListeners() {
+            safeListen('estoqueItems', s => { estoqueLista = s.docs.map(d => ({id:d.id,...d.data()})); renderEstoque(); });
+            safeListen('clientes', s => { clientesLista = s.docs.map(d => ({id:d.id,...d.data()})); renderClientes(); });
+            safeListen('motos', s => { motosLista = s.docs.map(d => ({id:d.id,...d.data()})); renderMotos(); });
+            safeListen('funcionarios', s => { funcionariosLista = s.docs.map(d => ({id:d.id,...d.data()})); renderFunc(); });
+            safeListen('fornecedores', s => { fornecedoresLista = s.docs.map(d => ({id:d.id,...d.data()})); renderForn(); });
+            safeListen('servicos', s => { servicosLista = s.docs.map(d => ({id:d.id,...d.data()})); renderServicos(); });
+            safeListen('financeiroItems', s => { financeiroLista = s.docs.map(d => ({id:d.id,...d.data()})); renderFin(); });
+            safeListen('mensagens', s => { 
+                mensagensLista = s.docs.map(d => ({id:d.id,...d.data()})).sort((a,b)=>a.timestamp - b.timestamp); 
+                if(chatActiveClienteId) openChatWith(chatActiveClienteId, document.getElementById('chatActiveClientName').innerText); 
             });
         }
 
-        // =========================================================================
-        // ESTOQUE
-        // =========================================================================
+        function showAdminSection(id) { 
+            document.querySelectorAll('.admin-section').forEach(s => s.style.display='none'); 
+            document.getElementById(id).style.display='block'; 
+            document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active')); 
+            try { event.target.classList.add('active'); } catch(e){} 
+        }
+
+        async function uploadCloudinary(file) {
+            if (!cloudinaryConfig.cloudName) return null;
+            const fd = new FormData(); fd.append('file', file); fd.append('upload_preset', cloudinaryConfig.uploadPreset);
+            try { const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/image/upload`, {method:'POST',body:fd}); return (await res.json()).secure_url || null; } catch(e) { return null; }
+        }
+
+        // ======================= ESTOQUE =======================
         function renderEstoque() {
-            const table = document.getElementById('tabelaEstoque');
-            const selAdj = document.getElementById('adjItem');
-            table.innerHTML = ''; selAdj.innerHTML = '<option value="">Escolha a peça</option>';
-            dbEstoque.forEach(p => {
-                const img = p.img ? `<img src="${p.img}" width="40" height="40" class="rounded object-fit-cover">` : '<i class="bi bi-box fs-3 text-secondary"></i>';
-                const colorQtd = p.qtd > 3 ? 'text-success' : 'text-danger';
-                table.innerHTML += `<tr><td>${img}</td><td class="fw-bold">${p.nome}</td><td>R$ ${p.custo.toFixed(2)}</td><td class="fw-bold text-info">R$ ${p.venda.toFixed(2)}</td><td class="fw-bold fs-5 ${colorQtd}">${p.qtd}</td><td><button class="btn btn-sm btn-outline-warning" onclick="prepararModalPeca('edit','${p.id}')" data-bs-toggle="modal" data-bs-target="#modalPeca"><i class="bi bi-pencil"></i></button> <button class="btn btn-sm btn-outline-danger" onclick="if(confirm('Excluir peça?')) db.collection('estoqueItems').doc('${p.id}').delete()"><i class="bi bi-trash"></i></button></td></tr>`;
-                selAdj.innerHTML += `<option value="${p.id}">${p.nome} (Tem: ${p.qtd})</option>`;
-            });
+            document.getElementById('listaEstoque').innerHTML = estoqueLista.map(i=>`<tr><td>${i.img?`<img src="${i.img}" width="40" style="border-radius:4px;">`:'-'}</td><td class="fw-bold">${i.nome}</td><td>R$ ${i.custo.toFixed(2)}</td><td class="text-success fw-bold">R$ ${i.venda.toFixed(2)}</td><td class="fw-bold">${i.qtd}</td><td><button class="btn btn-sm btn-warning text-dark fw-bold" onclick="prepareEstoqueModal('edit','${i.id}')" data-bs-toggle="modal" data-bs-target="#estoqueModal"><i class="bi bi-pencil"></i></button> <button class="btn btn-sm btn-danger" onclick="if(confirm('Excluir?')) db.collection('estoqueItems').doc('${i.id}').delete()"><i class="bi bi-trash"></i></button></td></tr>`).join('');
+            document.getElementById('adjItem').innerHTML = '<option value="">Peça...</option>' + estoqueLista.map(i=>`<option value="${i.id}">${i.nome} (Estoque: ${i.qtd})</option>`).join('');
         }
-
-        function prepararModalPeca(mode, id='') {
-            document.getElementById('formPeca').reset();
-            document.getElementById('pecaId').value = '';
-            if(mode === 'edit') {
-                const p = dbEstoque.find(x=>x.id===id);
-                document.getElementById('pecaId').value = p.id;
-                document.getElementById('pecaNome').value = p.nome;
-                document.getElementById('pecaCusto').value = p.custo;
-                document.getElementById('pecaVenda').value = p.venda;
-                document.getElementById('pecaQtd').value = p.qtd;
-            }
+        function prepareEstoqueModal(m, id='') {
+            document.getElementById('estoqueForm').reset(); document.getElementById('previewEstoqueImg').innerHTML='';
+            if(m==='edit'){ const i=estoqueLista.find(x=>x.id===id); document.getElementById('estoqueId').value=i.id; document.getElementById('estoqueNome').value=i.nome; document.getElementById('estoqueCusto').value=i.custo; document.getElementById('estoqueVenda').value=i.venda; document.getElementById('estoqueQuantidade').value=i.qtd; if(i.img) document.getElementById('previewEstoqueImg').innerHTML=`<img src="${i.img}" width="80" class="mt-2 rounded">`; } else document.getElementById('estoqueId').value='';
         }
-
-        async function salvarPeca(e) {
-            e.preventDefault();
-            const id = document.getElementById('pecaId').value;
-            const file = document.getElementById('pecaImg').files[0];
-            let url = file ? await uploadImagem(file) : '';
-            
-            const d = { nome: document.getElementById('pecaNome').value, custo: parseFloat(document.getElementById('pecaCusto').value), venda: parseFloat(document.getElementById('pecaVenda').value), qtd: parseInt(document.getElementById('pecaQtd').value) };
-            
-            if(id) {
-                if(!url) url = dbEstoque.find(x=>x.id===id).img;
-                d.img = url;
-                await db.collection('estoqueItems').doc(id).update(d);
-                showToast("Peça atualizada.");
-            } else {
-                d.img = url;
-                await db.collection('estoqueItems').add(d);
-                showToast("Peça cadastrada com sucesso!", "success");
-            }
-            bootstrap.Modal.getInstance(document.getElementById('modalPeca')).hide();
+        async function salvarEstoque(e) {
+            e.preventDefault(); const id=document.getElementById('estoqueId').value; const f=document.getElementById('estoqueImagem').files[0]; let img = f ? await uploadCloudinary(f) : '';
+            const d = {nome:document.getElementById('estoqueNome').value, custo:parseFloat(document.getElementById('estoqueCusto').value), venda:parseFloat(document.getElementById('estoqueVenda').value), qtd:parseInt(document.getElementById('estoqueQuantidade').value)};
+            if(id) { const o=estoqueLista.find(x=>x.id===id); if(!img) img=o.img; d.img=img; await db.collection('estoqueItems').doc(id).update(d); showToast("Peça Editada!"); } else { d.img=img; await db.collection('estoqueItems').add(d); showToast("Peça Criada!", "success"); } bootstrap.Modal.getInstance(document.getElementById('estoqueModal')).hide();
         }
-
-        function prepararStockAdjustmentModal(t) { 
-            document.getElementById('adjType').value=t; 
-            document.getElementById('stockAdjTitle').innerHTML=t==='add'?'Entrada Avulsa':'Baixa Avulsa (Perda/Uso Interno)'; 
-        }
-
+        function prepareStockAdjustmentModal(t) { document.getElementById('adjType').value=t; document.getElementById('stockAdjTitle').innerText=t==='add'?'Dar Entrada (+ Qtd)':'Dar Baixa Manual (- Qtd)'; }
         async function ajustarEstoque(e) {
-            e.preventDefault();
-            const id = document.getElementById('adjItem').value;
-            const tipo = document.getElementById('adjType').value;
-            const q = parseInt(document.getElementById('adjQtd').value);
-            const p = dbEstoque.find(x=>x.id===id);
-            
-            if(tipo === 'remove' && p.qtd < q) return showToast("Estoque insuficiente para baixar tudo isso.", "error");
-            
-            await db.collection('estoqueItems').doc(id).update({ qtd: tipo==='add'? p.qtd+q : p.qtd-q });
-            showToast("Ajuste concluído.");
-            bootstrap.Modal.getInstance(document.getElementById('stockAdjustmentModal')).hide();
+            e.preventDefault(); const id=document.getElementById('adjItem').value; const t=document.getElementById('adjType').value; const q=parseInt(document.getElementById('adjQtd').value); const i=estoqueLista.find(x=>x.id===id);
+            if(!id) return; if(t==='remove' && i.qtd<q) return showToast("Estoque não possui tudo isso para baixar.", "error"); await db.collection('estoqueItems').doc(id).update({qtd: t==='add'?i.qtd+q:i.qtd-q}); bootstrap.Modal.getInstance(document.getElementById('stockAdjustmentModal')).hide(); showToast("Ajuste concluído.");
         }
 
-        // =========================================================================
-        // CLIENTES E MOTOS
-        // =========================================================================
+        // ======================= CLIENTES E MOTOS =======================
         function renderClientes() {
-            document.getElementById('tabelaClientes').innerHTML = dbClientes.map(c => `<tr><td class="fw-bold">${c.nome}</td><td>${c.contato}</td><td><span class="badge bg-secondary">${c.email}</span></td><td><button class="btn btn-sm btn-success" onclick="window.open('https://wa.me/55${c.contato}?text=${encodeURIComponent(`Olá ${c.nome}! Acesse sua garagem virtual: https://tsvalencio-ia.github.io/EvolutionMotor/clientes/projeto_evolution_24.html \\nE-mail: ${c.email}\\nSenha: ${c.senhaProv}`)}', '_blank')"><i class="bi bi-whatsapp"></i></button> <button class="btn btn-sm btn-outline-warning" onclick="prepararModalCliente('edit','${c.id}')" data-bs-toggle="modal" data-bs-target="#modalCliente"><i class="bi bi-pencil"></i></button></td></tr>`).join('');
-            
-            const ops = '<option value="">Selecione o Cliente...</option>' + dbClientes.map(c=>`<option value="${c.id}">${c.nome}</option>`).join('');
-            document.getElementById('osCliente').innerHTML = ops;
-            document.getElementById('motoClienteId').innerHTML = ops;
-            
-            document.getElementById('chatListaClientes').innerHTML = dbClientes.map(c=>`<button class="list-group-item list-group-item-action bg-black text-white border-secondary fs-6 py-3" onclick="abrirChat('${c.id}', '${c.nome}')"><i class="bi bi-person-circle text-primary me-2"></i> ${c.nome}</button>`).join('');
+            document.getElementById('listaClientes').innerHTML = clientesLista.map(c=>`<tr><td class="fw-bold">${c.nome}</td><td>${c.contato}</td><td>${c.email||'<span class="text-white-50">Sem Acesso</span>'}</td><td><button class="btn btn-sm btn-success fw-bold" onclick="window.open('https://wa.me/55${c.contato}?text=${encodeURIComponent(`Olá ${c.nome}! Acompanhe sua moto:\\nLink: https://tsvalencio-ia.github.io/EvolutionMotor/clientes/projeto_evolution_24.html \\nUsuário: ${c.email}\\nSenha: ${c.senhaProv}`)}','_blank')" title="Mandar App"><i class="bi bi-whatsapp"></i> Mandar App</button> <button class="btn btn-sm btn-warning text-dark fw-bold" onclick="prepareClienteModal('edit','${c.id}')" data-bs-toggle="modal" data-bs-target="#clienteModal"><i class="bi bi-pencil"></i></button></td></tr>`).join('');
+            const ops='<option value="">Selecione o Cliente</option>'+clientesLista.map(c=>`<option value="${c.id}">${c.nome}</option>`).join(''); document.getElementById('osCliente').innerHTML=ops; document.getElementById('motoClienteId').innerHTML=ops;
+            document.getElementById('chatClientList').innerHTML = clientesLista.map(c=>`<button class="list-group-item list-group-item-action bg-dark text-white border-secondary fs-5" onclick="openChatWith('${c.id}', '${c.nome}')"><i class="bi bi-person-circle text-primary me-2"></i> ${c.nome}</button>`).join('');
         }
-
-        function prepararModalCliente(m, id='') {
-            document.getElementById('formCliente').reset();
-            if(m==='edit') {
-                const c = dbClientes.find(x=>x.id===id);
-                document.getElementById('clienteId').value = c.id;
-                document.getElementById('clienteNome').value = c.nome;
-                document.getElementById('clienteContato').value = c.contato;
-                document.getElementById('clienteEmail').value = c.email;
-                document.getElementById('clienteSenha').value = c.senhaProv;
-            } else {
-                document.getElementById('clienteId').value = '';
-                document.getElementById('clienteSenha').value = Math.random().toString(36).slice(-6);
-            }
+        function prepareClienteModal(m, id='') {
+            document.getElementById('clienteForm').reset(); if(m==='edit'){ const c=clientesLista.find(x=>x.id===id); document.getElementById('clienteId').value=c.id; document.getElementById('clienteNome').value=c.nome; document.getElementById('clienteContato').value=c.contato; document.getElementById('clienteEmail').value=c.email||''; document.getElementById('clienteSenha').value=c.senhaProv||''; } else { document.getElementById('clienteId').value=''; document.getElementById('clienteSenha').value=Math.random().toString(36).slice(-6); }
         }
-
         async function salvarCliente(e) {
-            e.preventDefault();
-            const id = document.getElementById('clienteId').value;
-            const d = { nome: document.getElementById('clienteNome').value, contato: document.getElementById('clienteContato').value, email: document.getElementById('clienteEmail').value, senhaProv: document.getElementById('clienteSenha').value };
-            
-            if(id) { await db.collection('clientes').doc(id).update(d); showToast("Cliente atualizado."); } 
-            else { await db.collection('clientes').add(d); showToast("Cliente criado e acesso liberado!", "success"); }
-            
-            bootstrap.Modal.getInstance(document.getElementById('modalCliente')).hide();
+            e.preventDefault(); const id=document.getElementById('clienteId').value; const d={nome:document.getElementById('clienteNome').value, contato:document.getElementById('clienteContato').value, email:document.getElementById('clienteEmail').value, senhaProv:document.getElementById('clienteSenha').value};
+            if(id) await db.collection('clientes').doc(id).update(d); else await db.collection('clientes').add(d); bootstrap.Modal.getInstance(document.getElementById('clienteModal')).hide(); showToast("Cliente salvo!");
         }
 
-        function renderMotos() {
-            document.getElementById('tabelaMotos').innerHTML = dbMotos.map(m => {
-                const dono = dbClientes.find(c=>c.id===m.clienteId);
-                return `<tr><td>${m.img?`<img src="${m.img}" width="50" class="rounded">`:'<i class="bi bi-bicycle fs-3"></i>'}</td><td>${dono?dono.nome:'-'}</td><td class="fw-bold">${m.modelo}<br><span class="text-info">${m.placa}</span></td><td>${m.km||'0'}</td><td><button class="btn btn-sm btn-outline-danger" onclick="if(confirm('Apagar moto?')) db.collection('motos').doc('${m.id}').delete()"><i class="bi bi-trash"></i></button></td></tr>`;
+        function renderMotos() { document.getElementById('listaMotos').innerHTML = motosLista.map(m=>{const d=clientesLista.find(x=>x.id===m.clienteId); return `<tr><td>${m.img?`<img src="${m.img}" width="40" class="rounded">`:'-'}</td><td>${d?d.nome:'-'}</td><td class="fw-bold text-info">${m.modelo} / ${m.placa}</td><td>${m.km||'-'}</td><td><button class="btn btn-sm btn-danger" onclick="if(confirm('Apagar Moto?')) db.collection('motos').doc('${m.id}').delete()"><i class="bi bi-trash"></i></button></td></tr>`; }).join(''); }
+        async function salvarMoto(e) { e.preventDefault(); const f=document.getElementById('motoImagem').files[0]; let i=f?await uploadCloudinary(f):''; await db.collection('motos').add({clienteId:document.getElementById('motoClienteId').value, modelo:document.getElementById('motoModelo').value, placa:document.getElementById('motoPlaca').value.toUpperCase(), km:document.getElementById('motoKmAtual').value, img:i}); bootstrap.Modal.getInstance(document.getElementById('motoModal')).hide(); showToast("Moto Cadastrada!");}
+
+        // ======================= RH E FORNECEDOR =======================
+        function renderFunc() { document.getElementById('listaFuncionarios').innerHTML = funcionariosLista.map(f=>`<tr><td class="fw-bold">${f.nome}</td><td>${f.funcao}</td><td><button class="btn btn-sm btn-danger" onclick="db.collection('funcionarios').doc('${f.id}').delete()"><i class="bi bi-trash"></i></button></td></tr>`).join(''); document.getElementById('osMec').innerHTML='<option value="">Sem mecânico alocado</option>'+funcionariosLista.map(f=>`<option value="${f.id}">${f.nome}</option>`).join(''); }
+        function salvarFuncionario(e) { e.preventDefault(); db.collection('funcionarios').add({nome:document.getElementById('funcNome').value, funcao:document.getElementById('funcFuncao').value}); bootstrap.Modal.getInstance(document.getElementById('funcionarioModal')).hide(); }
+
+        function renderForn() { document.getElementById('listaFornecedores').innerHTML = fornecedoresLista.map(f=>`<tr><td class="fw-bold">${f.nome}</td><td>${f.cat}</td><td><button class="btn btn-sm btn-danger" onclick="db.collection('fornecedores').doc('${f.id}').delete()"><i class="bi bi-trash"></i></button></td></tr>`).join(''); document.getElementById('purchForn').innerHTML='<option value="">Selecione...</option>'+fornecedoresLista.map(f=>`<option value="${f.id}">${f.nome}</option>`).join(''); }
+        function salvarFornecedor(e) { e.preventDefault(); db.collection('fornecedores').add({nome:document.getElementById('fornNome').value, cat:document.getElementById('fornCat').value}); bootstrap.Modal.getInstance(document.getElementById('fornecedorModal')).hide(); }
+
+        // ======================= COMPRA DE PEÇAS (NF E CAIXA) =======================
+        function preparePurchaseModal() { 
+            document.getElementById('purchaseForm').reset(); 
+            document.getElementById('purchDate').value=new Date().toISOString().split('T')[0]; 
+            document.getElementById('purchPecasContainer').innerHTML=''; 
+            document.getElementById('purchValorTotal').value='0.00';
+            addPecaCompra();
+        }
+        function addPecaCompra() {
+            const div = document.createElement('div'); div.className='d-flex mb-2 gap-2 bg-dark p-2 border border-secondary rounded align-items-center';
+            div.innerHTML=`<select class="form-select form-select-sm p-comp-sel bg-dark text-white"><option value="">Selecionar Peça...</option>${estoqueLista.map(i=>`<option value="${i.id}">${i.nome}</option>`).join('')}</select><input type="number" class="form-control form-control-sm p-comp-qtd bg-dark text-white" style="width:70px" placeholder="Qtd" min="1"><input type="number" step="0.01" class="form-control form-control-sm p-comp-val bg-dark text-white" style="width:90px" placeholder="R$ Lote" oninput="calcCompra()"><button type="button" class="btn btn-sm btn-danger" onclick="this.parentElement.remove(); calcCompra()"><i class="bi bi-x"></i></button>`;
+            document.getElementById('purchPecasContainer').appendChild(div);
+        }
+        function calcCompra() {
+            let t=0; document.querySelectorAll('.p-comp-val').forEach(i=>{ t+=parseFloat(i.value)||0; });
+            document.getElementById('purchValorTotal').value = t.toFixed(2);
+        }
+        async function salvarCompra(e) { 
+            e.preventDefault(); 
+            const forId = document.getElementById('purchForn').value; if(!forId) return;
+            const forNome = fornecedoresLista.find(x=>x.id===forId).nome; 
+            const nf = document.getElementById('purchNF').value;
+            const dt = document.getElementById('purchDate').value;
+            const val = parseFloat(document.getElementById('purchValorTotal').value);
+
+            let hasPeca = false;
+            const blocos = document.querySelectorAll('#purchPecasContainer > div');
+            for(let b of blocos) {
+                const idSel = b.querySelector('.p-comp-sel').value;
+                const qtdComprada = parseInt(b.querySelector('.p-comp-qtd').value);
+                if(idSel && qtdComprada > 0) {
+                    hasPeca = true;
+                    const pecaAtual = estoqueLista.find(x=>x.id===idSel);
+                    if(pecaAtual) await db.collection('estoqueItems').doc(idSel).update({qtd: pecaAtual.qtd + qtdComprada});
+                }
+            }
+            if(!hasPeca) return showToast("Adicione pelo menos uma peça e quantidade.", "error");
+
+            await db.collection('financeiroItems').add({tipo:'Saída', descricao:`NF: ${nf} - ${forNome}`, valor:val, data:dt, originType:'compra_nf', nf_numero: nf}); 
+            
+            // Visual feedback locally immediately
+            document.getElementById('listaHistoricoCompras').innerHTML += `<tr><td>${dt}</td><td>${forNome}</td><td class="text-warning fw-bold">${nf}</td><td class="text-danger fw-bold">R$ ${val.toFixed(2)}</td></tr>`;
+            
+            bootstrap.Modal.getInstance(document.getElementById('purchaseModal')).hide(); 
+            showToast("Nota registrada! Estoque e caixa atualizados.", "success");
+        }
+
+        // ======================= A MÁGICA DA O.S. =======================
+        function loadOsMotos() { const cid = document.getElementById('osCliente').value; document.getElementById('osMoto').innerHTML='<option value="">Sel. Moto</option>'+motosLista.filter(m=>m.clienteId===cid).map(m=>`<option value="${m.id}">${m.modelo} (${m.placa})</option>`).join(''); }
+        
+        function addOsPeca() {
+            const div = document.createElement('div'); div.className='d-flex mb-2 gap-2 bg-dark p-2 border border-secondary rounded align-items-center';
+            div.innerHTML=`<select class="form-select form-select-sm os-peca-sel bg-dark text-white" onchange="calcOsTotal()"><option value="">Peça do Estoque...</option>${estoqueLista.map(i=>`<option value="${i.id}" data-p="${i.venda}">${i.nome} - R$ ${i.venda.toFixed(2)} (Qtd: ${i.qtd})</option>`).join('')}</select><input type="number" class="form-control form-control-sm os-peca-qtd bg-dark text-white text-center" style="width:70px" value="1" min="1" oninput="calcOsTotal()"><button type="button" class="btn btn-sm btn-danger" onclick="this.parentElement.remove(); calcOsTotal()"><i class="bi bi-x"></i></button>`;
+            document.getElementById('osPecasContainer').appendChild(div);
+        }
+        
+        function calcOsTotal() {
+            let mao = parseFloat(document.getElementById('osMaoObra').value)||0;
+            let pecs = 0;
+            document.querySelectorAll('.os-peca-sel').forEach(s=>{ 
+                if(s.value) pecs += parseFloat(s.options[s.selectedIndex].getAttribute('data-p'))*parseInt(s.nextElementSibling.value); 
+            });
+            const t = mao + pecs;
+            document.getElementById('osTotal').value = t;
+            document.getElementById('osTotalVisual').innerText = t.toFixed(2);
+        }
+        
+        function verificarStatusOS() {
+            const s = document.getElementById('osStatus').value;
+            if(s === 'Concluido') document.getElementById('areaPagamento').style.display = 'block';
+            else document.getElementById('areaPagamento').style.display = 'none';
+        }
+        
+        function verificarParcelas() {
+            if(document.getElementById('osFormaPagamento').value === 'Cartão de Crédito') document.getElementById('divParcelas').style.display = 'block';
+            else document.getElementById('divParcelas').style.display = 'none';
+        }
+
+        function renderServicos() {
+            if(servicosLista.length===0){ document.getElementById('listaAgendamentos').innerHTML='<div class="col-12 text-center text-white-50 p-5 fs-5">O quadro de Ordens de Serviço está vazio.</div>'; return; }
+            document.getElementById('listaAgendamentos').innerHTML = servicosLista.sort((a,b)=>new Date(b.data)-new Date(a.data)).map(os=>{
+                const c=clientesLista.find(x=>x.id===os.clienteId); const m=motosLista.find(x=>x.id===os.motoId); const sCls=`status-${os.status.toLowerCase().replace(/\s/g,'-')}`;
+                return `<div class="col-md-6 col-lg-4"><div class="servico-card ${sCls} h-100 d-flex flex-column shadow"><div class="d-flex justify-content-between"><h6 class="text-white mb-0">${c?c.nome:'Excluído'}</h6><span class="badge bg-dark">${new Date(os.data).toLocaleDateString('pt-BR')}</span></div><p class="text-info fw-bold my-2 border-bottom border-secondary pb-1">${m?m.placa:'-'} (${m?m.modelo:'-'})</p><p class="text-white-50 small flex-grow-1">"${os.desc}"</p><div class="bg-dark p-2 text-center rounded border border-secondary mt-2 mb-3"><span class="d-block text-warning fw-bold mb-1">${os.status}</span><span class="fs-5 text-success fw-bold">R$ ${os.total.toFixed(2)}</span></div><button class="btn btn-outline-light btn-sm fw-bold w-100" onclick="prepareServicoModal('edit','${os.id}')" data-bs-toggle="modal" data-bs-target="#servicoModal">Abrir O.S.</button></div></div>`;
             }).join('');
         }
 
-        async function salvarMoto(e) {
-            e.preventDefault();
-            const f = document.getElementById('motoImg').files[0];
-            const img = f ? await uploadImagem(f) : '';
-            await db.collection('motos').add({ clienteId: document.getElementById('motoClienteId').value, modelo: document.getElementById('motoModelo').value, placa: document.getElementById('motoPlaca').value.toUpperCase(), km: document.getElementById('motoKmAtual').value, img: img });
-            bootstrap.Modal.getInstance(document.getElementById('modalMoto')).hide();
-            showToast("Moto registrada.");
-        }
-
-        // =========================================================================
-        // FUNCIONÁRIOS E FORNECEDORES
-        // =========================================================================
-        function renderFuncionarios() {
-            document.getElementById('tabelaFuncionarios').innerHTML = dbFuncionarios.map(f=>`<tr><td class="fw-bold">${f.nome}</td><td>${f.funcao}</td><td><button class="btn btn-sm btn-danger" onclick="db.collection('funcionarios').doc('${f.id}').delete()"><i class="bi bi-trash"></i></button></td></tr>`).join('');
-            document.getElementById('osMec').innerHTML = '<option value="">Sem alocação</option>' + dbFuncionarios.map(f=>`<option value="${f.id}">${f.nome}</option>`).join('');
-        }
-        function salvarFunc(e) { e.preventDefault(); db.collection('funcionarios').add({nome: document.getElementById('funcNome').value, funcao: document.getElementById('funcCargo').value}); bootstrap.Modal.getInstance(document.getElementById('funcionarioModal')).hide(); }
-
-        function renderFornecedores() {
-            document.getElementById('tabelaFornecedores').innerHTML = dbFornecedores.map(f=>`<tr><td class="fw-bold">${f.nome}</td><td>${f.cat}</td><td><button class="btn btn-sm btn-danger" onclick="db.collection('fornecedores').doc('${f.id}').delete()"><i class="bi bi-trash"></i></button></td></tr>`).join('');
-            document.getElementById('compraFornecedor').innerHTML = '<option value="">Fornecedor...</option>' + dbFornecedores.map(f=>`<option value="${f.id}">${f.nome}</option>`).join('');
-        }
-        function salvarFornecedor(e) { e.preventDefault(); db.collection('fornecedores').add({nome: document.getElementById('fornNome').value, cat: document.getElementById('fornCat').value}); bootstrap.Modal.getInstance(document.getElementById('fornecedorModal')).hide(); }
-
-        // COMPRAS DE NOTA FISCAL INTELIGENTE
-        function prepararModalCompra() {
-            document.getElementById('formCompra').reset();
-            document.getElementById('compraData').value = new Date().toISOString().split('T')[0];
-            document.getElementById('containerPecasCompra').innerHTML = '';
-            document.getElementById('compraValorTotal').value = '0.00';
-            adicionarPecaCompra();
-        }
-
-        function adicionarPecaCompra() {
-            const div = document.createElement('div');
-            div.className = 'd-flex gap-2 p-2 bg-black rounded border border-secondary align-items-center mb-2 item-compra';
-            div.innerHTML = `
-                <select class="form-select comp-peca bg-dark text-white border-secondary" required><option value="">Peça do Estoque...</option>${dbEstoque.map(p=>`<option value="${p.id}">${p.nome}</option>`).join('')}</select>
-                <input type="number" class="form-control comp-qtd bg-dark text-white border-secondary" placeholder="Qtd" required min="1" style="width: 80px;">
-                <input type="number" step="0.01" class="form-control comp-custo bg-dark text-white border-secondary" placeholder="R$ Unit" required style="width: 100px;" oninput="calcularTotalCompra()">
-                <button type="button" class="btn btn-danger" onclick="this.parentElement.remove(); calcularTotalCompra()"><i class="bi bi-x"></i></button>
-            `;
-            document.getElementById('containerPecasCompra').appendChild(div);
-        }
-
-        function calcularTotalCompra() {
-            let total = 0;
-            document.querySelectorAll('.item-compra').forEach(el => {
-                const q = parseInt(el.querySelector('.comp-qtd').value) || 0;
-                const c = parseFloat(el.querySelector('.comp-custo').value) || 0;
-                total += (q * c);
-            });
-            document.getElementById('compraValorTotal').value = total.toFixed(2);
-        }
-
-        async function salvarCompra(e) {
-            e.preventDefault();
-            const fornecedorId = document.getElementById('compraFornecedor').value;
-            const nomeForn = dbFornecedores.find(f=>f.id===fornecedorId).nome;
-            const nf = document.getElementById('compraNF').value;
-            const total = parseFloat(document.getElementById('compraValorTotal').value);
-            const dataStr = document.getElementById('compraData').value;
-
-            const itens = [];
-            document.querySelectorAll('.item-compra').forEach(el => {
-                const pecaId = el.querySelector('.comp-peca').value;
-                if(pecaId) itens.push({ id: pecaId, qtd: parseInt(el.querySelector('.comp-qtd').value) });
-            });
-
-            if(itens.length === 0) return showToast("Adicione peças da nota.", "error");
-
-            // 1. Atualiza Estoque
-            for (let i of itens) {
-                const pEst = dbEstoque.find(x=>x.id===i.id);
-                if(pEst) await db.collection('estoqueItems').doc(i.id).update({ qtd: pEst.qtd + i.qtd });
-            }
-
-            // 2. Lança Financeiro
-            await db.collection('financeiroItems').add({
-                tipo: 'Saída', 
-                descricao: `Nota Fiscal: ${nf} - Fornecedor: ${nomeForn}`, 
-                valor: total, 
-                data: dataStr, 
-                originType: 'NF de Compra',
-                numeroNota: nf
-            });
-
-            // Opcional: Salvar no histórico de compras para a tabela (não crucial pro funil, mas bom visualmente)
-            const rowHist = `<tr><td>${new Date(dataStr).toLocaleDateString('pt-BR')}</td><td class="fw-bold text-warning">${nf}</td><td>${nomeForn}</td><td class="text-danger fw-bold">R$ ${total.toFixed(2)}</td><td><span class="badge bg-success">Lançado Estoque/Caixa</span></td></tr>`;
-            document.getElementById('tabelaHistoricoCompras').insertAdjacentHTML('afterbegin', rowHist);
-
-            bootstrap.Modal.getInstance(document.getElementById('modalCompra')).hide();
-            showToast("Compra lançada! Estoque abastecido e caixa debitado.", "success");
-        }
-
-        // =========================================================================
-        // ORDEM DE SERVIÇO (OS) - CORAÇÃO DA OFICINA
-        // =========================================================================
-        function loadOsMotos() {
-            const cid = document.getElementById('osCliente').value;
-            document.getElementById('osMoto').innerHTML = '<option value="">Selecione Moto do Cliente</option>' + dbMotos.filter(m=>m.clienteId===cid).map(m=>`<option value="${m.id}">${m.modelo} (${m.placa})</option>`).join('');
-        }
-
-        function addOsPeca() {
-            const div = document.createElement('div');
-            div.className = 'd-flex mb-2 gap-2 p-2 bg-dark rounded border border-secondary item-os-peca align-items-center';
-            div.innerHTML = `
-                <select class="form-select bg-black text-white border-secondary os-peca-sel" onchange="calcOsTotal()"><option value="">Peça do Estoque...</option>${dbEstoque.map(i=>`<option value="${i.id}" data-p="${i.venda}">${i.nome} - R$ ${i.venda.toFixed(2)} (Qtd: ${i.qtd})</option>`).join('')}</select>
-                <input type="number" class="form-control bg-black text-white border-secondary os-peca-qtd text-center" style="width:70px" value="1" min="1" oninput="calcOsTotal()">
-                <button type="button" class="btn btn-danger" onclick="this.parentElement.remove(); calcOsTotal()"><i class="bi bi-x-lg"></i></button>
-            `;
-            document.getElementById('osPecasContainer').appendChild(div);
-        }
-
-        function calcOsTotal() {
-            let mao = parseFloat(document.getElementById('osMaoObra').value) || 0;
-            let pcs = 0;
-            document.querySelectorAll('.item-os-peca').forEach(el => {
-                const s = el.querySelector('.os-peca-sel');
-                if(s.value) { pcs += parseFloat(s.options[s.selectedIndex].getAttribute('data-p')) * parseInt(el.querySelector('.os-peca-qtd').value); }
-            });
-            const total = mao + pcs;
-            document.getElementById('osTotalValor').innerText = total.toFixed(2);
-            document.getElementById('osTotalHidden').value = total.toFixed(2);
-        }
-
-        function verificarStatusOS() {
-            const status = document.getElementById('osStatus').value;
-            const divPgto = document.getElementById('areaPagamentoOS');
-            if(status === 'Concluido') {
-                divPgto.classList.remove('d-none');
-            } else {
-                divPgto.classList.add('d-none');
-            }
-        }
-
-        function verificarParcelas() {
-            const forma = document.getElementById('osFormaPagamento').value;
-            const divParc = document.getElementById('divParcelas');
-            if(forma === 'Crédito') divParc.style.display = 'block';
-            else divParc.style.display = 'none';
-        }
-
-        function renderOS() {
-            const cont = document.getElementById('containerOS');
-            cont.innerHTML = '';
-            if(dbServicos.length === 0) { cont.innerHTML = '<div class="text-center w-100 py-5 text-white-50"><i class="bi bi-clipboard-x display-1"></i><p class="mt-3 fs-5">Nenhuma Ordem de Serviço na oficina.</p></div>'; return; }
+        function prepareServicoModal(m, id='') {
+            document.getElementById('servicoForm').reset(); document.getElementById('osPecasContainer').innerHTML=''; document.getElementById('osData').value=new Date().toISOString().split('T')[0];
+            const t=document.querySelector('#servicoForm .nav-link[data-bs-target="#osGeral"]'); if(t){try{new bootstrap.Tab(t).show()}catch(e){}}
+            document.getElementById('areaPagamento').style.display = 'none';
+            document.getElementById('osTotalVisual').innerText = "0.00"; document.getElementById('osTotal').value = 0;
             
-            dbServicos.sort((a,b)=>new Date(b.data)-new Date(a.data)).forEach(os => {
-                const c = dbClientes.find(x=>x.id===os.clienteId);
-                const m = dbMotos.find(x=>x.id===os.motoId);
-                const cls = `status-${os.status.toLowerCase().replace(/\s/g,'-')}`;
-                
-                let icon = 'bi-wrench';
-                if(os.status==='Concluido') icon='bi-check-circle-fill text-success';
-                
-                cont.innerHTML += `
-                <div class="col-md-6 col-lg-4">
-                    <div class="servico-card ${cls} d-flex flex-column h-100 position-relative shadow-lg">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h6 class="mb-0 fw-bold text-white"><i class="bi bi-person text-white-50"></i> ${c?c.nome:'S/ Cadastro'}</h6>
-                            <span class="badge bg-black border border-secondary">${new Date(os.data).toLocaleDateString('pt-BR')}</span>
-                        </div>
-                        <p class="text-info fw-bold mb-2 pb-2 border-bottom border-secondary"><i class="bi bi-motorcycle"></i> ${m?m.placa:'-'} (${m?m.modelo:'-'})</p>
-                        <p class="small text-white flex-grow-1 mb-3" style="opacity: 0.85;">"${os.desc}"</p>
-                        <div class="mt-auto bg-black p-3 rounded mb-3 border border-secondary text-center">
-                            <span class="d-block fw-bold text-warning mb-1"><i class="${icon}"></i> ${os.status.toUpperCase()}</span>
-                            <span class="fs-4 text-success fw-bold">R$ ${os.total.toFixed(2)}</span>
-                        </div>
-                        <button class="btn btn-outline-light fw-bold w-100" onclick="prepararModalOS('edit','${os.id}')" data-bs-toggle="modal" data-bs-target="#modalOS">Abrir O.S.</button>
-                    </div>
-                </div>`;
-            });
-        }
-
-        function prepararModalOS(m, id='') {
-            document.getElementById('formOS').reset();
-            document.getElementById('osPecasContainer').innerHTML = '';
-            document.getElementById('osData').value = new Date().toISOString().split('T')[0];
-            document.getElementById('osTotalValor').innerText = "0.00";
-            document.getElementById('osTotalHidden').value = 0;
-            verificarStatusOS();
-            verificarParcelas();
-            
-            try { new bootstrap.Tab(document.querySelector('#formOS .nav-link[data-bs-target="#osGeral"]')).show(); } catch(e){}
-
-            if(m === 'edit') {
-                const os = dbServicos.find(x=>x.id===id);
-                document.getElementById('osId').value = os.id;
-                document.getElementById('osCliente').value = os.clienteId;
-                loadOsMotos();
-                document.getElementById('osMoto').value = os.motoId;
-                document.getElementById('osDescricao').value = os.desc;
-                document.getElementById('osStatus').value = os.status;
-                document.getElementById('osMec').value = os.mecId || '';
-                document.getElementById('osMaoObra').value = os.maoObra;
-                
-                if(os.pecas) {
-                    os.pecas.forEach(p => {
-                        addOsPeca();
-                        const selects = document.querySelectorAll('.os-peca-sel');
-                        const lastSel = selects[selects.length - 1];
-                        lastSel.value = p.id;
-                        lastSel.nextElementSibling.value = p.qtd;
-                    });
-                }
-                
-                if(os.check) {
-                    document.getElementById('chkCombustivel').value = os.check.comb;
-                    document.getElementById('chkPainel').checked = os.check.painel;
-                    document.getElementById('chkPneus').checked = os.check.pneus;
-                    document.getElementById('chkCarenagem').checked = os.check.care;
-                    document.getElementById('chkAvarias').value = os.check.obs || '';
-                }
-                
-                calcOsTotal();
-                verificarStatusOS();
-            } else {
-                document.getElementById('osId').value = '';
-            }
+            if(m==='edit') {
+                const os=servicosLista.find(x=>x.id===id); document.getElementById('osId').value=os.id; document.getElementById('osCliente').value=os.clienteId; loadOsMotos(); document.getElementById('osMoto').value=os.motoId; document.getElementById('osDesc').value=os.desc; document.getElementById('osStatus').value=os.status; document.getElementById('osMec').value=os.mecId||''; document.getElementById('osMaoObra').value=os.maoObra||0;
+                if(os.pecas){ os.pecas.forEach(p=>{ addOsPeca(); const ss=document.querySelectorAll('.os-peca-sel'); ss[ss.length-1].value=p.id; ss[ss.length-1].nextElementSibling.value=p.qtd; }); }
+                if(os.check){ document.getElementById('chkComb').value=os.check.comb; document.getElementById('chkPainel').checked=os.check.painel; document.getElementById('chkPneus').checked=os.check.pneus; document.getElementById('chkCare').checked=os.check.care; document.getElementById('chkObs').value=os.check.obs||''; }
+                verificarStatusOS(); verificarParcelas();
+            } else document.getElementById('osId').value='';
+            calcOsTotal();
         }
 
         async function salvarOS(e) {
-            e.preventDefault();
-            const id = document.getElementById('osId').value;
-            const status = document.getElementById('osStatus').value;
-            const total = parseFloat(document.getElementById('osTotalHidden').value);
+            e.preventDefault(); const id=document.getElementById('osId').value; const sts=document.getElementById('osStatus').value; const tot=parseFloat(document.getElementById('osTotal').value); const arrP=[]; document.querySelectorAll('.os-peca-sel').forEach(s=>{ if(s.value) arrP.push({id:s.value, qtd:parseInt(s.nextElementSibling.value)}); });
+            const d = { clienteId:document.getElementById('osCliente').value, motoId:document.getElementById('osMoto').value, desc:document.getElementById('osDesc').value, status:sts, mecId:document.getElementById('osMec').value, data:document.getElementById('osData').value, maoObra:parseFloat(document.getElementById('osMaoObra').value), total:tot, pecas:arrP, check:{comb:document.getElementById('chkComb').value, painel:document.getElementById('chkPainel').checked, pneus:document.getElementById('chkPneus').checked, care:document.getElementById('chkCare').checked, obs:document.getElementById('chkObs').value} };
             
-            const arrPecas = [];
-            document.querySelectorAll('.item-os-peca').forEach(el => {
-                const idSel = el.querySelector('.os-peca-sel').value;
-                if(idSel) arrPecas.push({ id: idSel, qtd: parseInt(el.querySelector('.os-peca-qtd').value) });
-            });
-
-            const osObj = {
-                clienteId: document.getElementById('osCliente').value, motoId: document.getElementById('osMoto').value,
-                desc: document.getElementById('osDescricao').value, status: status, mecId: document.getElementById('osMec').value,
-                data: document.getElementById('osData').value, maoObra: parseFloat(document.getElementById('osMaoObra').value),
-                total: total, pecas: arrPecas,
-                check: {
-                    comb: document.getElementById('chkCombustivel').value, painel: document.getElementById('chkPainel').checked,
-                    pneus: document.getElementById('chkPneus').checked, care: document.getElementById('chkCarenagem').checked,
-                    obs: document.getElementById('chkAvarias').value
-                }
-            };
-
-            // LÓGICA DE COBRANÇA E ESTOQUE (Executa apenas na conclusão pela 1ª vez)
-            if (status === 'Concluido') {
-                const osAntiga = dbServicos.find(x=>x.id===id);
-                if (!id || (osAntiga && osAntiga.status !== 'Concluido')) {
-                    
-                    // Validação de Estoque
-                    let erroEstoque = false;
-                    arrPecas.forEach(p => { const es = dbEstoque.find(x=>x.id===p.id); if(!es || es.qtd < p.qtd) erroEstoque = true; });
-                    if(erroEstoque) return showToast("Atenção! Você não tem as peças solicitadas em estoque para baixar. Ajuste o estoque e tente finalizar.", "error");
-
-                    // Baixa Estoque
-                    arrPecas.forEach(p => { const es = dbEstoque.find(x=>x.id===p.id); db.collection('estoqueItems').doc(p.id).update({qtd: es.qtd - p.qtd}); });
-                    
-                    // Lança Financeiro Recebimento Cartão/Dinheiro
-                    const forma = document.getElementById('osFormaPagamento').value;
-                    const parc = document.getElementById('osParcelas').value;
-                    let descCaixa = `OS Finalizada - Pagamento via ${forma}`;
-                    if(forma === 'Crédito') descCaixa += ` (${parc})`;
-
-                    await db.collection('financeiroItems').add({
-                        tipo: 'Entrada', descricao: descCaixa, valor: total,
-                        data: new Date().toISOString().split('T')[0], originType: 'OS Recebimento', formaPagamento: forma, parcelas: forma==='Crédito'?parc:'1x'
-                    });
-                    
-                    showToast("OS Concluída! Peças baixadas e valor no Caixa.", "success");
-                }
-            }
-
-            if(id) await db.collection('servicos').doc(id).update(osObj); else await db.collection('servicos').add(osObj);
-            bootstrap.Modal.getInstance(document.getElementById('modalOS')).hide();
-            if(status !== 'Concluido') showToast("Ordem de serviço salva com sucesso.");
-        }
-
-        // =========================================================================
-        // FINANCEIRO GERAL
-        // =========================================================================
-        function renderCaixa() {
-            let ent = 0, sai = 0;
-            document.getElementById('listaFinanceiro').innerHTML = dbFinanceiro.sort((a,b)=>new Date(b.data)-new Date(a.data)).map(t => {
-                if(t.tipo==='Entrada') ent += t.valor; else sai += t.valor;
+            // SE FOR CONCLUÍDO
+            if (sts==='Concluido' && (!id || servicosLista.find(x=>x.id===id).status!=='Concluido')) {
+                // Valida se tem peça no estoque
+                let erro = false; arrP.forEach(p=>{ const es=estoqueLista.find(x=>x.id===p.id); if(!es || es.qtd < p.qtd) erro = true; });
+                if(erro) return showToast("Estoque insuficiente para as peças utilizadas nesta OS.", "error");
                 
-                let fpStr = t.formaPagamento ? `<span class="badge bg-secondary">${t.formaPagamento} ${t.parcelas ? t.parcelas : ''}</span>` : '';
-                let nfStr = t.numeroNota ? `<span class="badge bg-warning text-dark border border-warning">NF: ${t.numeroNota}</span>` : '';
+                // Baixa Estoque
+                arrP.forEach(p=>{ const es=estoqueLista.find(x=>x.id===p.id); db.collection('estoqueItems').doc(p.id).update({qtd:es.qtd-p.qtd}); });
                 
-                return `
-                <tr class="${t.tipo==='Entrada'?'table-success text-success':'table-danger text-danger'}">
-                    <td class="fw-bold"><i class="bi ${t.tipo==='Entrada'?'bi-arrow-up-right':'bi-arrow-down-left'}"></i> ${t.tipo}</td>
-                    <td class="text-white">${t.descricao} ${fpStr} ${nfStr}</td>
-                    <td class="fw-bold fs-6">R$ ${t.valor.toFixed(2)}</td>
-                    <td class="text-white-50">${new Date(t.data).toLocaleDateString('pt-BR')}</td>
-                    <td><span class="badge bg-dark border border-secondary text-white-50">${t.originType || 'Avulso'}</span></td>
-                    <td>${!t.originType ? `<button class="btn btn-sm btn-outline-danger" onclick="if(confirm('Excluir transação manual?')) db.collection('financeiroItems').doc('${t.id}').delete()"><i class="bi bi-trash"></i></button>` : `<i class="bi bi-lock text-white-50" title="Automático do Sistema"></i>`}</td>
-                </tr>`;
-            }).join('');
-
-            document.getElementById('totEnt').innerText = `R$ ${ent.toFixed(2)}`;
-            document.getElementById('totSai').innerText = `R$ ${sai.toFixed(2)}`;
-            document.getElementById('totSal').innerText = `R$ ${(ent-sai).toFixed(2)}`;
-            if(ent-sai < 0) document.getElementById('totSal').classList.add('text-danger'); else document.getElementById('totSal').classList.remove('text-danger');
-        }
-
-        async function salvarFinManual(e) {
-            e.preventDefault();
-            const tipo = document.getElementById('finTipo').value;
-            const fPgt = document.getElementById('finPgto').value;
-            await db.collection('financeiroItems').add({
-                tipo: tipo, descricao: document.getElementById('finDesc').value, valor: parseFloat(document.getElementById('finValor').value),
-                data: document.getElementById('finData').value, formaPagamento: fPgt
-            });
-            bootstrap.Modal.getInstance(document.getElementById('modalFinanceiroManual')).hide();
-            showToast("Caixa atualizado!");
-        }
-
-        // =========================================================================
-        // CHAT DE MENSAGENS COM CLIENTE
-        // =========================================================================
-        function abrirChat(id, nm) {
-            idClienteConversaAtiva = id;
-            document.getElementById('chatNomeCliente').innerHTML = `<i class="bi bi-chat-fill me-2 text-primary"></i> ${nm}`;
-            document.getElementById('chatAreaInput').style.display = 'flex';
-            
-            const area = document.getElementById('chatAreaMensagens');
-            area.innerHTML = '';
-            
-            const msgs = dbMensagens.filter(m=>m.clienteId === id);
-            if(msgs.length === 0) {
-                area.innerHTML = '<div class="text-center text-white-50 mt-5 pt-5"><i class="bi bi-envelope-open fs-1"></i><p>Envie a primeira mensagem. Ficará visível no App do cliente.</p></div>';
-            } else {
-                msgs.forEach(m => {
-                    const hora = m.timestamp ? new Date(m.timestamp.toDate()).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : '';
-                    area.innerHTML += `<div class="message ${m.sender==='admin'?'admin':'cliente shadow'}">${m.text}<small>${hora}</small></div>`;
-                });
-                area.scrollTop = area.scrollHeight;
+                // Lança Caixa com informações do Cartão/Parcelas
+                const pgto = document.getElementById('osFormaPagamento').value;
+                const parc = pgto === 'Cartão de Crédito' ? ` - ${document.getElementById('osParcelas').value}` : '';
+                await db.collection('financeiroItems').add({tipo:'Entrada', descricao:`O.S. da Moto: ${document.getElementById('osMoto').options[document.getElementById('osMoto').selectedIndex].text} | Pagto: ${pgto}${parc}`, valor:tot, data:new Date().toISOString().split('T')[0], originType:'os_auto', originId:id||'nova'}); 
+                showToast("OS Concluída! Peças baixadas e valor lançado no Caixa.", "success");
             }
+            if(id) await db.collection('servicos').doc(id).update(d); else await db.collection('servicos').add(d); bootstrap.Modal.getInstance(document.getElementById('servicoModal')).hide();
         }
 
-        async function enviarChat() {
-            const val = document.getElementById('inputChatAdmin').value.trim();
-            if(!val || !idClienteConversaAtiva) return;
-            await db.collection('mensagens').add({ clienteId: idClienteConversaAtiva, sender: 'admin', text: val, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
-            document.getElementById('inputChatAdmin').value = '';
+        // ======================= FINANCEIRO E CHAT =======================
+        function renderFin() {
+            let e=0, s=0; document.getElementById('listaFinanceiro').innerHTML=financeiroLista.sort((a,b)=>new Date(b.data)-new Date(a.data)).map(t=>{ if(t.tipo==='Entrada') e+=t.valor; else s+=t.valor; return `<tr class="${t.tipo==='Entrada'?'table-success text-success':'table-danger text-danger'}"><td class="fw-bold"><i class="bi ${t.tipo==='Entrada'?'bi-arrow-up':'bi-arrow-down'}"></i> ${t.tipo}</td><td class="text-white">${t.descricao}</td><td class="fw-bold">R$ ${t.valor.toFixed(2)}</td><td class="text-white">${new Date(t.data).toLocaleDateString('pt-BR')}</td><td><span class="badge bg-secondary">Detalhes Origem</span></td><td><span class="badge bg-dark border border-secondary text-white-50">${t.originType||'Manual'}</span></td><td>${!t.originType?`<button class="btn btn-sm btn-outline-danger" onclick="if(confirm('Apagar transação avulsa?')) db.collection('financeiroItems').doc('${t.id}').delete()"><i class="bi bi-trash"></i></button>`:'<i class="bi bi-lock" title="Travado pelo sistema"></i>'}</td></tr>`; }).join('');
+            document.getElementById('totEnt').innerText=`R$ ${e.toFixed(2)}`; document.getElementById('totSai').innerText=`R$ ${s.toFixed(2)}`; document.getElementById('totSal').innerText=`R$ ${(e-s).toFixed(2)}`;
         }
+        async function salvarFinanceiro(e) { e.preventDefault(); await db.collection('financeiroItems').add({tipo:document.getElementById('finTipo').value, descricao:document.getElementById('finDesc').value, valor:parseFloat(document.getElementById('finValor').value), data:document.getElementById('finData').value}); bootstrap.Modal.getInstance(document.getElementById('financeiroModal')).hide(); showToast("Caixa Atualizado!"); }
 
-        // INÍCIO
-        document.addEventListener('DOMContentLoaded', ligarMotorDados);
+        function openChatWith(id, nm) { chatActiveClienteId=id; document.getElementById('chatActiveClientName').innerHTML=`<i class="bi bi-chat-dots-fill text-primary me-2"></i> ${nm}`; document.getElementById('chatInputArea').style.display='flex'; const a=document.getElementById('chatMessagesArea'); a.innerHTML=''; const m=mensagensLista.filter(x=>x.clienteId===id); if(m.length===0) a.innerHTML='<div class="text-center text-white-50 mt-5"><i class="bi bi-envelope-open fs-2"></i><br>Nenhuma mensagem ainda.</div>'; else { m.forEach(x=>{ const t=x.timestamp?new Date(x.timestamp.toDate()).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):''; a.innerHTML+=`<div class="message ${x.sender==='admin'?'admin':'cliente border border-secondary shadow-sm'}">${x.text}<small>${t}</small></div>`; }); a.scrollTop=a.scrollHeight; } }
+        async function enviarMensagemAdmin() { const v=document.getElementById('chatMsgInput').value.trim(); if(!v||!chatActiveClienteId) return; await db.collection('mensagens').add({clienteId:chatActiveClienteId, sender:'admin', text:v, timestamp:firebase.firestore.FieldValue.serverTimestamp()}); document.getElementById('chatMsgInput').value=''; }
 
     </script>
 </body>

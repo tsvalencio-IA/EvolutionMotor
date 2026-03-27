@@ -321,6 +321,8 @@
 
         // --- LISTENERS ---
         let est=[], cli=[], mot=[], func=[], forn=[], serv=[], fin=[], msg=[];
+        let chatActiveClienteId = null; // AQUI ESTÁ A CORREÇÃO DA AUDITORIA! (Estava faltando e causando erro no login)
+        
         function setupListeners() {
             db.collection('estoqueItems').onSnapshot(s => { est = s.docs.map(d=>({id:d.id,...d.data()})); renderEstoque(); });
             db.collection('clientes').onSnapshot(s => { cli = s.docs.map(d=>({id:d.id,...d.data()})); renderClientes(); });
@@ -393,7 +395,7 @@
                 bootstrap.Modal.getInstance(document.getElementById('clienteModal')).hide(); showToast("Salvo!");
             } catch(err) { showToast(err.message, "error"); console.error(err); }
         });
-        function msgWhats(n, t, e, s) { const url="https://seusite.com/cliente"; window.open(`https://wa.me/55${t}?text=${encodeURIComponent(`Olá ${n}! Acesso Oficina: ${url} | Usuário: ${e} | Senha: ${s}`)}`,'_blank'); }
+        function msgWhats(n, t, e, s) { const url="https://tsvalencio-ia.github.io/clientes/projeto_evolution_24.html"; window.open(`https://wa.me/55${t}?text=${encodeURIComponent(`Olá ${n}! Acesso Oficina: ${url} | Usuário: ${e} | Senha: ${s}`)}`,'_blank'); }
 
         // --- MOTOS ---
         function renderMotos() {

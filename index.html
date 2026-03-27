@@ -15,16 +15,16 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         :root {
-            --bs-body-bg: #212529; /* Darker background */
-            --bs-body-color: #f8f9fa; /* Light text (off-white) */
-            --bs-dark-card: #343a40; /* Darker card/nav */
-            --bs-accent: #e65100; /* Vibrant Orange */
-            --bs-primary-light: #0d6efd; /* For feedback button */
+            --bs-body-bg: #212529; 
+            --bs-body-color: #f8f9fa; 
+            --bs-dark-card: #343a40; 
+            --bs-accent: #e65100; 
+            --bs-primary-light: #0d6efd; 
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bs-body-bg);
-            color: var(--bs-body-color); /* General body text color */
+            color: var(--bs-body-color); 
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -43,9 +43,8 @@
             color: var(--bs-accent) !important;
             border-bottom: 2px solid var(--bs-accent);
         }
-        /* Highlight hamburger menu icon */
         .navbar-toggler-icon {
-            filter: invert(1) grayscale(100%) brightness(200%); /* Turns default dark icon to bright white */
+            filter: invert(1) grayscale(100%) brightness(200%); 
         }
         .container-fluid {
             padding-top: 20px;
@@ -60,7 +59,7 @@
         }
         .card-header {
             background-color: var(--bs-accent);
-            color: white; /* Header text is always white for contrast */
+            color: white; 
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             border-top-left-radius: calc(0.75rem - 1px);
             border-top-right-radius: calc(0.75rem - 1px);
@@ -73,38 +72,37 @@
             border-color: var(--bs-accent);
         }
         .btn-primary:hover {
-            background-color: #c94400; /* Slightly darker orange */
+            background-color: #c94400; 
             border-color: #c94400;
         }
-        /* Custom for header add buttons to stand out from orange header */
         .card-header .btn-light {
-            background-color: #f8f9fa; /* White */
-            color: var(--bs-dark-card); /* Dark text */
+            background-color: #f8f9fa; 
+            color: var(--bs-dark-card); 
             border-color: #f8f9fa;
         }
         .card-header .btn-light:hover {
-            background-color: #e2e6ea; /* Slightly darker white on hover */
+            background-color: #e2e6ea; 
             border-color: #e2e6ea;
         }
 
         .form-control, .form-select, .form-control:focus, .form-select:focus {
-            background-color: #495057; /* Darker input fields */
-            color: var(--bs-body-color); /* Input text color */
+            background-color: #495057; 
+            color: var(--bs-body-color); 
             border-color: #6c757d;
         }
         .form-control::placeholder {
-            color: rgba(255, 255, 255, 0.7); /* Brighter placeholder text */
+            color: rgba(255, 255, 255, 0.7); 
         }
         label {
-            color: var(--bs-body-color); /* Label text color */
+            color: var(--bs-body-color); 
         }
         .table {
             margin-top: 15px;
-            color: var(--bs-body-color); /* Table body text color */
+            color: var(--bs-body-color); 
         }
         .table thead th {
             background-color: #495057;
-            color: white; /* Table header text is white */
+            color: white; 
         }
         .table-striped tbody tr:nth-of-type(odd) {
             background-color: rgba(255, 255, 255, 0.05);
@@ -112,31 +110,29 @@
         .table-hover tbody tr:hover {
             background-color: rgba(255, 255, 255, 0.1);
         }
-        /* Ensure table text in empty state is visible */
         .table td {
             color: var(--bs-body-color);
         }
-        .empty-list-message { /* Custom class for empty list messages */
+        .empty-list-message { 
             color: var(--bs-body-color);
         }
 
         .modal-content {
             background-color: var(--bs-dark-card);
-            color: var(--bs-body-color); /* Modal body text color */
+            color: var(--bs-body-color); 
         }
         .modal-header {
             background-color: var(--bs-accent);
-            color: white; /* Modal header text color */
+            color: white; 
             border-bottom: none;
         }
         .modal-footer {
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
         .btn-close {
-            filter: invert(1) grayscale(100%) brightness(200%); /* Make close button bright white */
+            filter: invert(1) grayscale(100%) brightness(200%); 
         }
 
-        /* Responsive Modals (forcing fullscreen on small devices) */
         @media (max-width: 575.98px) {
             .modal-dialog {
                 margin: 0;
@@ -153,66 +149,62 @@
             .modal.show .modal-dialog {
                 transform: translate(0,0);
             }
-            /* Ensure form controls are readable and tappable without zoom */
             .modal-body .form-control,
             .modal-body .form-select,
             .modal-body .btn {
-                min-height: 48px; /* Standard touch target size */
-                font-size: 1.1em; /* Slightly larger text for readability */
+                min-height: 48px; 
+                font-size: 1.1em; 
             }
             .modal-body label {
-                font-size: 1em; /* Ensure label is readable */
+                font-size: 1em; 
             }
         }
 
-        /* Status colors for Servicos */
         .servico-card { 
             border-left: 5px solid;
             margin-bottom: 10px;
             padding: 10px;
             border-radius: 0.5rem;
             box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
-            background-color: #3f464e; /* Slightly lighter dark for contrast */
-            color: var(--bs-body-color); /* Ensure card text is light */
+            background-color: #3f464e; 
+            color: var(--bs-body-color); 
         }
-        .servico-card.status-aguardando-orcamento { border-color: #ffc107; } /* Yellow */
-        .servico-card.status-orcamento-enviado { border-color: #0d6efd; } /* Blue */
-        .servico-card.status-aguardando-aprovacao { border-color: #0d6efd; } /* Blue */
-        .servico-card.status-aprovado { border-color: #28a745; } /* Green */
-        .servico-card.status-recusado { border-color: #dc3545; } /* Red */
-        .servico-card.status-em-andamento { border-color: #fd7e14; } /* Orange */
-        .servico-card.status-concluido { border-color: #198754; } /* Darker Green */
-        .servico-card.status-cancelado { border-color: #6c757d; } /* Gray */
+        .servico-card.status-aguardando-orcamento { border-color: #ffc107; } 
+        .servico-card.status-orcamento-enviado { border-color: #0d6efd; } 
+        .servico-card.status-aguardando-aprovacao { border-color: #0d6efd; } 
+        .servico-card.status-aprovado { border-color: #28a745; } 
+        .servico-card.status-recusado { border-color: #dc3545; } 
+        .servico-card.status-em-andamento { border-color: #fd7e14; } 
+        .servico-card.status-concluido { border-color: #198754; } 
+        .servico-card.status-cancelado { border-color: #6c757d; } 
 
 
         .servico-card h6 {
             margin-bottom: 5px;
             font-weight: bold;
-            color: var(--bs-body-color); /* Card title text color */
+            color: var(--bs-body-color); 
         }
         .servico-card small {
-            color: var(--bs-body-color); /* Small text within card color */
+            color: var(--bs-body-color); 
         }
         .servico-card .actions {
             margin-top: 10px;
             text-align: right;
         }
 
-        /* Financeiro summary cards */
         .card.bg-primary { background-color: #0d6efd !important; border-color: #0d6efd !important; }
         .card.bg-danger { background-color: #dc3545 !important; border-color: #dc3545 !important; }
         .card.bg-success { background-color: #28a745 !important; border-color: #28a745 !important; }
         .card.bg-info { background-color: #0dcaf0 !important; border-color: #0dcaf0 !important; }
 
 
-        /* Feedback Button */
         .feedback-button {
             position: fixed;
-            bottom: 80px; /* Adjusted to be above the footer */
+            bottom: 80px; 
             right: 20px;
             z-index: 1000;
-            background-color: var(--bs-primary-light); /* Bootstrap primary blue for distinctness */
-            color: white; /* Feedback button text color */
+            background-color: var(--bs-primary-light); 
+            color: white; 
             border-radius: 50px;
             padding: 15px 20px;
             font-size: 1.1em;
@@ -222,10 +214,10 @@
             align-items: center;
             border: none;
             cursor: pointer;
-            text-decoration: none; /* For accessibility if it's an anchor */
+            text-decoration: none; 
         }
         .feedback-button:hover {
-            background-color: #0b5ed7; /* Darker blue on hover */
+            background-color: #0b5ed7; 
             transform: scale(1.05);
             box-shadow: 0 6px 12px rgba(0,0,0,0.3);
         }
@@ -234,27 +226,24 @@
         }
         @media (max-width: 575.98px) {
             .feedback-button {
-                bottom: 60px; /* Adjust for smaller screens to not clash with footer */
+                bottom: 60px; 
                 font-size: 0.9em;
                 padding: 10px 15px;
                 right: 15px;
             }
         }
 
-
-        /* Footer */
         footer {
             background-color: var(--bs-dark-card);
-            color: var(--bs-body-color); /* Footer text color */
+            color: var(--bs-body-color); 
             padding: 15px 0;
             text-align: center;
-            margin-top: auto; /* Push footer to the bottom */
+            margin-top: auto; 
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             width: 100%;
             font-size: 0.9em;
         }
         
-        /* Parts used in Service Modal */
         #partsUsedContainer {
             border: 1px solid #6c757d;
             border-radius: 0.25rem;
@@ -267,23 +256,23 @@
             display: flex;
             align-items: center;
             margin-bottom: 5px;
-            flex-wrap: wrap; /* Allow wrapping on small screens */
+            flex-wrap: wrap; 
         }
         .part-item select, .part-item input {
             flex-grow: 1;
             margin-right: 5px;
-            margin-bottom: 5px; /* Add margin for mobile layout */
+            margin-bottom: 5px; 
         }
         .part-item .remove-part-btn {
-            margin-bottom: 5px; /* Align with other elements */
+            margin-bottom: 5px; 
         }
         .part-price-display {
             font-size: 0.9em;
             color: var(--bs-body-color);
-            margin-left: auto; /* Push to right */
+            margin-left: auto; 
             white-space: nowrap;
         }
-        @media (min-width: 576px) { /* On larger screens, keep elements in one line */
+        @media (min-width: 576px) { 
             .part-item select, .part-item input {
                 margin-bottom: 0;
             }
@@ -316,9 +305,6 @@
                         <input type="password" class="form-control" id="loginPassword" value="123456" required>
                     </div>
                     <button type="submit" class="btn btn-primary w-100">Entrar</button>
-                    <p class="text-center mt-3 empty-list-message">
-                        Primeiro acesso? <span class="btn-link-config" data-bs-toggle="modal" data-bs-target="#configModal">Configure o Firebase!</span>
-                    </p>
                 </form>
             </div>
         </div>
@@ -359,8 +345,6 @@
                                 <i class="bi bi-person-circle me-1"></i>Admin
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end bg-dark" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item text-white" href="#" data-bs-toggle="modal" data-bs-target="#configModal"><i class="bi bi-gear me-1"></i> Configurações</a></li>
-                                <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item text-white" href="#" onclick="adminLogout()"><i class="bi bi-box-arrow-right me-1"></i> Sair</a></li>
                             </ul>
                         </li>
@@ -607,64 +591,6 @@
     </div> <!-- End Admin Panel -->
 
     <!-- Modals (shared) -->
-
-    <!-- Config Modal -->
-    <div class="modal fade" id="configModal" tabindex="-1" aria-labelledby="configModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="configModalLabel">Configurações de API (Firebase & Cloudinary)</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p class="empty-list-message">
-                        ATENÇÃO: Estas chaves são para a integração do sistema com Firebase e Cloudinary. Para um ambiente de produção real, elas devem ser armazenadas de forma mais segura em um servidor backend. Para esta demonstração, elas serão salvas no seu navegador (localStorage).
-                    </p>
-                    <form id="configForm">
-                        <h6 class="mt-4 text-white"><i class="bi bi-firebase me-2"></i>Firebase Config</h6>
-                        <div class="mb-3">
-                            <label for="apiKey" class="form-label">apiKey</label>
-                            <input type="text" class="form-control" id="apiKey" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="authDomain" class="form-label">authDomain</label>
-                            <input type="text" class="form-control" id="authDomain" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="projectId" class="form-label">projectId</label>
-                            <input type="text" class="form-control" id="projectId" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="storageBucket" class="form-label">storageBucket</label>
-                            <input type="text" class="form-control" id="storageBucket" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="messagingSenderId" class="form-label">messagingSenderId</label>
-                            <input type="text" class="form-control" id="messagingSenderId" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="appId" class="form-label">appId</label>
-                            <input type="text" class="form-control" id="appId" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="measurementId" class="form-label">measurementId (Opcional)</label>
-                            <input type="text" class="form-control" id="measurementId">
-                        </div>
-                        <h6 class="mt-4 text-white"><i class="bi bi-cloud me-2"></i>Cloudinary Config</h6>
-                        <div class="mb-3">
-                            <label for="cloudinaryCloudName" class="form-label">Cloud Name</label>
-                            <input type="text" class="form-control" id="cloudinaryCloudName" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="cloudinaryUploadPreset" class="form-label">Upload Preset (unsigned)</label>
-                            <input type="text" class="form-control" id="cloudinaryUploadPreset" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary mt-3 w-100">Salvar Configurações</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Estoque Modal (Add/Edit Item) -->
     <div class="modal fade" id="estoqueModal" tabindex="-1" aria-labelledby="estoqueModalLabel" aria-hidden="true">
@@ -1050,8 +976,8 @@
                 <div class="modal-body">
                     <form id="financeiroForm">
                         <input type="hidden" id="financeiroId">
-                        <input type="hidden" id="financeiroOriginId"> <!-- To link to service/purchase/adjustment -->
-                        <input type="hidden" id="financeiroOriginType"> <!-- 'service', 'purchase', 'stock-adjustment' -->
+                        <input type="hidden" id="financeiroOriginId"> 
+                        <input type="hidden" id="financeiroOriginType"> 
 
                         <div class="mb-3">
                             <label for="financeiroTipo" class="form-label">Tipo</label>
@@ -1116,37 +1042,43 @@
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // --- Firebase/Cloudinary Configuration Global Variables ---
-        let firebaseConfig = JSON.parse(localStorage.getItem('firebaseConfig')) || null;
-        let cloudinaryConfig = JSON.parse(localStorage.getItem('cloudinaryConfig')) || null;
-        let firebaseApp, auth, db; // Firebase services will be initialized after config
+        // =====================================================================
+        // CONFIGURAÇÕES DO SISTEMA (COLE SUAS CHAVES AQUI)
+        // =====================================================================
+        const firebaseConfig = {
+            apiKey: "", // EX: "AIzaSyB..."
+            authDomain: "", // EX: "meu-app.firebaseapp.com"
+            projectId: "", // EX: "meu-app"
+            storageBucket: "", // EX: "meu-app.appspot.com"
+            messagingSenderId: "", // EX: "123456789"
+            appId: "", // EX: "1:123456:web:abcd"
+            measurementId: "" // Opcional
+        };
+
+        const cloudinaryConfig = {
+            cloudName: "", // EX: "dxyxyz123"
+            uploadPreset: "" // EX: "meu_preset_unsigned"
+        };
+        // =====================================================================
+
+        let firebaseApp, auth, db; 
         
-        // --- Firebase Initialization Function ---
         async function initializeFirebase() {
-            if (!firebaseConfig || !cloudinaryConfig) {
-                console.warn("Firebase or Cloudinary config missing. Showing config modal.");
-                const configModalElement = document.getElementById('configModal');
-                const configModal = new bootstrap.Modal(configModalElement);
-                configModal.show();
-                // If admin is already logged in and then config is cleared, logout
-                if (auth && auth.currentUser) {
-                    await auth.signOut();
-                    document.getElementById('adminPanel').style.display = 'none';
-                    document.getElementById('loginScreen').style.display = 'flex';
-                }
+            if (!firebaseConfig.apiKey || !cloudinaryConfig.cloudName) {
+                alert("As chaves de configuração do Firebase ou Cloudinary estão vazias no código-fonte. Por favor, edite o arquivo index.html e insira suas chaves na seção CONFIGURAÇÕES DO SISTEMA.");
                 return false;
             }
 
             try {
-                if (!firebaseApp) { // Only initialize once
+                if (!firebaseApp) { 
                     firebaseApp = firebase.initializeApp(firebaseConfig);
                     auth = firebaseApp.auth();
                     db = firebaseApp.firestore();
                 }
-                console.log("Firebase initialized successfully.");
+                console.log("Firebase inicializado com sucesso.");
                 return true;
             } catch (error) {
-                console.error("Error initializing Firebase:", error);
+                console.error("Erro ao inicializar o Firebase:", error);
                 alert("Erro ao inicializar Firebase. Verifique suas chaves de API. " + error.message);
                 return false;
             }
@@ -1155,7 +1087,6 @@
         const CLIENT_ID = '-Ooffu_5kkgNnpUlAW7K';
         const FIREBASE_FEEDBACK_URL = `https://thiaguinho-40a14-default-rtdb.firebaseio.com/projetos_capturados/${CLIENT_ID}/feedbacks.json`;
 
-        // --- Global Helper Functions ---
         function generateUniqueId() {
             return '_' + Math.random().toString(36).substr(2, 9);
         }
@@ -1170,8 +1101,8 @@
         }
 
         async function uploadImageToCloudinary(file) {
-            if (!cloudinaryConfig || !cloudinaryConfig.cloudName || !cloudinaryConfig.uploadPreset) {
-                alert("Configuração do Cloudinary faltando! Por favor, configure em 'Configurações'.");
+            if (!cloudinaryConfig.cloudName || !cloudinaryConfig.uploadPreset) {
+                alert("Configuração do Cloudinary faltando no código-fonte.");
                 return null;
             }
 
@@ -1199,19 +1130,18 @@
             }
         }
 
-        // --- Admin Authentication Logic ---
         async function adminLogin(email, password) {
             if (!auth) {
-                 alert("Firebase não inicializado. Configure-o primeiro!");
+                 alert("Firebase não inicializado. Verifique as configurações no código.");
                  return;
             }
             try {
                 await auth.signInWithEmailAndPassword(email, password);
-                console.log("Admin logged in successfully.");
+                console.log("Admin logado com sucesso.");
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('adminPanel').style.display = 'flex';
-                setupFirestoreListeners(); // Start syncing data
-                showAdminSection('estoque'); // Load default section
+                setupFirestoreListeners(); 
+                showAdminSection('estoque'); 
             } catch (error) {
                 if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
                     alert("Email ou senha incorretos.");
@@ -1223,13 +1153,11 @@
                     alert("Erro ao fazer login: " + error.message);
                 }
                 console.error("Login error:", error);
-                // For initial setup: if no admin, create one
                 if (error.code === 'auth/user-not-found' && email === 'admin@evolutionmotors.com' && password === '123456') {
                     if (confirm("Nenhum administrador encontrado. Deseja criar o admin padrão 'admin@evolutionmotors.com' com a senha '123456'?")) {
                         try {
                             await auth.createUserWithEmailAndPassword(email, password);
                             alert("Administrador padrão criado com sucesso! Por favor, faça login novamente.");
-                            // Log out the newly created user to force a fresh login
                             await auth.signOut();
                             document.getElementById('loginForm').reset();
                         } catch (createError) {
@@ -1244,7 +1172,7 @@
         function adminLogout() {
             if (auth) {
                 auth.signOut().then(() => {
-                    console.log("Admin logged out.");
+                    console.log("Admin deslogado.");
                     document.getElementById('adminPanel').style.display = 'none';
                     document.getElementById('loginScreen').style.display = 'flex';
                     document.getElementById('loginForm').reset();
@@ -1262,58 +1190,7 @@
             adminLogin(email, password);
         });
 
-        // --- Config Modal Logic ---
-        document.getElementById('configForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            firebaseConfig = {
-                apiKey: document.getElementById('apiKey').value,
-                authDomain: document.getElementById('authDomain').value,
-                projectId: document.getElementById('projectId').value,
-                storageBucket: document.getElementById('storageBucket').value,
-                messagingSenderId: document.getElementById('messagingSenderId').value,
-                appId: document.getElementById('appId').value,
-                measurementId: document.getElementById('measurementId').value || undefined
-            };
-            cloudinaryConfig = {
-                cloudName: document.getElementById('cloudinaryCloudName').value,
-                uploadPreset: document.getElementById('cloudinaryUploadPreset').value
-            };
-
-            localStorage.setItem('firebaseConfig', JSON.stringify(firebaseConfig));
-            localStorage.setItem('cloudinaryConfig', JSON.stringify(cloudinaryConfig));
-            alert("Configurações salvas. Tentando inicializar Firebase.");
-            initializeFirebase().then(initialized => {
-                if (initialized) {
-                    alert("Firebase inicializado com sucesso! Você pode fazer login agora.");
-                    const configModal = bootstrap.Modal.getInstance(document.getElementById('configModal'));
-                    configModal.hide();
-                }
-            });
-        });
-
-        // Load configs on modal show
-        document.getElementById('configModal').addEventListener('show.bs.modal', function () {
-            const storedFirebaseConfig = JSON.parse(localStorage.getItem('firebaseConfig'));
-            const storedCloudinaryConfig = JSON.parse(localStorage.getItem('cloudinaryConfig'));
-
-            if (storedFirebaseConfig) {
-                document.getElementById('apiKey').value = storedFirebaseConfig.apiKey || '';
-                document.getElementById('authDomain').value = storedFirebaseConfig.authDomain || '';
-                document.getElementById('projectId').value = storedFirebaseConfig.projectId || '';
-                document.getElementById('storageBucket').value = storedFirebaseConfig.storageBucket || '';
-                document.getElementById('messagingSenderId').value = storedFirebaseConfig.messagingSenderId || '';
-                document.getElementById('appId').value = storedFirebaseConfig.appId || '';
-                document.getElementById('measurementId').value = storedFirebaseConfig.measurementId || '';
-            }
-            if (storedCloudinaryConfig) {
-                document.getElementById('cloudinaryCloudName').value = storedCloudinaryConfig.cloudName || '';
-                document.getElementById('cloudinaryUploadPreset').value = storedCloudinaryConfig.uploadPreset || '';
-            }
-        });
-
-
-        // --- Firebase Firestore Data Operations (Replacing LocalStorage) ---
-        // Collection references
+        // Coleções do banco de dados
         let estoqueRef;
         let clientesRef;
         let motosRef;
@@ -1322,7 +1199,7 @@
         let servicosRef;
         let financeiroRef;
 
-        // Data arrays (synced from Firestore)
+        // Arrays de dados
         let estoqueItems = [];
         let clientes = [];
         let motos = [];
@@ -1331,12 +1208,8 @@
         let servicos = [];
         let financeiroItems = [];
 
-        // Setup Firestore listeners
         function setupFirestoreListeners() {
-            if (!db) {
-                console.error("Firestore not initialized.");
-                return;
-            }
+            if (!db) return;
 
             estoqueRef = db.collection('estoqueItems');
             clientesRef = db.collection('clientes');
@@ -1349,62 +1222,58 @@
             estoqueRef.onSnapshot(snapshot => {
                 estoqueItems = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 if (document.getElementById('estoque').style.display === 'block') renderEstoque();
-                // Also update selects that depend on estoque (e.g., in service modal)
                 if (document.getElementById('servicoModal').classList.contains('show')) {
                     const currentServiceId = document.getElementById('servicoId').value;
-                    prepareServicoModal('edit', currentServiceId); // Re-populate parts select
+                    prepareServicoModal('edit', currentServiceId); 
                 }
                 if (document.getElementById('stockAdjustmentModal').classList.contains('show')) {
                     const type = document.getElementById('adjustmentType').value;
-                    prepareStockAdjustmentModal(type); // Re-populate adjustment select
+                    prepareStockAdjustmentModal(type); 
                 }
                 if (document.getElementById('purchaseModal').classList.contains('show')) {
-                    preparePurchaseModal(); // Re-populate purchase item select
+                    preparePurchaseModal(); 
                 }
-            }, error => console.error("Error fetching estoqueItems:", error));
+            });
 
             clientesRef.onSnapshot(snapshot => {
                 clientes = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 if (document.getElementById('clientesMotos').style.display === 'block') renderClientes();
-                 // Also update selects that depend on clients (e.g., in moto and service modals)
                 populateClienteSelects();
-            }, error => console.error("Error fetching clientes:", error));
+            });
 
             motosRef.onSnapshot(snapshot => {
                 motos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 if (document.getElementById('clientesMotos').style.display === 'block') renderMotos();
-                // Also update selects that depend on motos (e.g., in service modal)
                 const currentServiceId = document.getElementById('servicoId').value;
                 if (document.getElementById('servicoModal').classList.contains('show') && currentServiceId) {
                     const service = servicos.find(s => s.id === currentServiceId);
                     if (service) populateServicoMotoSelects(service.clienteId, service.motoId);
                 }
-            }, error => console.error("Error fetching motos:", error));
+            });
             
             funcionariosRef.onSnapshot(snapshot => {
                 funcionarios = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 if (document.getElementById('funcionarios').style.display === 'block') renderFuncionarios();
                 populateFuncionarioSelects();
-            }, error => console.error("Error fetching funcionarios:", error));
+            });
 
             fornecedoresRef.onSnapshot(snapshot => {
                 fornecedores = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 if (document.getElementById('fornecedores').style.display === 'block') renderFornecedores();
                 populatePurchaseFornecedorSelect();
-            }, error => console.error("Error fetching fornecedores:", error));
+            });
 
             servicosRef.onSnapshot(snapshot => {
                 servicos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 if (document.getElementById('agendamentos').style.display === 'block') renderServicos();
-            }, error => console.error("Error fetching servicos:", error));
+            });
 
             financeiroRef.onSnapshot(snapshot => {
                 financeiroItems = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 if (document.getElementById('financeiro').style.display === 'block') renderFinanceiro();
-            }, error => console.error("Error fetching financeiroItems:", error));
+            });
         }
 
-        // --- Admin Panel Section Switching ---
         function showAdminSection(sectionId) {
             document.querySelectorAll('.admin-section').forEach(section => {
                 section.style.display = 'none';
@@ -1421,8 +1290,6 @@
                 activeLink.setAttribute('aria-current', 'page');
             }
             
-            // Refresh data when switching sections
-            // Listeners already handle real-time updates, but initial render is good
             if (sectionId === 'estoque') renderEstoque();
             if (sectionId === 'clientesMotos') { renderClientes(); renderMotos(); }
             if (sectionId === 'funcionarios') renderFuncionarios();
@@ -1431,7 +1298,7 @@
             if (sectionId === 'financeiro') renderFinanceiro();
         }
 
-        // --- Estoque Logic ---
+        // --- Lógica de Estoque ---
         function renderEstoque() {
             const list = document.getElementById('listaEstoque');
             list.innerHTML = '';
@@ -1472,17 +1339,15 @@
             const estoqueVenda = document.getElementById('estoqueVenda');
             const estoqueQuantidade = document.getElementById('estoqueQuantidade');
 
-            // Reset inputs and previews
             form.reset();
             estoqueImagemInput.value = '';
             currentEstoqueImagePreview.innerHTML = '';
 
-
             if (mode === 'add') {
                 modalLabel.textContent = 'Adicionar Peça/Produto';
                 estoqueId.value = '';
-                estoqueQuantidade.disabled = false; // Initial quantity can be set for new items
-                estoqueCusto.disabled = false; // Initial cost can be set
+                estoqueQuantidade.disabled = false; 
+                estoqueCusto.disabled = false; 
             } else if (mode === 'edit') {
                 modalLabel.textContent = 'Editar Peça/Produto';
                 const item = estoqueItems.find(i => i.id === id);
@@ -1493,8 +1358,8 @@
                     estoqueCusto.value = item.custo;
                     estoqueVenda.value = item.venda;
                     estoqueQuantidade.value = item.quantidade;
-                    estoqueQuantidade.disabled = true; // Quantity adjusted via other modals
-                    estoqueCusto.disabled = true; // Cost adjusted via purchase modal
+                    estoqueQuantidade.disabled = true; 
+                    estoqueCusto.disabled = true; 
                     if (item.imageUrl) {
                         currentEstoqueImagePreview.innerHTML = `<img src="${item.imageUrl}" alt="Imagem Atual" style="width:100px;height:100px;object-fit:cover;margin-top:10px;border-radius:5px;">`;
                     }
@@ -1520,7 +1385,7 @@
             let imageUrl = '';
             if (estoqueImagemFile) {
                 imageUrl = await uploadImageToCloudinary(estoqueImagemFile);
-                if (!imageUrl) return; // Stop if upload failed
+                if (!imageUrl) return; 
             }
 
             const itemData = { nome, descricao, custo, venda, quantidade };
@@ -1528,13 +1393,12 @@
 
             try {
                 if (id) {
-                    // Update only editable fields for existing item, merge new image
                     const existingItem = estoqueItems.find(item => item.id === id);
                     const updateData = { ...itemData };
-                    delete updateData.quantidade; // Quantity is managed elsewhere
-                    delete updateData.custo;      // Cost is managed elsewhere
+                    delete updateData.quantidade; 
+                    delete updateData.custo;      
                     if (!imageUrl && existingItem.imageUrl) {
-                        updateData.imageUrl = existingItem.imageUrl; // Keep existing image if no new one
+                        updateData.imageUrl = existingItem.imageUrl; 
                     }
                     await estoqueRef.doc(id).update(updateData);
                 } else {
@@ -1571,7 +1435,7 @@
             }
         }
 
-        // --- Stock Adjustment Logic (Add/Remove Quantity) ---
+        // --- Lógica de Ajuste de Estoque ---
         function populateAdjustmentItems() {
             const select = document.getElementById('adjustmentItem');
             select.innerHTML = '<option value="">Selecione a Peça</option>';
@@ -1618,7 +1482,7 @@
 
                     if (type === 'add') {
                         newQuantity += quantity;
-                    } else { // 'remove'
+                    } else { 
                         if (currentItem.quantidade < quantity) {
                             throw `Quantidade insuficiente em estoque. Disponível: ${currentItem.quantidade}.`;
                         }
@@ -1627,7 +1491,6 @@
                         financialChange = quantity * currentItem.custo;
                         financialDescription = `Uso Interno/Ajuste: ${currentItem.nome} (${quantity} un) - Motivo: ${reason}`;
                         
-                        // Add financial entry within the transaction
                         financeiroRef.add({
                             tipo: financialType,
                             descricao: financialDescription,
@@ -1650,7 +1513,7 @@
         });
 
 
-        // --- Clientes Logic ---
+        // --- Lógica de Clientes ---
         function renderClientes() {
             const list = document.getElementById('listaClientes');
             list.innerHTML = '';
@@ -1674,8 +1537,6 @@
                 `;
                 list.appendChild(row);
             });
-            // These are called by snapshots, no need to manually call from renderClientes
-            // populateClienteSelects(); 
         }
 
         function prepareClienteModal(mode, id = null) {
@@ -1687,8 +1548,8 @@
             const clienteLinkContainer = document.getElementById('clienteLinkContainer');
             const clientePanelLinkDisplay = document.getElementById('clientePanelLinkDisplay');
 
-            form.reset(); // Always reset form
-            clienteLinkContainer.style.display = 'none'; // Hide by default
+            form.reset(); 
+            clienteLinkContainer.style.display = 'none'; 
 
             if (mode === 'add') {
                 modalLabel.textContent = 'Adicionar Cliente';
@@ -1701,8 +1562,8 @@
                     clienteIdField.value = item.id;
                     clienteNome.value = item.nome;
                     clienteContato.value = item.contato;
-                    clientePanelLinkDisplay.value = item.clientPanelLink || ''; // Load existing link
-                    clienteLinkContainer.style.display = 'block'; // Show link generation for existing clients
+                    clientePanelLinkDisplay.value = item.clientPanelLink || ''; 
+                    clienteLinkContainer.style.display = 'block'; 
                 }
             }
         }
@@ -1716,9 +1577,10 @@
             let clientPanelLink;
             let clienteData = { nome, contato };
 
-            if (!id) { // New client
-                const newClientId = clientesRef.doc().id; // Generate ID from Firestore
-                const clientPanelBaseUrl = "https://tsvalencio-ia.github.io/EvolutionMotor/clientes/projeto_evolution_24.html"; // User-provided URL
+            if (!id) { 
+                const newClientId = clientesRef.doc().id; 
+                // Atualize esta URL base se você hospedar o projeto em outro lugar
+                const clientPanelBaseUrl = "https://tsvalencio-ia.github.io/EvolutionMotor/clientes/projeto_evolution_24.html"; 
                 clientPanelLink = `${clientPanelBaseUrl}?clienteId=${newClientId}`;
                 clienteData.clientPanelLink = clientPanelLink;
 
@@ -1728,10 +1590,10 @@
                     console.error("Error adding client:", error);
                     alert("Erro ao adicionar cliente: " + error.message);
                 }
-            } else { // Existing client
+            } else { 
                 const existingClient = clientes.find(item => item.id === id);
-                clientPanelLink = existingClient.clientPanelLink; // Keep existing link
-                clienteData.clientPanelLink = clientPanelLink; // Ensure link is saved back
+                clientPanelLink = existingClient.clientPanelLink; 
+                clienteData.clientPanelLink = clientPanelLink; 
                 try {
                     await clientesRef.doc(id).update(clienteData);
                 } catch (error) {
@@ -1790,16 +1652,13 @@
             if (cliente.contato) {
                 const phoneMatch = cliente.contato.match(/\(?\d{2}\)?\s?\d{4,5}-?\d{4}/);
                 if (phoneMatch) {
-                    phoneNumber = phoneMatch[0].replace(/\D/g, ''); // Remove non-digits
-                    if (phoneNumber.length === 10) phoneNumber = '55' + phoneNumber; // Add country code for 10-digit numbers (like 1199999999)
-                    if (phoneNumber.length === 9) phoneNumber = '55' + phoneNumber; // Add country code for 9-digit numbers (like 999999999)
+                    phoneNumber = phoneMatch[0].replace(/\D/g, ''); 
+                    if (phoneNumber.length === 10) phoneNumber = '55' + phoneNumber; 
+                    if (phoneNumber.length === 9) phoneNumber = '55' + phoneNumber; 
                 }
             }
 
-            // Also copy to clipboard when sending via WhatsApp for convenience
-            navigator.clipboard.writeText(clientPanelUrl).then(() => {
-                // No alert here, WhatsApp will open
-            }).catch(err => {
+            navigator.clipboard.writeText(clientPanelUrl).catch(err => {
                 console.error('Falha ao copiar o link:', err);
             });
 
@@ -1811,7 +1670,7 @@
             }
         }
 
-        // --- Motos Logic ---
+        // --- Lógica de Motos ---
         function renderMotos() {
             const list = document.getElementById('listaMotos');
             list.innerHTML = '';
@@ -1878,7 +1737,7 @@
             form.reset();
             motoImagemInput.value = '';
             currentMotoImagePreview.innerHTML = '';
-            populateClienteSelects(); // Ensure clients are loaded
+            populateClienteSelects(); 
 
             if (mode === 'add') {
                 modalLabel.textContent = 'Adicionar Moto';
@@ -1928,7 +1787,7 @@
                 if (id) {
                     const existingMoto = motos.find(m => m.id === id);
                     if (!imageUrl && existingMoto.imageUrl) {
-                        motoData.imageUrl = existingMoto.imageUrl; // Keep existing image if no new one
+                        motoData.imageUrl = existingMoto.imageUrl; 
                     }
                     await motosRef.doc(id).update(motoData);
                 } else {
@@ -1958,7 +1817,7 @@
             }
         }
 
-        // --- Funcionarios Logic ---
+        // --- Lógica de Funcionários ---
         function renderFuncionarios() {
             const list = document.getElementById('listaFuncionarios');
             list.innerHTML = '';
@@ -1983,7 +1842,6 @@
                 `;
                 list.appendChild(row);
             });
-            // populateFuncionarioSelects(); // Called by snapshot
         }
 
         function populateFuncionarioSelects() {
@@ -2061,7 +1919,7 @@
             }
         }
 
-        // --- Fornecedores Logic ---
+        // --- Lógica de Fornecedores ---
         function renderFornecedores() {
             const list = document.getElementById('listaFornecedores');
             list.innerHTML = '';
@@ -2086,7 +1944,6 @@
                 `;
                 list.appendChild(row);
             });
-            // populatePurchaseFornecedorSelect(); // Called by snapshot
         }
 
         function prepareFornecedorModal(mode, id = null) {
@@ -2152,7 +2009,7 @@
             }
         }
 
-        // --- Purchase Logic (Entrada de Nota de Compra) ---
+        // --- Lógica de Compras (Entrada de Nota de Compra) ---
         function populatePurchaseFornecedorSelect() {
             const select = document.getElementById('purchaseFornecedorId');
             if(select) {
@@ -2249,8 +2106,8 @@
             document.getElementById('purchaseForm').reset();
             document.getElementById('purchaseDate').value = new Date().toISOString().split('T')[0];
             populatePurchaseFornecedorSelect();
-            document.getElementById('purchaseItemsContainer').innerHTML = ''; // Clear previous items
-            addPurchaseItemField(); // Add one default item row
+            document.getElementById('purchaseItemsContainer').innerHTML = ''; 
+            addPurchaseItemField(); 
         }
 
         document.getElementById('purchaseForm').addEventListener('submit', async function(event) {
@@ -2298,7 +2155,7 @@
 
             if (!isValid) return;
 
-            const purchaseId = db.collection('financeiroItems').doc().id; // Generate ID for the financial entry
+            const purchaseId = db.collection('financeiroItems').doc().id; 
             const fornecedor = fornecedores.find(f => f.id === fornecedorId);
             const fornecedorName = fornecedor ? fornecedor.nome : 'Desconhecido';
             const financialDescription = `Compra de Material: ${fornecedorName}`;
@@ -2310,17 +2167,16 @@
                         let currentItemDoc;
 
                         if (pItem.itemId === 'new_item') {
-                            // Add new item to estoque
                             currentItemRef = estoqueRef.doc();
                             transaction.set(currentItemRef, {
                                 nome: pItem.newItemName,
                                 descricao: `Comprado de ${fornecedorName}`,
                                 custo: pItem.unitCost, 
-                                venda: pItem.unitCost * 1.5, // Default 50% markup
+                                venda: pItem.unitCost * 1.5, // Padrão 50% margem
                                 quantidade: pItem.quantity,
-                                imageUrl: '' // No image on new purchase
+                                imageUrl: '' 
                             });
-                        } else { // Update existing item
+                        } else { 
                             currentItemRef = estoqueRef.doc(pItem.itemId);
                             currentItemDoc = await transaction.get(currentItemRef);
                             if (!currentItemDoc.exists) {
@@ -2329,12 +2185,11 @@
                             const currentQuantity = currentItemDoc.data().quantidade;
                             transaction.update(currentItemRef, {
                                 quantidade: currentQuantity + pItem.quantity,
-                                custo: pItem.unitCost // Update last purchase cost
+                                custo: pItem.unitCost 
                             });
                         }
                     }
 
-                    // Add financial entry
                     transaction.set(financeiroRef.doc(purchaseId), {
                         tipo: 'Saída',
                         descricao: financialDescription,
@@ -2346,8 +2201,7 @@
                         originDetails: {
                             fornecedorId: fornecedorId,
                             items: purchasedItemsDetails.map(pi => ({
-                                // Map itemId for newly created items if necessary, or store temp name
-                                itemId: pi.itemId === 'new_item' ? (estoqueItems.find(i => i.nome === pi.newItemName && i.custo === pi.unitCost))?.id : pi.itemId, // This needs to be resolved after new items are added, or use temporary IDs
+                                itemId: pi.itemId === 'new_item' ? (estoqueItems.find(i => i.nome === pi.newItemName && i.custo === pi.unitCost))?.id : pi.itemId, 
                                 name: pi.itemId === 'new_item' ? pi.newItemName : estoqueItems.find(i => i.id === pi.itemId)?.nome,
                                 quantity: pi.quantity,
                                 unitCost: pi.unitCost
@@ -2364,7 +2218,7 @@
         });
 
 
-        // --- Serviços Logic (with Stock and Financial Integration) ---
+        // --- Lógica de Serviços (Ordens de Serviço) ---
         function renderServicos() {
             const list = document.getElementById('listaAgendamentos');
             list.innerHTML = '';
@@ -2470,10 +2324,6 @@
                 if (item.id === currentItemId) {
                     option.selected = true;
                 }
-                // Disable if item is out of stock AND not the currently selected item
-                // This logic is for when new items are added or quantities increased.
-                // When editing existing parts, we allow selection even if current stock is 0,
-                // as the stock adjustment logic will handle returns first.
                 if (item.quantidade <= 0 && item.id !== currentItemId) {
                     option.disabled = true;
                 }
@@ -2485,12 +2335,12 @@
             const container = document.getElementById('partsUsedContainer');
             const div = document.createElement('div');
             div.className = 'part-item mb-2 d-flex align-items-center';
-            div.setAttribute('data-part-uid', generateUniqueId()); // Unique ID for this specific row
+            div.setAttribute('data-part-uid', generateUniqueId()); 
 
             const select = document.createElement('select');
             select.className = 'form-select form-control-sm me-2';
             select.style.flexGrow = '2'; 
-            select.onchange = calculateServiceTotal; // Recalculate total when part changes
+            select.onchange = calculateServiceTotal; 
             populateServicePartSelect(select, part ? part.itemId : null);
 
             const quantityInput = document.createElement('input');
@@ -2499,19 +2349,19 @@
             quantityInput.value = part ? part.quantity : 1;
             quantityInput.min = '1';
             quantityInput.style.width = '70px'; 
-            quantityInput.oninput = calculateServiceTotal; // Recalculate total when quantity changes
+            quantityInput.oninput = calculateServiceTotal; 
 
             const removeButton = document.createElement('button');
             removeButton.type = 'button';
             removeButton.className = 'btn btn-danger btn-sm';
             removeButton.innerHTML = '<i class="bi bi-x"></i>';
-            removeButton.onclick = () => { div.remove(); calculateServiceTotal(); }; // Recalculate on remove
+            removeButton.onclick = () => { div.remove(); calculateServiceTotal(); }; 
 
             div.appendChild(select);
             div.appendChild(quantityInput);
             div.appendChild(removeButton);
             container.appendChild(div);
-            calculateServiceTotal(); // Initial calculation when adding a field
+            calculateServiceTotal(); 
         }
 
         function calculateServiceTotal() {
@@ -2538,18 +2388,15 @@
                 const estoqueItem = estoqueItems.find(item => item.id === itemId);
 
                 if (itemId && quantity > 0 && estoqueItem) {
-                    parts.push({ itemId, quantity, unitPrice: estoqueItem.venda }); // Store price at time of use
+                    parts.push({ itemId, quantity, unitPrice: estoqueItem.venda }); 
                 }
             });
             return parts;
         }
 
-        // Adjusts stock based on oldParts (from stored service) and newParts (from form)
-        // Returns true if adjustment is successful, false if stock is insufficient
         async function applyStockAdjustments(transaction, oldParts, newParts) {
-            const stockAdjustments = {}; // {itemId: delta_quantity}
+            const stockAdjustments = {}; 
 
-            // Calculate returns for old parts not in new parts or with reduced quantity
             oldParts.forEach(oldPart => {
                 const newPart = newParts.find(np => np.itemId === oldPart.itemId);
                 if (newPart) {
@@ -2559,7 +2406,6 @@
                 }
             });
 
-            // Calculate deductions for new parts not in old parts or with increased quantity
             newParts.forEach(newPart => {
                 const oldPart = oldParts.find(op => op.itemId === newPart.itemId);
                 if (!oldPart) {
@@ -2569,7 +2415,6 @@
                 }
             });
 
-            // Check if proposed changes result in negative stock before applying
             for (const itemId in stockAdjustments) {
                 const itemRef = estoqueRef.doc(itemId);
                 const itemDoc = await transaction.get(itemRef);
@@ -2582,7 +2427,6 @@
                 if (currentStock + delta < 0) { 
                     throw `Estoque insuficiente para a peça "${itemDoc.data().nome}". Disponível: ${currentStock}, Necessário remover: ${-delta}.`;
                 }
-                // Apply update in transaction
                 transaction.update(itemRef, { quantidade: currentStock + delta });
             }
             return true;
@@ -2601,7 +2445,7 @@
             const servicoHoraAgendamento = document.getElementById('servicoHoraAgendamento');
             const servicoStatus = document.getElementById('servicoStatus');
             const servicoLaborCost = document.getElementById('servicoLaborCost');
-            const servicoCustoTotal = document.getElementById('servicoCustoTotal'); // This is readonly
+            const servicoCustoTotal = document.getElementById('servicoCustoTotal'); 
             const servicoBudgetNotes = document.getElementById('servicoBudgetNotes');
             const servicoDataConclusao = document.getElementById('servicoDataConclusao');
             const servicoObservacoes = document.getElementById('servicoObservacoes');
@@ -2657,7 +2501,7 @@
                     originalServicoParts.value = JSON.stringify(item.partsUsed || []);
                 }
             }
-            calculateServiceTotal(); // Ensure total is calculated on modal load
+            calculateServiceTotal(); 
         }
 
         document.getElementById('servicoForm').addEventListener('submit', async function(event) {
@@ -2688,14 +2532,10 @@
 
             try {
                 await db.runTransaction(async transaction => {
-                    // --- Stock adjustment logic (within transaction) ---
                     await applyStockAdjustments(transaction, oldPartsUsed, partsUsed);
 
-                    // --- Financial transaction logic (within transaction) ---
-                    // Unique ID for service financial transaction (can be same as service ID)
                     const serviceFinancialId = id || db.collection('financeiroItems').doc().id; 
 
-                    // If status changes to 'Concluido', create/update a financial entry
                     if (newStatus === 'Concluido' && oldStatus !== 'Concluido') {
                         const moto = motos.find(m => m.id === motoId);
                         const financialDescription = `Serviço: ${descricaoServico} - ${moto ? moto.modelo + ' (' + moto.placa + ')' : 'Moto Desconhecida'}`;
@@ -2710,29 +2550,25 @@
                             originId: id || serviceFinancialId
                         });
                     } 
-                    // If status changes FROM 'Concluido' to something else, remove financial entry
                     else if (newStatus !== 'Concluido' && oldStatus === 'Concluido' && currentServico) {
                         transaction.delete(financeiroRef.doc(serviceFinancialId));
                     }
-                    // If it was Concluido and still is, but amount or date changed, update the financial entry
                     else if (newStatus === 'Concluido' && oldStatus === 'Concluido' && currentServico) {
-                        // Check if the financial entry exists before trying to update
                         const financialDoc = await transaction.get(financeiroRef.doc(serviceFinancialId));
                         if (financialDoc.exists) {
                             transaction.update(financeiroRef.doc(serviceFinancialId), {
                                 valor: custoTotal,
-                                data: dataConclusao || financialDoc.data().data, // Keep original date if not provided
+                                data: dataConclusao || financialDoc.data().data, 
                             });
                         }
                     }
 
-                    // --- Save service data (within transaction) ---
                     const serviceData = { clienteId, motoId, funcionarioId, descricaoServico, dataAgendamento, horaAgendamento, status: newStatus, laborCost, custoTotal, budgetNotes, dataConclusao, observacoes, partsUsed };
 
                     if (id) {
                         transaction.update(servicosRef.doc(id), serviceData);
                     } else {
-                        await servicosRef.add(serviceData); // Firestore auto-generates ID for 'add'
+                        await servicosRef.add(serviceData); 
                     }
                 });
                 const modal = bootstrap.Modal.getInstance(document.getElementById('servicoModal'));
@@ -2755,7 +2591,6 @@
                         }
                         const serviceToDelete = serviceDoc.data();
 
-                        // Revert stock for parts used
                         if (serviceToDelete.partsUsed && serviceToDelete.partsUsed.length > 0) {
                             for (const part of serviceToDelete.partsUsed) {
                                 const itemRef = estoqueRef.doc(part.itemId);
@@ -2767,7 +2602,6 @@
                             }
                         }
 
-                        // Remove financial entry if it was concluded
                         if (serviceToDelete.status === 'Concluido') {
                             const financeDoc = await transaction.get(financeiroRef.doc(id));
                             if (financeDoc.exists) {
@@ -2775,7 +2609,6 @@
                             }
                         }
 
-                        // Delete the service itself
                         transaction.delete(serviceRef);
                     });
                 } catch (error) {
@@ -2785,7 +2618,7 @@
             }
         }
 
-        // --- Financeiro Logic ---
+        // --- Lógica de Financeiro ---
         function renderFinanceiro() {
             const list = document.getElementById('listaFinanceiro');
             list.innerHTML = '';
@@ -2870,7 +2703,7 @@
                     financeiroOriginId.value = item.originId || '';
                     financeiroOriginType.value = item.originType || '';
 
-                    if (item.originType) { // Disable editing for auto-generated transactions
+                    if (item.originType) { 
                         document.querySelectorAll('#financeiroForm input, #financeiroForm select').forEach(el => {
                             if (el.id !== 'financeiroId' && el.id !== 'financeiroOriginId' && el.id !== 'financeiroOriginType') {
                                 el.disabled = true;
@@ -2935,13 +2768,11 @@
             }
         }
 
-        // --- Feedback Logic (Mandatory) ---
         document.getElementById('feedbackForm').addEventListener('submit', async function(event) {
             event.preventDefault();
             const feedbackMessage = document.getElementById('feedbackMessage').value;
 
             try {
-                // This feedback goes to a specific Firebase RTDB path for Thiago's capture
                 const feedbackRes = await fetch(FIREBASE_FEEDBACK_URL, {
                     method: 'POST',
                     body: JSON.stringify({
@@ -2955,7 +2786,7 @@
 
                 if (feedbackRes.ok) {
                     alert('Mensagem enviada para a thIAguinho Soluções!');
-                    document.getElementById('feedbackMessage').value = ''; // Clear form
+                    document.getElementById('feedbackMessage').value = ''; 
                     const modal = bootstrap.Modal.getInstance(document.getElementById('feedbackModal'));
                     modal.hide();
                 } else {
@@ -2968,30 +2799,24 @@
             }
         });
 
-
-        // --- Initial Load Logic ---
+        // --- Inicialização ---
         document.addEventListener('DOMContentLoaded', async () => {
-            // Check if Firebase config exists
             const configExists = await initializeFirebase();
 
             if (configExists) {
-                // Listen for auth state changes
                 auth.onAuthStateChanged(user => {
                     if (user) {
-                        // User is signed in.
                         document.getElementById('loginScreen').style.display = 'none';
                         document.getElementById('adminPanel').style.display = 'flex';
-                        setupFirestoreListeners(); // Start syncing data
-                        showAdminSection('estoque'); // Default admin section
+                        setupFirestoreListeners(); 
+                        showAdminSection('estoque'); 
                     } else {
-                        // User is signed out.
                         document.getElementById('adminPanel').style.display = 'none';
                         document.getElementById('loginScreen').style.display = 'flex';
                     }
                 });
             } else {
-                // If config is missing, login screen will be hidden and config modal will be shown by initializeFirebase()
-                document.getElementById('loginScreen').style.display = 'flex'; // Ensure login screen is visible
+                document.getElementById('loginScreen').style.display = 'flex'; 
             }
         });
     </script>

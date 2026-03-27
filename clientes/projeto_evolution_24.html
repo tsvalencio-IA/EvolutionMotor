@@ -41,7 +41,7 @@
     <div id="dashboardArea" style="display: none; flex-grow: 1;">
         <nav class="navbar navbar-dark bg-dark px-3 border-bottom border-warning">
             <span class="navbar-brand fw-bold text-warning"><i class="bi bi-speedometer2"></i> Meu Portal</span>
-            <button class="btn btn-outline-light btn-sm" onclick="auth.signOut()"><i class="bi bi-box-arrow-right"></i> Sair</button>
+            <button class="btn btn-outline-light btn-sm" onclick="clientLogout()"><i class="bi bi-box-arrow-right"></i> Sair</button>
         </nav>
         <div class="container mt-4">
             <h3 id="welcomeMsg" class="mb-4"></h3>
@@ -100,6 +100,8 @@
             try { await auth.signInWithEmailAndPassword(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value); } 
             catch(err) { showToast("E-mail ou senha incorretos."); console.error(err); }
         });
+
+        function clientLogout() { auth.signOut(); }
 
         let motos=[], servicos=[];
         function startListeners() {
